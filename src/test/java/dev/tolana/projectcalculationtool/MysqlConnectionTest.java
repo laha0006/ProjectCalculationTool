@@ -9,6 +9,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.platform.commons.function.Try.success;
+
 @SpringBootTest
 public class MysqlConnectionTest {
 
@@ -22,13 +25,15 @@ public class MysqlConnectionTest {
                 id INT PRIMARY KEY AUTO_INCREMENT,
                 name VARCHAR(255));
                 """;
+        boolean res = false;
         try(Connection con = dataSource.getConnection()) {
             Statement stmt = con.createStatement();
             stmt.execute("DROP TABLE IF EXISTS test");
-            stmt.execute(SQL);
+            res = stmt.execute(SQL);
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        assertTrue(res);
     }
 }
