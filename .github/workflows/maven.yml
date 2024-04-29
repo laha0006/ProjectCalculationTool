@@ -49,3 +49,7 @@ jobs:
       run: mvn -B test
       env:
         profile: ${{ vars.PROFILE }}
+
+    - name: Publish Test Report
+      if: success() || failure()
+      uses: scacap/action-surefire-report@v1
