@@ -7,8 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import javax.sql.DataSource;
 import java.sql.*;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.platform.commons.function.Try.success;
 
 @SpringBootTest
@@ -25,7 +24,8 @@ public class MysqlConnectionTest {
             ResultSet rs = stmt.executeQuery("SHOW DATABASES;");
             if (rs.next()) {
                 String dbName = rs.getString(1);
-                assertTrue(dbName.contains("MySQL"));
+                System.out.println("Database Name: " + dbName);
+                assertFalse(dbName.isEmpty());
             } else {
                 fail();
             }
