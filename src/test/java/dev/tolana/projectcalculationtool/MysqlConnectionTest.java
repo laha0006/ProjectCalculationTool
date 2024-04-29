@@ -5,9 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.platform.commons.function.Try.success;
 
 @SpringBootTest
 public class MysqlConnectionTest {
@@ -17,16 +18,17 @@ public class MysqlConnectionTest {
 //    test
     @Test
     void testConnection() {
-        String SQL = """
-                CREATE TABLE test (
-                id INT PRIMARY KEY AUTO_INCREMENT,
-                name VARCHAR(255));
-                """;
+
         try(Connection con = dataSource.getConnection()) {
             Statement stmt = con.createStatement();
-            stmt.execute("DROP TABLE IF EXISTS test");
-            stmt.execute(SQL);
-
+            ResultSet rs = stmt.executeQuery("SHOW DATABASES;");
+            if (rs.next()) {
+                String dbName = rs.getString(1);
+                System.out.println("Database Name: " + dbName);
+                assertFalse(dbName.isEmpty());
+            } else {
+                fail();
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
