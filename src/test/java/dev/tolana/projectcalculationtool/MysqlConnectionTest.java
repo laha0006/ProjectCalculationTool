@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.SQLOutput;
 import java.sql.Statement;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -29,7 +30,9 @@ public class MysqlConnectionTest {
         try(Connection con = dataSource.getConnection()) {
             Statement stmt = con.createStatement();
             stmt.execute("DROP TABLE IF EXISTS test");
+            System.out.println("RES: " + res);
             res = stmt.execute(SQL);
+            System.out.println("RES: " + res);
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
