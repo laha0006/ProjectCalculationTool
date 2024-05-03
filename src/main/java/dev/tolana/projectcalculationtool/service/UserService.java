@@ -17,4 +17,12 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    public void registerUser(UserDto newUser) {
+        UserDetails userToRegister = User.builder()
+                .username(newUser.username())
+                .password(passwordEncoder.encode(newUser.password()))
+                .build();
+
+        userDetailsManager.createUser(userToRegister);
+    }
 }
