@@ -19,4 +19,20 @@ public class UserController {
         this.userService = userService;
     }
 
+//    @GetMapping("login")
+//    public String loginForm() {}
+
+    @GetMapping("/register")
+    public String registerForm(Model model) {
+        model.addAttribute("newUser", new UserDto("username", "password"));
+
+        return "user/register";
+    }
+
+    @PostMapping("/register")
+    public String registerUser(@ModelAttribute UserDto newUser) {
+        userService.registerUser(newUser);
+
+        return "redirect:/index";
+    }
 }
