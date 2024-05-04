@@ -5,8 +5,13 @@
     <title>Login</title>
 </head>
 <body>
-
+<h1>Login</h1>
 <form th:action="@{/dashboard}" method="get">
+
+    <div th:if="${param.error}">
+        <p style="color: red;">Invalid username or password.</p>
+    </div>
+
     <label>Username: </label>
     <input type="text">
 
