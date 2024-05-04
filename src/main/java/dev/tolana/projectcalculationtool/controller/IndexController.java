@@ -21,8 +21,7 @@ public class IndexController {
     @GetMapping("")
     public String displayDashboardOnUser(Model model, Authentication authentication) {
         String username = authentication.getName();
-
-        UserEntityRoleDto user = indexService.getAuthenticatedUser(username);
+        UserEntityRoleDto user = indexService.getUserEntityRoleOnUsername(username);
         model.addAttribute("user", user);
 
         return "index";
