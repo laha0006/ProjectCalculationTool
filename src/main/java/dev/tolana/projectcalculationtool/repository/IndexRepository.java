@@ -1,4 +1,10 @@
 package dev.tolana.projectcalculationtool.repository;
 
-public class IndexRepository {
+import dev.tolana.projectcalculationtool.dto.UserEntityRoleDto;
+
+import java.util.List;
+
+public interface IndexRepository {
+
+    List<UserEntityRoleDto> getUserEntityRoleListOnUsername(String username);
 }
