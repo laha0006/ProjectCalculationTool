@@ -1,6 +1,7 @@
 package dev.tolana.projectcalculationtool.controller;
 
 import dev.tolana.projectcalculationtool.dto.UserEntityRoleDto;
+import dev.tolana.projectcalculationtool.service.DashboardService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,12 +14,18 @@ import java.util.List;
 @RequestMapping("/dashboard")
 public class DashboardController {
 
+    private DashboardService dashboardService;
+
+    public DashboardController(DashboardService dashboardService) {
+        this.dashboardService = dashboardService;
+    }
+
     @GetMapping("")
     public String displayDashboardOnUser(Model model, Authentication authentication) {
         String username = authentication.getName();
-        List<UserEntityRoleDto> userEntityRoleList = indexService.getUserEntityRoleListOnUsername(username);
+        List<UserEntityRoleDto> userEntityRoleList = dashboardService.getUserEntityRoleListOnUsername(username);
         model.addAttribute("user", userEntityRoleList);
 
-        return "index";
+        return "user/dashboard";
     }
 }
