@@ -35,6 +35,6 @@ public class UserController {
     public String registerUser(@ModelAttribute UserDto newUser) {
         userService.registerUser(newUser);
 
-        return "redirect:/index";
+        return "redirect:/dashboard";
     }
 }
