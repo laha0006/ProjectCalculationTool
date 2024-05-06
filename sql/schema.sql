@@ -1,24 +1,25 @@
 CREATE DATABASE IF NOT EXISTS project_calc_db;
+USE project_calc_db;
 
-CREATE TABLE IF NOT EXISTS project_calc_db.users(
+CREATE TABLE IF NOT EXISTS users(
     username VARCHAR(50) NOT NULL PRIMARY KEY,
     password VARCHAR(500) NOT NULL,
     enabled BOOLEAN,
     email VARCHAR(255) DEFAULT NULL
     );
 
-CREATE TABLE IF NOT EXISTS project_calc_db.role(
+CREATE TABLE IF NOT EXISTS role(
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     weight SMALLINT UNSIGNED
     );
 
-CREATE TABLE IF NOT EXISTS project_calc_db.permission(
+CREATE TABLE IF NOT EXISTS permission(
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL
     );
 
-CREATE TABLE IF NOT EXISTS project_calc_db.role_permission(
+CREATE TABLE IF NOT EXISTS role_permission(
     role_id INT,
     perm_ID INT,
     FOREIGN KEY (role_id) REFERENCES role(id),
@@ -26,7 +27,7 @@ CREATE TABLE IF NOT EXISTS project_calc_db.role_permission(
     PRIMARY KEY (role_id, perm_id)
     );
 
-CREATE TABLE IF NOT EXISTS project_calc_db.organization(
+CREATE TABLE IF NOT EXISTS organization(
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     description VARCHAR(255) NOT NULL,
@@ -34,7 +35,7 @@ CREATE TABLE IF NOT EXISTS project_calc_db.organization(
     archived BOOLEAN DEFAULT FALSE
     );
 
-CREATE TABLE IF NOT EXISTS project_calc_db.department(
+CREATE TABLE IF NOT EXISTS department(
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     description VARCHAR(255) NOT NULL,
@@ -44,7 +45,7 @@ CREATE TABLE IF NOT EXISTS project_calc_db.department(
     FOREIGN KEY (organization_id) REFERENCES organization(id)
     );
 
-CREATE TABLE IF NOT EXISTS project_calc_db.team(
+CREATE TABLE IF NOT EXISTS team(
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     description VARCHAR(255) NOT NULL,
@@ -54,7 +55,7 @@ CREATE TABLE IF NOT EXISTS project_calc_db.team(
     FOREIGN KEY (department_id) REFERENCES department(id)
     );
 
-CREATE TABLE IF NOT EXISTS project_calc_db.project(
+CREATE TABLE IF NOT EXISTS project(
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     description VARCHAR(255) NOT NULL,
@@ -69,7 +70,7 @@ CREATE TABLE IF NOT EXISTS project_calc_db.project(
     FOREIGN KEY (parent_id) REFERENCES project(id)
     );
 
-CREATE TABLE IF NOT EXISTS project_calc_db.task(
+CREATE TABLE IF NOT EXISTS task(
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     description VARCHAR(255) NOT NULL,
@@ -85,7 +86,7 @@ CREATE TABLE IF NOT EXISTS project_calc_db.task(
     FOREIGN KEY (parent_id) REFERENCES task(id)
     );
 
-CREATE TABLE IF NOT EXISTS project_calc_db.user_entity_role(
+CREATE TABLE IF NOT EXISTS user_entity_role(
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL,
     role_id INT,
