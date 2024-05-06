@@ -8,8 +8,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.List;
+
 @Controller
-@RequestMapping("/dashboard")
 public class IndexController {
 
     private final IndexService indexService;
@@ -18,12 +19,4 @@ public class IndexController {
         this.indexService = indexService;
     }
 
-    @GetMapping("")
-    public String displayDashboardOnUser(Model model, Authentication authentication) {
-        String username = authentication.getName();
-        UserEntityRoleDto user = indexService.getUserEntityRoleOnUsername(username);
-        model.addAttribute("user", user);
-
-        return "index";
-    }
 }
