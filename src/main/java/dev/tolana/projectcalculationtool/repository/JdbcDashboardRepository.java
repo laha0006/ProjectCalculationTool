@@ -12,11 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class JdbcIndexRepository implements IndexRepository {
+public class JdbcDashboardRepository implements DashboardRepository {
 
     private DataSource dataSource;
 
-    public JdbcIndexRepository(DataSource dataSource) {
+    public JdbcDashboardRepository(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
