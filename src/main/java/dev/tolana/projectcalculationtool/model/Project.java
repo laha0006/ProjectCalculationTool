@@ -8,6 +8,8 @@ public class Project {
     private int status; //TODO make into Enum
     private Timestamp deadline;
 
+    public Project(){}
+
     public Project(String name, String description, int team_id, Timestamp deadline,
                    int allotted_hours, int status, int parent_id){
         this.name = name;
