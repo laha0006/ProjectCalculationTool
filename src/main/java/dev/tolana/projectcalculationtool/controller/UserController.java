@@ -19,8 +19,10 @@ public class UserController {
         this.userService = userService;
     }
 
-//    @GetMapping("login")
-//    public String loginForm() {}
+    @GetMapping("/login")
+    public String loginForm() {
+        return "user/login";
+    }
 
     @GetMapping("/register")
     public String registerForm(Model model) {
