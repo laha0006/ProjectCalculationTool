@@ -18,7 +18,7 @@ public class MysqlConnectionTest {
 
     @Autowired
     private DataSource dataSource;
-//    test
+
     @Test
     void testConnection() {
 

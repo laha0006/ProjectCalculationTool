@@ -21,11 +21,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .authorizeHttpRequests((authz) -> authz
+                .authorizeHttpRequests((authorize ) -> authorize
                         .requestMatchers("/user/register").permitAll()
+                        .requestMatchers("/dashboard/**").authenticated()
                         .requestMatchers("/user/**").authenticated())
                 .formLogin(form -> form
-                        .loginPage("/user/login")
+                        .loginPage("/user/login").successForwardUrl("/dashboard")
                         .failureUrl("/user/login?error")
                         .permitAll())
                 .logout(logout -> logout
