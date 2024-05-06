@@ -6,7 +6,7 @@
 </head>
 <body>
 <h1>Login</h1>
-<form th:action="@{/dashboard}" method="get">
+<form th:action="@{/dashboard}" method="post">
 
     <div th:if="${param.error}">
         <p style="color: red;">Invalid username or password.</p>
