@@ -25,11 +25,11 @@ public class JDBCOrganisationRepository implements OrganisationRepository {
 
         try (Connection connection = datasource.getConnection()) {
             String getAllOrganisations = """
-                    SELECT id, name, description, date_created, archived 
+                    SELECT organisation.id, name, description, date_created, archived 
                     FROM organisation 
                     JOIN user_entity_role ON organisation.id = user_entity_role.organisation_id
-                    JOIN users ON user_entity.username = users.username
-                    WHERE username == ?
+                    JOIN users ON user_entity_role.username = users.username
+                    WHERE users.username = ?
                     """;
 
             PreparedStatement pstmt = connection.prepareStatement(getAllOrganisations);
@@ -87,7 +87,7 @@ public class JDBCOrganisationRepository implements OrganisationRepository {
             pstmtAssign.setString(1, username);
             pstmtAssign.setLong(2, 1);
             pstmtAssign.setLong(3, organisationId);
-            pstmtAdd.executeUpdate();
+            pstmtAssign.executeUpdate();
 
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
