@@ -8,7 +8,11 @@
 <body>
 <header th:replace="~{fragments/header :: header}"></header>
 
-<h2 th:value=" 'Velkomen ' + ${user}"></h2>
+<h2 th:value=" 'Welcome ' + ${username}"></h2>
+
+<a href="organisation/create" >
+    Create Organization
+    </a>
 
 </body>
 </html>

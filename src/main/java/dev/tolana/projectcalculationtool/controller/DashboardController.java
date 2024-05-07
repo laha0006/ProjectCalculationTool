@@ -24,7 +24,7 @@ public class DashboardController {
     public String displayDashboardOnUser(Model model, Authentication authentication) {
         String username = authentication.getName();
         List<UserEntityRoleDto> userEntityRoleList = dashboardService.getUserEntityRoleListOnUsername(username);
-        model.addAttribute("user", userEntityRoleList);
+        model.addAttribute("username", username);
 
         return "user/dashboard";
     }
