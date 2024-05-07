@@ -3,7 +3,7 @@ package dev.tolana.projectcalculationtool.model;
 import java.time.LocalDateTime;
 
 
-public class Organization {
+public class Organisation {
 
     private long id;
     private String name;
@@ -11,7 +11,7 @@ public class Organization {
     private LocalDateTime dateCreated;
     private boolean archived;
 
-    public Organization(long id, String name, String description, LocalDateTime dateCreated, boolean archived) {
+    public Organisation(long id, String name, String description, LocalDateTime dateCreated, boolean archived) {
         this.id = id;
         this.name = name;
         this.description = description;
