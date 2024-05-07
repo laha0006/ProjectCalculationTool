@@ -7,9 +7,9 @@
 <body>
     <header th:fragment="header">
         <nav>
-           <a th:href="@{/user/logout}">
-               <button>Logout</button>
-           </a>
+            <form th:action="@{/logout}" method="post">
+                <button type="submit">Logout</button>
+            </form>
 
 
         </nav>
