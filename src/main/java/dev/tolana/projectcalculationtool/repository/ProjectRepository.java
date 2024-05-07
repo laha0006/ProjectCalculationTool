@@ -5,8 +5,7 @@ import dev.tolana.projectcalculationtool.model.Project;
 
 import java.util.List;
 
-public interface DashboardRepository {
+public interface ProjectRepository {
 
-    List<UserEntityRoleDto> getUserEntityRoleListOnUsername(String username);
-
+    int addProject(Project project);
 }
