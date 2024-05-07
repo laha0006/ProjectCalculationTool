@@ -31,8 +31,8 @@ public class DashboardController {
 
     @GetMapping("/addProject")
     public String showPageForAddingProject(Model model) {
-        model.addAttribute("activeLink","wishlist");
         Project newProject = new Project();
+        model.addAttribute("newProject",newProject);
         //TODO add something that makes it possible to display Team/Department/Organization/whatever
 
         model.addAttribute("addProject", newProject);
