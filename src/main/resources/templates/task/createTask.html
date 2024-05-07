@@ -1,10 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
     <title>task creation</title>
 </head>
 <body>
+<from th:action="@{/task/create}" metod="post" th:object="${taskDto}">
+    <p>
+        <label>Name: </label>
+        <input type="text" th:name="taskName" required>
+    </p>
+
+    <p>
+        <label>Description: </label>
+        <input type="text" th:name="taskDescription" required>
+    </p>
+
+    <p>
+        <label>Estimated hours for completion: </label>
+        <input type="number" th:name="estimatedHours" required>
+    </p>
+
+    <p>
+        <label>Deadline: </label>
+        <input type="date" th:name="deadline" required>
+    </p>
+
+    <button type="submit">Create</button>
+
+</from>
+
+<a th:href="@{/}"> <!--TODO: Specify endpoint for overview of project for project leader-->
+    <button>Back</button>
+</a>
 
 </body>
 </html>
