@@ -23,8 +23,8 @@ public class SecurityConfig {
         httpSecurity
                 .authorizeHttpRequests((authorize ) -> authorize
                         .requestMatchers("/user/register").permitAll()
-                        .requestMatchers("/dashboard/**").authenticated()
-                        .requestMatchers("/user/**").authenticated())
+                        .anyRequest().authenticated()
+                        )
                 .formLogin(form -> form
                         .loginPage("/user/login")
                         .defaultSuccessUrl("/dashboard")

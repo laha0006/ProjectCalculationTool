@@ -20,7 +20,7 @@ public class UserService {
     public void registerUser(UserDto newUser) {
         UserDetails userToRegister = User.builder()
                 .username(newUser.username())
-                .password(passwordEncoder.encode(newUser.password()))
+                .password(passwordEncoder.encode(newUser.password())).roles("USER")
                 .build();
 
         userDetailsManager.createUser(userToRegister);
