@@ -26,7 +26,8 @@ public class SecurityConfig {
                         .requestMatchers("/dashboard/**").authenticated()
                         .requestMatchers("/user/**").authenticated())
                 .formLogin(form -> form
-                        .loginPage("/user/login").successForwardUrl("/dashboard")
+                        .loginPage("/user/login")
+                        .defaultSuccessUrl("/dashboard")
                         .failureUrl("/user/login?error")
                         .permitAll())
                 .logout(logout -> logout
