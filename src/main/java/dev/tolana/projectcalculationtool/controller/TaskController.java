@@ -1,12 +1,11 @@
 package dev.tolana.projectcalculationtool.controller;
 
-import dev.tolana.projectcalculationtool.dto.CreateTaskFormDto;
+import dev.tolana.projectcalculationtool.dto.TaskDto;
 import dev.tolana.projectcalculationtool.service.TaskService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -23,12 +22,12 @@ public class TaskController {
 
     @GetMapping("/create")
     public String createForm(Model model) {
-        model.addAttribute("taskDto", new CreateTaskFormDto("", "", 0, LocalDate.now()));
+        model.addAttribute("taskDto", new TaskDto("", "", LocalDate.now(), 0, 0));
         return "task/createTask";
     }
 
     @PostMapping("/create")
-    public String createTask(CreateTaskFormDto newTask, Authentication authentication) {
+    public String createTask(TaskDto newTask, Authentication authentication) {
         String username = authentication.getName();
         taskService.createTask(newTask, username);
         return "redirect:/"; //TODO redirect to a summary page.
