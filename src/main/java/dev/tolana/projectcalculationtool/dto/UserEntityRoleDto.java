@@ -8,3 +8,5 @@ public record UserEntityRoleDto(String username,
                                 int departmentId,
                                 int organizationId) {
 }
+
+
