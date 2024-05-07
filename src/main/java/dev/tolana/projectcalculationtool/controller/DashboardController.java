@@ -28,20 +28,4 @@ public class DashboardController {
 
         return "user/dashboard";
     }
-
-    @GetMapping("/addproject")
-    public String showPageForAddingProject(Model model) {
-        Project newProject = new Project();
-        model.addAttribute("newProject",newProject);
-        //TODO add something that makes it possible to display Team/Department/Organization/whatever
-
-        return "project/create";
-    }
-
-    @PostMapping("/addproject")
-    public String addProject(@ModelAttribute Project newProject) {
-        dashboardService.addProject(newProject);
-
-        return "user/dashboard";
-    }
 }
