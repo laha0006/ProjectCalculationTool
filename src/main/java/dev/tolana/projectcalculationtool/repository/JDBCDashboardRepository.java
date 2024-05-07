@@ -10,11 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class JdbcDashboardRepository implements DashboardRepository {
+public class JDBCDashboardRepository implements DashboardRepository {
 
     private DataSource dataSource;
 
-    public JdbcDashboardRepository(DataSource dataSource) {
+    public JDBCDashboardRepository(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
@@ -50,35 +50,4 @@ public class JdbcDashboardRepository implements DashboardRepository {
 
         return userEntityRoleDtoList;
     }
-
-    @Override
-    public int addProject(Project project){
-        int projectId = -1;
-
-        try (Connection connection = dataSource.getConnection()) {
-            String insertNewProject = "INSERT INTO project (name, description, team_id," +
-                                      "allotted_hours, status) " +
-                                      "VALUES (?,?,?,?,?);";
-
-            PreparedStatement pstmt = connection.prepareStatement(insertNewProject,
-                    Statement.RETURN_GENERATED_KEYS);
-
-            pstmt.setString(1, project.getName());
-            pstmt.setString(2, project.getDescription());
-            pstmt.setInt(3, project.getTeam_id());
-            pstmt.setInt(4, project.getAllotted_hours());
-            pstmt.setInt(5, project.getStatus());
-            pstmt.executeUpdate();
-
-            ResultSet generatedKeys = pstmt.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                projectId = generatedKeys.getInt(1);
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        return projectId;
-    };
 }
