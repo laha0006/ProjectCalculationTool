@@ -1,13 +1,12 @@
 package dev.tolana.projectcalculationtool.repository;
 
-import dev.tolana.projectcalculationtool.dto.CreateTaskFormDto;
 import dev.tolana.projectcalculationtool.model.Task;
 
 import java.util.List;
 
 public interface TaskRepository {
 
-    boolean createTask(CreateTaskFormDto taskFormDto, String username);
+    boolean createTask(Task task, String username);
 
     boolean deleteTask(long taskId, String username);
 
