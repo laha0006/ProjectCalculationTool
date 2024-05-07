@@ -19,8 +19,4 @@ public class DashboardService {
     public List<UserEntityRoleDto> getUserEntityRoleListOnUsername(String username) {
         return dashboardRepository.getUserEntityRoleListOnUsername(username);
     }
-
-    public int addProject(Project project){
-        return dashboardRepository.addProject(project);
-    }
 }
