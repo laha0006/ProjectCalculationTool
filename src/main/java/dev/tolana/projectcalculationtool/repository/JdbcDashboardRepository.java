@@ -58,7 +58,7 @@ public class JdbcDashboardRepository implements DashboardRepository {
         try (Connection connection = dataSource.getConnection()) {
             String insertNewProject = "INSERT INTO project (name, description, team_id," +
                                       "allotted_hours, status) " +
-                                      "VALUES (?,?,?,?,?,?,?);";
+                                      "VALUES (?,?,?,?,?);";
 
             PreparedStatement pstmt = connection.prepareStatement(insertNewProject,
                     Statement.RETURN_GENERATED_KEYS);
