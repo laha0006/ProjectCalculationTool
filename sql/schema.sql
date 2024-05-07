@@ -8,6 +8,13 @@ CREATE TABLE IF NOT EXISTS users(
     email VARCHAR(255) DEFAULT NULL
     );
 
+CREATE TABLE IF NOT EXISTS authorities (
+    username VARCHAR(50) NOT NULL,
+    authority VARCHAR(50) NOT NULL,
+    PRIMARY KEY (username,authority),
+    FOREIGN KEY (username) REFERENCES users(username)
+);
+
 CREATE TABLE IF NOT EXISTS role(
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
