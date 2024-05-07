@@ -1,6 +1,7 @@
 package dev.tolana.projectcalculationtool.service;
 
 import dev.tolana.projectcalculationtool.dto.UserEntityRoleDto;
+import dev.tolana.projectcalculationtool.model.Project;
 import dev.tolana.projectcalculationtool.repository.DashboardRepository;
 import org.springframework.stereotype.Service;
 
@@ -17,5 +18,9 @@ public class DashboardService {
 
     public List<UserEntityRoleDto> getUserEntityRoleListOnUsername(String username) {
         return dashboardRepository.getUserEntityRoleListOnUsername(username);
+    }
+
+    public int addProject(Project project){
+        return dashboardRepository.addProject(project);
     }
 }
