@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS role_permission(
     PRIMARY KEY (role_id, perm_id)
     );
 
-CREATE TABLE IF NOT EXISTS organization(
+CREATE TABLE IF NOT EXISTS organisation(
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     description VARCHAR(255) NOT NULL,
@@ -46,10 +46,10 @@ CREATE TABLE IF NOT EXISTS department(
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     description VARCHAR(255) NOT NULL,
-    organization_id INT,
+    organisation_id INT,
     date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     archived BOOLEAN DEFAULT FALSE,
-    FOREIGN KEY (organization_id) REFERENCES organization(id)
+    FOREIGN KEY (organisation_id) REFERENCES organisation(id)
     );
 
 CREATE TABLE IF NOT EXISTS team(
@@ -101,12 +101,12 @@ CREATE TABLE IF NOT EXISTS user_entity_role(
     project_id INT,
     team_id INT,
     department_id INT,
-    organization_id INT,
+    organisation_id INT,
     FOREIGN KEY (username) REFERENCES users(username),
     FOREIGN KEY (role_id) REFERENCES role(id),
     FOREIGN KEY (task_id) REFERENCES task(id),
     FOREIGN KEY (project_id) REFERENCES project(id),
     FOREIGN KEY (team_id) REFERENCES team(id),
     FOREIGN KEY (department_id) REFERENCES department(id),
-    FOREIGN KEY (organization_id) REFERENCES organization(id)
+    FOREIGN KEY (organisation_id) REFERENCES organisation(id)
     );
