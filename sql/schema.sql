@@ -85,7 +85,7 @@ CREATE TABLE IF NOT EXISTS task(
     date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     deadline TIMESTAMP,
     estimated_hours INT,
-    actual_hours INT,
+    actual_hours INT DEFAULT 0,
     status INT,
     parent_id INT,
     archived BOOLEAN DEFAULT FALSE,
