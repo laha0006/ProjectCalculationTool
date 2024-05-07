@@ -35,6 +35,19 @@ public class Task {
         this.isArchived = isArchived;
     }
 
+    public Task(String taskName,
+                String taskDescription,
+                LocalDate deadline,
+                int estimatedHours,
+                int status) {
+
+        this.taskName = taskName;
+        this.taskDescription = taskDescription;
+        this.deadline = deadline;
+        this.estimatedHours = estimatedHours;
+        this.status = status;
+    }
+
     public String getTaskName() {
         return taskName;
     }
