@@ -29,17 +29,16 @@ public class DashboardController {
         return "user/dashboard";
     }
 
-    @GetMapping("/addProject")
+    @GetMapping("/addproject")
     public String showPageForAddingProject(Model model) {
         Project newProject = new Project();
         model.addAttribute("newProject",newProject);
         //TODO add something that makes it possible to display Team/Department/Organization/whatever
 
-        model.addAttribute("addProject", newProject);
         return "project/create";
     }
 
-    @PostMapping("/addProject")
+    @PostMapping("/addproject")
     public String addProject(@ModelAttribute Project newProject) {
         dashboardService.addProject(newProject);
 
