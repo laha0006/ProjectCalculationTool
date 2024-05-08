@@ -110,3 +110,20 @@ CREATE TABLE IF NOT EXISTS user_entity_role(
     FOREIGN KEY (department_id) REFERENCES department(id),
     FOREIGN KEY (organisation_id) REFERENCES organisation(id)
     );
+
+CREATE VIEW hierarchy AS
+SELECT tsk.id AS task_id,
+       tm.id  AS team_id,
+       pjt.id AS project_id,
+       dpt.id AS department_id,
+       org.id AS organisation_id
+FROM organization org
+     LEFT JOIN department dpt
+               ON org.id = dpt.organization_id
+     LEFT JOIN team tm
+               ON dpt.id = tm.department_id
+     LEFT JOIN project pjt
+               ON tm.id = pjt.team_id
+     LEFT JOIN task tsk
+               ON pjt.id = tsk.project_id;
+
