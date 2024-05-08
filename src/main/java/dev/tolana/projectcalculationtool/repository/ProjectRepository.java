@@ -8,4 +8,6 @@ import java.util.List;
 public interface ProjectRepository {
 
     int addProject(Project project);
+
+    List<Project> getAllProjectsOnUsername(String username);
 }
