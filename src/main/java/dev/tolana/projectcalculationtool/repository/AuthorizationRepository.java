@@ -3,6 +3,7 @@ package dev.tolana.projectcalculationtool.repository;
 import dev.tolana.projectcalculationtool.constant.AccessLevel;
 import dev.tolana.projectcalculationtool.constant.Permission;
 import dev.tolana.projectcalculationtool.dto.HierarchyDto;
+import dev.tolana.projectcalculationtool.dto.UserEntityRoleDto;
 import dev.tolana.projectcalculationtool.model.Role;
 import org.springframework.stereotype.Repository;
 
@@ -11,10 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Repository
 public class AuthorizationRepository {
@@ -24,11 +22,11 @@ public class AuthorizationRepository {
     private final String DEPARTMENT_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE department_id = ? LIMIT 1";
     private final String ORGANIZATION_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE organization_id = ? LIMIT 1";
 
-    private final String ORGANIZATION_ROLE_SQL = "SELECT role_id FROM user_entity_role WHERE username = ? AND organisation_id = ? LIMIT 1";
-    private final String DEPARTMENT_ROLE_SQL = "SELECT role_id FROM user_entity_role WHERE username = ? AND (organisation_id = ? OR department_id = ?) LIMIT 1";
-    private final String TEAM_ROLE_SQL = "SELECT role_id FROM user_entity_role WHERE username = ? AND (organisation_id = ? OR department_id = ? OR team_id = ?) = ? LIMIT 1";
-    private final String PROJECT_ROLE_SQL = "SELECT role_id FROM user_entity_role WHERE username = ? AND (organisation_id = ? OR department_id = ? OR team_id = ? OR project_id = ?) LIMIT 1";
-    private final String TASK_ROLE_SQL = "SELECT role_id FROM user_entity_role WHERE username = ? AND (organisation_id = ? OR department_id = ? OR team_id = ? OR project_id = ? OR task_id = ?) LIMIT 1";
+    private final String ORGANIZATION_ROLE_SQL = "SELECT * FROM user_entity_role WHERE username = ? AND organisation_id = ? LIMIT 1";
+    private final String DEPARTMENT_ROLE_SQL = "SELECT * FROM user_entity_role WHERE username = ? AND (organisation_id = ? OR department_id = ?) LIMIT 1";
+    private final String TEAM_ROLE_SQL = "SELECT * FROM user_entity_role WHERE username = ? AND (organisation_id = ? OR department_id = ? OR team_id = ?) = ? LIMIT 1";
+    private final String PROJECT_ROLE_SQL = "SELECT * FROM user_entity_role WHERE username = ? AND (organisation_id = ? OR department_id = ? OR team_id = ? OR project_id = ?) LIMIT 1";
+    private final String TASK_ROLE_SQL = "SELECT * FROM user_entity_role WHERE username = ? AND (organisation_id = ? OR department_id = ? OR team_id = ? OR project_id = ? OR task_id = ?) LIMIT 1";
 
     private final String ROLES_PERMISSIONS_SQL = """
             SELECT r.id   AS role_id,
@@ -103,8 +101,8 @@ public class AuthorizationRepository {
     }
 
 
-    public Set<Long> getRoleIdsMatchingHierarchy(String username, HierarchyDto hierarchy, AccessLevel accessLevel) {
-        Set<Long> roleIds = new HashSet<>();
+    public List<UserEntityRoleDto> getRoleIdsMatchingHierarchy(String username, HierarchyDto hierarchy, AccessLevel accessLevel) {
+        List<UserEntityRoleDto> roles = new ArrayList<>();
         String SQL = switch (accessLevel) {
             case TASK -> TASK_ROLE_SQL;
             case PROJECT -> PROJECT_ROLE_SQL;
@@ -144,12 +142,20 @@ public class AuthorizationRepository {
             }
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                roleIds.add(resultSet.getLong(1));
+                roles.add(new UserEntityRoleDto(
+                        resultSet.getString(2),
+                        resultSet.getLong(3),
+                        resultSet.getLong(4),
+                        resultSet.getLong(5),
+                        resultSet.getLong(6),
+                        resultSet.getLong(7),
+                        resultSet.getLong(8)
+                ));
             }
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return roleIds;
+        return roles;
     }
 }
