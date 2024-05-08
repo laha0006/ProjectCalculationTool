@@ -5,33 +5,35 @@
     <title>task creation</title>
 </head>
 <body>
-<from th:action="@{/task/create}" metod="post" th:object="${taskDto}">
+
+<form th:action="@{/task/create}" method="post" th:object="${taskDto}">
     <p>
         <label>Name: </label>
-        <input type="text" th:name="taskName" required>
+        <input type="text" th:field="*{taskName}" required>
     </p>
 
     <p>
         <label>Description: </label>
-        <input type="text" th:name="taskDescription" required>
+        <input type="text" th:field="*{taskDescription}" required>
+    </p>
+
+    <input type="number" th:field="*{projectId}" hidden="hidden">
+
+    <p>
+        <label>Deadline: </label>
+        <input type="date" th:field="*{deadline}" required>
     </p>
 
     <p>
         <label>Estimated hours for completion: </label>
-        <input type="number" th:name="estimatedHours" required>
+        <input type="number" th:field="*{estimatedHours}" required>
     </p>
 
-    <p>
-        <label>Deadline: </label>
-        <input type="date" th:name="deadline" required>
-    </p>
-
-    <input type="number" th:name="status" hidden="hidden">
-    <input type="number" th:name="projectid" hidden="hidden">
+    <input type="number" th:field="*{status}" hidden="hidden">
+    <input type="number" th:field="*{parentId}" hidden="hidden">
 
     <button type="submit">Create</button>
-
-</from>
+</form>
 
 <a th:href="@{/}"> <!--TODO: Specify endpoint for overview of project for project leader-->
     <button>Back</button>
