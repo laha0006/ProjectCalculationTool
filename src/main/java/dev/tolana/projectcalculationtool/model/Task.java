@@ -37,15 +37,19 @@ public class Task {
 
     public Task(String taskName,
                 String taskDescription,
+                long projectId,
                 LocalDate deadline,
                 int estimatedHours,
-                int status) {
+                int status,
+                long parentId) {
 
         this.taskName = taskName;
         this.taskDescription = taskDescription;
+        this.projectId = projectId;
         this.deadline = deadline;
         this.estimatedHours = estimatedHours;
         this.status = status;
+        this.parentId = parentId;
     }
 
     public String getTaskName() {
