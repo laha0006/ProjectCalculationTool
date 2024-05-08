@@ -25,11 +25,11 @@ public class JDBCOrganisationRepository implements OrganisationRepository {
 
         try (Connection connection = datasource.getConnection()) {
             String getAllOrganisations = """
-                    SELECT id, name, description, date_created, archived 
+                    SELECT organisation.id, name, description, date_created, archived 
                     FROM organisation 
                     JOIN user_entity_role ON organisation.id = user_entity_role.organisation_id
-                    JOIN users ON user_entity.username = users.username
-                    WHERE username == ?
+                    JOIN users ON user_entity_role.username = users.username
+                    WHERE users.username = ?
                     """;
 
             PreparedStatement pstmt = connection.prepareStatement(getAllOrganisations);
@@ -70,13 +70,24 @@ public class JDBCOrganisationRepository implements OrganisationRepository {
 
         try (Connection connection = datasource.getConnection()) {
             String createOrganisation = "INSERT INTO organisation(name, description) VALUES (?, ?)";
-            PreparedStatement pstmt = connection.prepareStatement(createOrganisation);
-            pstmt.setString(1, organisationName);
-            pstmt.setString(2, organisationDescription);
-            //pstmt.setString(3, username);
+            PreparedStatement pstmtAdd = connection.prepareStatement(createOrganisation, Statement.RETURN_GENERATED_KEYS);
+            pstmtAdd.setString(1, organisationName);
+            pstmtAdd.setString(2, organisationDescription);
 
-            pstmt.executeUpdate();
+            pstmtAdd.executeUpdate();
+            ResultSet rs = pstmtAdd.getGeneratedKeys();
 
+
+            long organisationId = -1;
+            if (rs.next()) {
+                organisationId = rs.getLong(1);
+            }
+            String assignOrganisationToUser = "INSERT INTO user_entity_role(username, role_id, organisation_id) VALUES (?, ?, ?)";
+            PreparedStatement pstmtAssign = connection.prepareStatement(assignOrganisationToUser);
+            pstmtAssign.setString(1, username);
+            pstmtAssign.setLong(2, 1);
+            pstmtAssign.setLong(3, organisationId);
+            pstmtAssign.executeUpdate();
 
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
