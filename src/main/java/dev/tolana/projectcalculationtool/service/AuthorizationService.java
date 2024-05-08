@@ -3,16 +3,14 @@ package dev.tolana.projectcalculationtool.service;
 import dev.tolana.projectcalculationtool.constant.AccessLevel;
 import dev.tolana.projectcalculationtool.constant.Permission;
 import dev.tolana.projectcalculationtool.dto.HierarchyDto;
+import dev.tolana.projectcalculationtool.dto.UserEntityRoleDto;
 import dev.tolana.projectcalculationtool.model.Role;
 import dev.tolana.projectcalculationtool.repository.AuthorizationRepository;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Service("auth")
 public class AuthorizationService {
@@ -32,14 +30,14 @@ public class AuthorizationService {
     public boolean hasAccess(long id, AccessLevel accessLevel, Permission permission) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         HierarchyDto hierarchy = getHierarchy(id, accessLevel);
-        Set<Long> roleIds = getRoleIdsMatchingHierarchy(username,hierarchy,accessLevel);
-        return hasPermission(roleIds,Permission permission);
+        List<UserEntityRoleDto> userRoles = getRoleIdsMatchingHierarchy(username,hierarchy,accessLevel);
+        return hasPermission(userRoles,permission);
     }
 
-    private boolean hasPermission(Set<Long> roleIds, Permission permission) {
+    private boolean hasPermission(List<UserEntityRoleDto> userRoles, Permission permission) {
         Set<Permission> permissions = new HashSet<>();
-        for (Long roleId : roleIds) {
-            permissions.addAll(roles.get(roleId).getPermissions());
+        for (UserEntityRoleDto role : userRoles) {
+            permissions.addAll(roles.get(role.roleId()).getPermissions());
         }
         return permissions.contains(permission);
     }
@@ -52,8 +50,8 @@ public class AuthorizationService {
         return permissions.contains(permission);
     }
 
-    private Set<Long> getRoleIdsMatchingHierarchy(String username, HierarchyDto hierarchy, AccessLevel accessLevel) {
-        Set<Long> roleIds = authorizationRepository.getRoleIdsMatchingHierarchy(username,hierarchy,accessLevel);
+    private List<UserEntityRoleDto> getRoleIdsMatchingHierarchy(String username, HierarchyDto hierarchy, AccessLevel accessLevel) {
+        List<UserEntityRoleDto> roleIds = authorizationRepository.getRoleIdsMatchingHierarchy(username,hierarchy,accessLevel);
     }
 
     private HierarchyDto getHierarchy(long id, AccessLevel accessLevel) {
