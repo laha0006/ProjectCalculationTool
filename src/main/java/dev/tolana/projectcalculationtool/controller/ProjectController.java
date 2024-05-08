@@ -1,5 +1,6 @@
 package dev.tolana.projectcalculationtool.controller;
 
+import dev.tolana.projectcalculationtool.dto.ProjectDto;
 import dev.tolana.projectcalculationtool.dto.UserEntityRoleDto;
 import dev.tolana.projectcalculationtool.model.Project;
 import dev.tolana.projectcalculationtool.service.DashboardService;
@@ -38,5 +39,14 @@ public class ProjectController {
         projectService.addProject(newProject);
 
         return "user/dashboard";
+    }
+
+    @GetMapping("/overview")
+    public String getProjectOverview(Model model, Authentication authentication) {
+        String username = authentication.getName();
+        List<ProjectDto> projectDtoList = projectService.getAllProjects(username);
+
+        model.addAttribute("projectList", projectDtoList);
+        return "project/viewAllProjects";
     }
 }
