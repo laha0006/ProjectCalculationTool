@@ -7,10 +7,10 @@ import java.time.LocalDate;
 public record TaskDto(
         String taskName,
         String taskDescription,
-        int projectId,
+        long projectId,
         LocalDate deadline,
         int estimatedHours,
         int status,
-        int parentId
+        long parentId
 ) {
 }
