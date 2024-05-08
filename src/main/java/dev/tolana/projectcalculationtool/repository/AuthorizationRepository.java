@@ -12,11 +12,11 @@ import java.sql.SQLException;
 
 @Repository
 public class AuthorizationRepository {
-    private final String GET_TASK_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE task_id = ?";
-    private final String GET_PROJECT_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE project_id = ?";
-    private final String GET_TEAM_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE team_id = ?";
-    private final String GET_DEPARTMENT_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE department_id = ?";
-    private final String GET_ORGANIZATION_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE organization_id = ?";
+    private final String TASK_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE task_id = ?";
+    private final String PROJECT_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE project_id = ?";
+    private final String TEAM_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE team_id = ?";
+    private final String DEPARTMENT_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE department_id = ?";
+    private final String ORGANIZATION_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE organization_id = ?";
 
     private DataSource dataSource;
 
@@ -28,11 +28,11 @@ public class AuthorizationRepository {
     public HierarchyDto getHierarchy(long id, AccessLevel accessLevel) {
         HierarchyDto hierarchyDto = null;
         String SQL = switch(accessLevel) {
-            case TASK -> GET_TASK_HIERARCHY_SQL;
-            case PROJECT -> GET_PROJECT_HIERARCHY_SQL;
-            case TEAM -> GET_TEAM_HIERARCHY_SQL;
-            case DEPARTMENT -> GET_DEPARTMENT_HIERARCHY_SQL;
-            case ORGANIZATION -> GET_ORGANIZATION_HIERARCHY_SQL;
+            case TASK -> TASK_HIERARCHY_SQL;
+            case PROJECT -> PROJECT_HIERARCHY_SQL;
+            case TEAM -> TEAM_HIERARCHY_SQL;
+            case DEPARTMENT -> DEPARTMENT_HIERARCHY_SQL;
+            case ORGANIZATION -> ORGANIZATION_HIERARCHY_SQL;
         };
         try(Connection connection = dataSource.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(SQL);
@@ -45,7 +45,6 @@ public class AuthorizationRepository {
                         resultSet.getLong(3),
                         resultSet.getLong(4),
                         resultSet.getByte(5)
-                        
                 );
             }
         } catch (SQLException e) {
