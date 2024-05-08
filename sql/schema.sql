@@ -117,9 +117,9 @@ SELECT tsk.id AS task_id,
        pjt.id AS project_id,
        dpt.id AS department_id,
        org.id AS organisation_id
-FROM organization org
+FROM organisation org
      LEFT JOIN department dpt
-               ON org.id = dpt.organization_id
+               ON org.id = dpt.organisation_id
      LEFT JOIN team tm
                ON dpt.id = tm.department_id
      LEFT JOIN project pjt
