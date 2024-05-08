@@ -12,6 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -23,7 +24,11 @@ public class AuthorizationRepository {
     private final String DEPARTMENT_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE department_id = ? LIMIT 1";
     private final String ORGANIZATION_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE organization_id = ? LIMIT 1";
 
-    private final String ORGANIZATION_ROLE_SQL = "SELECT * FROM user_entity_role WHERE organization_role_id = ? LIMIT 1";
+    private final String ORGANIZATION_ROLE_SQL = "SELECT role_id FROM user_entity_role WHERE username = ? AND organisation_id = ? LIMIT 1";
+    private final String DEPARTMENT_ROLE_SQL = "SELECT role_id FROM user_entity_role WHERE username = ? AND (organisation_id = ? OR department_id = ?) LIMIT 1";
+    private final String TEAM_ROLE_SQL = "SELECT role_id FROM user_entity_role WHERE username = ? AND (organisation_id = ? OR department_id = ? OR team_id = ?) = ? LIMIT 1";
+    private final String PROJECT_ROLE_SQL = "SELECT role_id FROM user_entity_role WHERE username = ? AND (organisation_id = ? OR department_id = ? OR team_id = ? OR project_id = ?) LIMIT 1";
+    private final String TASK_ROLE_SQL = "SELECT role_id FROM user_entity_role WHERE username = ? AND (organisation_id = ? OR department_id = ? OR team_id = ? OR project_id = ? OR task_id = ?) LIMIT 1";
 
     private final String ROLES_PERMISSIONS_SQL = """
             SELECT r.id   AS role_id,
@@ -84,7 +89,7 @@ public class AuthorizationRepository {
                 if (!roles.containsKey(roleId)) {
                     String roleName = resultSet.getString(2);
                     short weight = resultSet.getShort(3);
-                    roles.put(roleId, new Role(roleId,roleName,weight));
+                    roles.put(roleId, new Role(roleId, roleName, weight));
                 }
                 if (resultSet.getString(4) != null) {
                     Permission perm = Permission.valueOf(resultSet.getString(4));
@@ -99,6 +104,47 @@ public class AuthorizationRepository {
 
 
     public Set<Long> getRoleIdsMatchingHierarchy(String username, HierarchyDto hierarchy, AccessLevel accessLevel) {
+        Set<Long> roleIds = new HashSet<>();
+        String SQL = switch (accessLevel) {
+            case TASK -> TASK_ROLE_SQL;
+            case PROJECT -> PROJECT_ROLE_SQL;
+            case TEAM -> TEAM_ROLE_SQL;
+            case DEPARTMENT -> DEPARTMENT_ROLE_SQL;
+            case ORGANIZATION -> ORGANIZATION_ROLE_SQL;
+        };
+        try (Connection con = dataSource.getConnection()) {
+            PreparedStatement preparedStatement = con.prepareStatement(SQL);
+            preparedStatement.setString(1, username);
+            switch (accessLevel) {
+                case TASK -> {
+                    preparedStatement.setLong(2, hierarchy.organizationId());
+                    preparedStatement.setLong(3, hierarchy.departmentId());
+                    preparedStatement.setLong(3, hierarchy.teamId());
+                    preparedStatement.setLong(4, hierarchy.projectId());
+                    preparedStatement.setLong(5, hierarchy.taskId());
+                }
+                case PROJECT -> {
+                    preparedStatement.setLong(2, hierarchy.organizationId());
+                    preparedStatement.setLong(3, hierarchy.departmentId());
+                    preparedStatement.setLong(3, hierarchy.teamId());
+                    preparedStatement.setLong(4, hierarchy.projectId());
+                }
+                case TEAM -> {
+                    preparedStatement.setLong(2, hierarchy.organizationId());
+                    preparedStatement.setLong(3, hierarchy.departmentId());
+                    preparedStatement.setLong(3, hierarchy.teamId());
+                }
+                case DEPARTMENT -> {
+                    preparedStatement.setLong(2, hierarchy.organizationId());
+                    preparedStatement.setLong(3, hierarchy.departmentId());
+                }
+                case ORGANIZATION -> {
+                    preparedStatement.setLong(2, hierarchy.organizationId());
+                }
+            }
 
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
