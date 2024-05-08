@@ -1,6 +1,7 @@
 package dev.tolana.projectcalculationtool.service;
 
 import dev.tolana.projectcalculationtool.constant.AccessLevel;
+import dev.tolana.projectcalculationtool.constant.Permission;
 import dev.tolana.projectcalculationtool.dto.HierarchyDto;
 import dev.tolana.projectcalculationtool.model.Role;
 import dev.tolana.projectcalculationtool.repository.AuthorizationRepository;
@@ -21,11 +22,11 @@ public class AuthorizationService {
     }
 
     private Map<Long, Role> initRoles() {
-        Map<Long, Role> roles = new HashMap<>();
-
+        return authorizationRepository.getRoles();
     }
 
-    public boolean hasAccess() {
+    public boolean hasAccess(long id, AccessLevel accessLevel, Permission permission) {
+        HierarchyDto hierarchy = getHierarchy(id, accessLevel);
         return true;
     }
 
