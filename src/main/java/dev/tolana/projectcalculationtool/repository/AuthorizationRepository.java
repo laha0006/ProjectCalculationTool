@@ -142,9 +142,14 @@ public class AuthorizationRepository {
                     preparedStatement.setLong(2, hierarchy.organizationId());
                 }
             }
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                roleIds.add(resultSet.getLong(1));
+            }
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        return roleIds;
     }
 }
