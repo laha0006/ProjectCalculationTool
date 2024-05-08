@@ -18,13 +18,13 @@ public class JdbcTaskRepository implements TaskRepository {
 
 
     @Override
-    public boolean createTask(Task task , String username) {
+    public boolean createParentTask(Task task , String username) {
         boolean isCreated = false;
 
         try (Connection connection = dataSource.getConnection()) {
             //query for task creation only concerns values that are not default
             String createTask = """
-                    INSERT INTO task (name, description, project_id, deadline, estimated_hours, parent) VALUES (?,?,?,?,?,?);
+                    INSERT INTO task (name, description, project_id, deadline, estimated_hours) VALUES (?,?,?,?,?);
                     """;
             PreparedStatement pstmt = connection.prepareStatement(createTask);
             pstmt.setString(1, task.getTaskName());
@@ -32,7 +32,6 @@ public class JdbcTaskRepository implements TaskRepository {
             pstmt.setLong(3, task.getProjectId());
             pstmt.setDate(4, Date.valueOf(task.getDeadline()));
             pstmt.setInt(5, task.getEstimatedHours());
-            pstmt.setLong(6, task.getParentId());
             int affectedRows = pstmt.executeUpdate();
 
             isCreated = affectedRows > 0;
