@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS task(
     estimated_hours INT,
     actual_hours INT DEFAULT 0,
     status INT,
-    parent_id INT,
+    parent_id INT DEFAULT NULL,
     archived BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (project_id) REFERENCES project(id),
     FOREIGN KEY (parent_id) REFERENCES task(id)
