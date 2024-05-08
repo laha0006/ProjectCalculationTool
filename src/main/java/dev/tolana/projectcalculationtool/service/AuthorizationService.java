@@ -5,13 +5,17 @@ import dev.tolana.projectcalculationtool.dto.HierarchyDto;
 import dev.tolana.projectcalculationtool.repository.AuthorizationRepository;
 import org.springframework.stereotype.Service;
 
-@Service
+@Service("auth")
 public class AuthorizationService {
 
     private AuthorizationRepository authorizationRepository;
 
     public AuthorizationService(AuthorizationRepository authorizationRepository) {
         this.authorizationRepository = authorizationRepository;
+    }
+
+    public boolean hasAccess() {
+        return true;
     }
 
     private HierarchyDto getHierarchy(long id, AccessLevel accessLevel) {
