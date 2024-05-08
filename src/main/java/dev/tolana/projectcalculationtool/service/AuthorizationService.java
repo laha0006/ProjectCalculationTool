@@ -44,6 +44,14 @@ public class AuthorizationService {
         return permissions.contains(permission);
     }
 
+    private boolean canDelete(String username, Set<Long> roleIds, Permission permission) {
+        Set<Permission> permissions = new HashSet<>();
+        for (Long roleId : roleIds) {
+            permissions.addAll(roles.get(roleId).getPermissions());
+        }
+        return permissions.contains(permission);
+    }
+
     private Set<Long> getRoleIdsMatchingHierarchy(String username, HierarchyDto hierarchy, AccessLevel accessLevel) {
         Set<Long> roleIds = authorizationRepository.getRoleIdsMatchingHierarchy(username,hierarchy,accessLevel);
     }
