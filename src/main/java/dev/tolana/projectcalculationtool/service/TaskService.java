@@ -18,6 +18,6 @@ public class TaskService {
 
     public void createTask(TaskDto newTask, String username) {
         Task task =  taskDtoMapper.convertToTask(newTask);
-        taskRepository.createTask(task, username);
+        taskRepository.createParentTask(task, username);
     }
 }
