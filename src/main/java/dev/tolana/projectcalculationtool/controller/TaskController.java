@@ -6,6 +6,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -20,9 +21,9 @@ public class TaskController {
         this.taskService = taskService;
     }
 
-    @GetMapping("/create")
-    public String createForm(Model model) {
-        model.addAttribute("taskDto", new TaskDto("", "", LocalDate.now(), 0, 0));
+    @GetMapping("/{projectid}/create")
+    public String createForm(Model model, @PathVariable long projectid) {
+        model.addAttribute("taskDto", new TaskDto("", "", projectid, LocalDate.now(), 0, 0, 0));
         return "task/createTask";
     }
 
