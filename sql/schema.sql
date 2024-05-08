@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS task(
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     description VARCHAR(255) NOT NULL,
-    project_id INT,
+    project_id INT NOT NULL,
     date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     deadline TIMESTAMP,
     estimated_hours INT,
