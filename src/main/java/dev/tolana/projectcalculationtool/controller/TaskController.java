@@ -5,10 +5,7 @@ import dev.tolana.projectcalculationtool.service.TaskService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 
@@ -21,16 +18,16 @@ public class TaskController {
         this.taskService = taskService;
     }
 
-    @GetMapping("/{projectid}/create")
-    public String createForm(Model model, @PathVariable long projectid) {
-        model.addAttribute("taskDto", new TaskDto("", "", projectid, LocalDate.now(), 0, 0, 0));
+    @GetMapping("/{projectId}/create")
+    public String createForm(Model model, @PathVariable long projectId) {
+        model.addAttribute("taskDto", new TaskDto("", "", projectId, LocalDate.now(), 0, 0, 0));
         return "task/createTask";
     }
 
     @PostMapping("/create")
-    public String createTask(TaskDto newTask, Authentication authentication) {
+    public String createTask(@ModelAttribute TaskDto newTask, Authentication authentication) {
         String username = authentication.getName();
         taskService.createTask(newTask, username);
-        return "redirect:/"; //TODO redirect to a summary page.
+        return "redirect:/dashboard"; //TODO redirect to a summary page.
     }
 }
