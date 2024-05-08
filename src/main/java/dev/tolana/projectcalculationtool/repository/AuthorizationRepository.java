@@ -13,14 +13,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @Repository
 public class AuthorizationRepository {
-    private final String TASK_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE task_id = ?";
-    private final String PROJECT_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE project_id = ?";
-    private final String TEAM_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE team_id = ?";
-    private final String DEPARTMENT_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE department_id = ?";
-    private final String ORGANIZATION_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE organization_id = ?";
+    private final String TASK_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE task_id = ? LIMIT 1";
+    private final String PROJECT_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE project_id = ? LIMIT 1";
+    private final String TEAM_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE team_id = ? LIMIT 1";
+    private final String DEPARTMENT_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE department_id = ? LIMIT 1";
+    private final String ORGANIZATION_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE organization_id = ? LIMIT 1";
+
+    private final String ORGANIZATION_ROLE_SQL = "SELECT * FROM user_entity_role WHERE organization_role_id = ? LIMIT 1";
+
     private final String ROLES_PERMISSIONS_SQL = """
             SELECT r.id   AS role_id,
                    r.name AS role_name,
@@ -94,4 +98,7 @@ public class AuthorizationRepository {
     }
 
 
+    public Set<Long> getRoleIdsMatchingHierarchy(String username, HierarchyDto hierarchy, AccessLevel accessLevel) {
+
+    }
 }
