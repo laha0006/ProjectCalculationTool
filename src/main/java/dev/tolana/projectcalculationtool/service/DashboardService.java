@@ -1,6 +1,7 @@
 package dev.tolana.projectcalculationtool.service;
 
 import dev.tolana.projectcalculationtool.dto.UserEntityRoleDto;
+import dev.tolana.projectcalculationtool.model.Project;
 import dev.tolana.projectcalculationtool.repository.DashboardRepository;
 import org.springframework.stereotype.Service;
 
