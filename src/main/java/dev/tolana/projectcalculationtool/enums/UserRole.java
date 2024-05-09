@@ -1,4 +1,4 @@
-package dev.tolana.projectcalculationtool.constant;
+package dev.tolana.projectcalculationtool.enums;
 
 public enum UserRole {
     OWNER(1),
