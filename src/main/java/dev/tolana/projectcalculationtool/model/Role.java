@@ -1,6 +1,6 @@
 package dev.tolana.projectcalculationtool.model;
 
-import dev.tolana.projectcalculationtool.constant.Permission;
+import dev.tolana.projectcalculationtool.enums.Permission;
 
 import java.util.HashSet;
 import java.util.Set;
