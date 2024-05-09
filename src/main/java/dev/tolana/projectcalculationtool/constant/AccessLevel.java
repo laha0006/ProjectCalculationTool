@@ -5,5 +5,5 @@ public enum AccessLevel {
     PROJECT,
     TEAM,
     DEPARTMENT,
-    ORGANIZATION
+    ORGANISATION
 }
