@@ -1,11 +1,10 @@
 package dev.tolana.projectcalculationtool.service;
 
 
-import dev.tolana.projectcalculationtool.constant.AccessLevel;
-import dev.tolana.projectcalculationtool.constant.Permission;
-import dev.tolana.projectcalculationtool.constant.UserRole;
+import dev.tolana.projectcalculationtool.enums.AccessLevel;
+import dev.tolana.projectcalculationtool.enums.Permission;
+import dev.tolana.projectcalculationtool.enums.UserRole;
 import dev.tolana.projectcalculationtool.util.RoleAssignUtil;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
