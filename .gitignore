@@ -7,6 +7,7 @@ target/
 mvnw
 mvnw.cmd
 .mvn
+.run
 
 src/main/resources/application-dev.properties
 
