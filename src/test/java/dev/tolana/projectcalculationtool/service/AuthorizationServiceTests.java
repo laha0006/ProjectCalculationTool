@@ -31,7 +31,24 @@ public class AuthorizationServiceTests {
 
     @WithMockUser("masiomasu")
     @Test
-    public void OrganisationAdminCanDeleteDepartment() {
+    public void departmentOwnerCanDeleteDepartment() {
         assertTrue(auth.hasAccess(2, AccessLevel.DEPARTMENT, Permission.DELETE));
+    }
+
+
+    @WithMockUser("vz")
+    @Test
+    public void departmentOwnerCannotDeleteParentOrganization() {
+        assertFalse(auth.hasAccess(2, AccessLevel.ORGANIZATION, Permission.DELETE));
+    }
+
+    @WithMockUser("tolana")
+    @Test
+    public void organizationOwnerCanReadEverything() {
+        assertTrue(auth.hasAccess(1, AccessLevel.ORGANIZATION, Permission.READ));
+        assertTrue(auth.hasAccess(1, AccessLevel.DEPARTMENT, Permission.READ));
+        assertTrue(auth.hasAccess(1, AccessLevel.TEAM, Permission.READ));
+        assertTrue(auth.hasAccess(1, AccessLevel.PROJECT, Permission.READ));
+        assertTrue(auth.hasAccess(1, AccessLevel.TASK, Permission.READ));
     }
 }
