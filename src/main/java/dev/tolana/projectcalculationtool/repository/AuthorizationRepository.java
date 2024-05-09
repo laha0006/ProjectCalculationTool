@@ -24,7 +24,7 @@ public class AuthorizationRepository {
 
     private final String ORGANIZATION_ROLE_SQL = "SELECT * FROM user_entity_role WHERE username = ? AND organisation_id = ?";
     private final String DEPARTMENT_ROLE_SQL = "SELECT * FROM user_entity_role WHERE username = ? AND (organisation_id = ? OR department_id = ?)";
-    private final String TEAM_ROLE_SQL = "SELECT * FROM user_entity_role WHERE username = ? AND (organisation_id = ? OR department_id = ? OR team_id = ?) = ?";
+    private final String TEAM_ROLE_SQL = "SELECT * FROM user_entity_role WHERE username = ? AND (organisation_id = ? OR department_id = ? OR team_id = ?)";
     private final String PROJECT_ROLE_SQL = "SELECT * FROM user_entity_role WHERE username = ? AND (organisation_id = ? OR department_id = ? OR team_id = ? OR project_id = ?)";
     private final String TASK_ROLE_SQL = "SELECT * FROM user_entity_role WHERE username = ? AND (organisation_id = ? OR department_id = ? OR team_id = ? OR project_id = ? OR task_id = ?)";
 
@@ -119,20 +119,20 @@ public class AuthorizationRepository {
                 case TASK -> {
                     preparedStatement.setLong(2, hierarchy.organizationId());
                     preparedStatement.setLong(3, hierarchy.departmentId());
-                    preparedStatement.setLong(3, hierarchy.teamId());
-                    preparedStatement.setLong(4, hierarchy.projectId());
-                    preparedStatement.setLong(5, hierarchy.taskId());
+                    preparedStatement.setLong(4, hierarchy.teamId());
+                    preparedStatement.setLong(5, hierarchy.projectId());
+                    preparedStatement.setLong(6, hierarchy.taskId());
                 }
                 case PROJECT -> {
                     preparedStatement.setLong(2, hierarchy.organizationId());
                     preparedStatement.setLong(3, hierarchy.departmentId());
-                    preparedStatement.setLong(3, hierarchy.teamId());
-                    preparedStatement.setLong(4, hierarchy.projectId());
+                    preparedStatement.setLong(4, hierarchy.teamId());
+                    preparedStatement.setLong(5, hierarchy.projectId());
                 }
                 case TEAM -> {
                     preparedStatement.setLong(2, hierarchy.organizationId());
                     preparedStatement.setLong(3, hierarchy.departmentId());
-                    preparedStatement.setLong(3, hierarchy.teamId());
+                    preparedStatement.setLong(4, hierarchy.teamId());
                 }
                 case DEPARTMENT -> {
                     preparedStatement.setLong(2, hierarchy.organizationId());
