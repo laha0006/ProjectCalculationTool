@@ -10,11 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class JDBCOrganisationRepository implements OrganisationRepository {
+public class JdbcOrganisationRepository implements OrganisationRepository {
 
     private DataSource datasource;
 
-    public JDBCOrganisationRepository(DataSource datasource) {
+    public JdbcOrganisationRepository(DataSource datasource) {
         this.datasource = datasource;
     }
 

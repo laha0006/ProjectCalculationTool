@@ -9,11 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class JDBCProjectRepository implements ProjectRepository {
+public class JdbcProjectRepository implements ProjectRepository {
 
     private DataSource dataSource;
 
-    public JDBCProjectRepository(DataSource dataSource) {
+    public JdbcProjectRepository(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
