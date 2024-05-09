@@ -20,13 +20,13 @@ public class AuthorizationRepository {
     private final String PROJECT_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE project_id = ? LIMIT 1";
     private final String TEAM_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE team_id = ? LIMIT 1";
     private final String DEPARTMENT_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE department_id = ? LIMIT 1";
-    private final String ORGANIZATION_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE organization_id = ? LIMIT 1";
+    private final String ORGANIZATION_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE organisation_id = ? LIMIT 1";
 
-    private final String ORGANIZATION_ROLE_SQL = "SELECT * FROM user_entity_role WHERE username = ? AND organisation_id = ? LIMIT 1";
-    private final String DEPARTMENT_ROLE_SQL = "SELECT * FROM user_entity_role WHERE username = ? AND (organisation_id = ? OR department_id = ?) LIMIT 1";
-    private final String TEAM_ROLE_SQL = "SELECT * FROM user_entity_role WHERE username = ? AND (organisation_id = ? OR department_id = ? OR team_id = ?) = ? LIMIT 1";
-    private final String PROJECT_ROLE_SQL = "SELECT * FROM user_entity_role WHERE username = ? AND (organisation_id = ? OR department_id = ? OR team_id = ? OR project_id = ?) LIMIT 1";
-    private final String TASK_ROLE_SQL = "SELECT * FROM user_entity_role WHERE username = ? AND (organisation_id = ? OR department_id = ? OR team_id = ? OR project_id = ? OR task_id = ?) LIMIT 1";
+    private final String ORGANIZATION_ROLE_SQL = "SELECT * FROM user_entity_role WHERE username = ? AND organisation_id = ?";
+    private final String DEPARTMENT_ROLE_SQL = "SELECT * FROM user_entity_role WHERE username = ? AND (organisation_id = ? OR department_id = ?)";
+    private final String TEAM_ROLE_SQL = "SELECT * FROM user_entity_role WHERE username = ? AND (organisation_id = ? OR department_id = ? OR team_id = ?) = ?";
+    private final String PROJECT_ROLE_SQL = "SELECT * FROM user_entity_role WHERE username = ? AND (organisation_id = ? OR department_id = ? OR team_id = ? OR project_id = ?)";
+    private final String TASK_ROLE_SQL = "SELECT * FROM user_entity_role WHERE username = ? AND (organisation_id = ? OR department_id = ? OR team_id = ? OR project_id = ? OR task_id = ?)";
 
     private final String ROLES_PERMISSIONS_SQL = """
             SELECT r.id   AS role_id,
@@ -103,6 +103,8 @@ public class AuthorizationRepository {
 
     public List<UserEntityRoleDto> getRoleIdsMatchingHierarchy(String username, HierarchyDto hierarchy, AccessLevel accessLevel) {
         List<UserEntityRoleDto> roles = new ArrayList<>();
+        System.out.println("GET ROLES ACCESS LEVEL " + accessLevel);
+        System.out.println("ROLES HIERARCHY " + hierarchy);
         String SQL = switch (accessLevel) {
             case TASK -> TASK_ROLE_SQL;
             case PROJECT -> PROJECT_ROLE_SQL;
@@ -156,6 +158,7 @@ public class AuthorizationRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        System.out.println("ROLES: " + roles);
         return roles;
     }
 }
