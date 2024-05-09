@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+
 @Service("auth")
 public class AuthorizationService {
 
@@ -21,15 +22,17 @@ public class AuthorizationService {
 
     public AuthorizationService(AuthorizationRepository authorizationRepository) {
         this.authorizationRepository = authorizationRepository;
-        roles = initRoles();
         weigthedPermissions = new ArrayList<>(List.of(Permission.EDIT,Permission.DELETE));
     }
 
-    private Map<Long, Role> initRoles() {
-        return authorizationRepository.getRoles();
+    private void initRoles() {
+        roles = authorizationRepository.getRoles();
     }
 
     public boolean hasAccess(long id, AccessLevel accessLevel, Permission permission) {
+        if (roles == null) {
+            initRoles();
+        }
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         HierarchyDto hierarchy = getHierarchy(id, accessLevel);
         List<UserEntityRoleDto> userRoles = getRoleIdsMatchingHierarchy(username, hierarchy, accessLevel);
