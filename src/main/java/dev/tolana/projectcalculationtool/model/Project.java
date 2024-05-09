@@ -1,29 +1,37 @@
 package dev.tolana.projectcalculationtool.model;
 
+import java.sql.Time;
 import java.sql.Timestamp;
 
 public class Project {
     private String name, description;
     private long teamId, parentId, projectId;
     private int allottedHours, status; //TODO make into Enum
-    private Timestamp deadline;
+    private Timestamp deadline, dateCreated;
+    private boolean isArchived;
 
     public Project(){}
 
-    public Project(String name,
+    public Project(long projectId,
+                   String name,
                    String description,
                    long teamId,
+                   Timestamp dateCreated,
                    Timestamp deadline,
                    int allottedHours,
                    int status,
-                   long parentId){
+                   long parentId,
+                   boolean isArchived){
+        this.projectId = projectId;
         this.name = name;
         this.description = description;
         this.teamId = teamId;
+        this.dateCreated = dateCreated;
         this.deadline = deadline;
         this.allottedHours = allottedHours;
         this.status = status;
         this.parentId = parentId;
+        this.isArchived = isArchived;
     }
 
     public String getName() {
@@ -48,6 +56,14 @@ public class Project {
 
     public void setTeamId(long teamId) {
         this.teamId = teamId;
+    }
+
+    public Timestamp getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(Timestamp dateCreated) {
+        this.dateCreated = dateCreated;
     }
 
     public long getParentId() {
@@ -88,5 +104,13 @@ public class Project {
 
     public void setProjectId(long projectId) {
         this.projectId = projectId;
+    }
+
+    public boolean isArchived() {
+        return isArchived;
+    }
+
+    public void setArchived(boolean archived) {
+        isArchived = archived;
     }
 }
