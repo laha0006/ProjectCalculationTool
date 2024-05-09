@@ -73,10 +73,10 @@ public class AuthorizationService {
             short weight = roles.get(role.roleId()).getWeight();
             Set<Permission> userRolePermissions = roles.get(role.roleId()).getPermissions();
             if (role.organizationId() > 0) {
-                if (!permissions.containsKey(AccessLevel.ORGANIZATION)) {
-                    permissions.put(AccessLevel.ORGANIZATION, new ArrayList<>());
+                if (!permissions.containsKey(AccessLevel.ORGANISATION)) {
+                    permissions.put(AccessLevel.ORGANISATION, new ArrayList<>());
                 }
-                permissions.get(AccessLevel.ORGANIZATION).add(new WeightedPermissionSetDto(weight, userRolePermissions));
+                permissions.get(AccessLevel.ORGANISATION).add(new WeightedPermissionSetDto(weight, userRolePermissions));
             }
             if (role.departmentId() > 0) {
                 if (!permissions.containsKey(AccessLevel.DEPARTMENT)) {
