@@ -1,6 +1,6 @@
 package dev.tolana.projectcalculationtool.dto;
 
-import dev.tolana.projectcalculationtool.constant.Permission;
+import dev.tolana.projectcalculationtool.enums.Permission;
 
 import java.util.Set;
 
