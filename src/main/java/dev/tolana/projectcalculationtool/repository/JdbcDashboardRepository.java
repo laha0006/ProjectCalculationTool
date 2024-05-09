@@ -1,7 +1,6 @@
 package dev.tolana.projectcalculationtool.repository;
 
 import dev.tolana.projectcalculationtool.dto.UserEntityRoleDto;
-import dev.tolana.projectcalculationtool.model.Project;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -10,11 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class JDBCDashboardRepository implements DashboardRepository {
+public class JdbcDashboardRepository implements DashboardRepository {
 
     private DataSource dataSource;
 
-    public JDBCDashboardRepository(DataSource dataSource) {
+    public JdbcDashboardRepository(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 

@@ -1,24 +1,37 @@
 package dev.tolana.projectcalculationtool.model;
 
+import java.sql.Time;
 import java.sql.Timestamp;
 
 public class Project {
     private String name, description;
-    private int team_id, parent_id, allotted_hours;
-    private int status; //TODO make into Enum
-    private Timestamp deadline;
+    private long teamId, parentId, projectId;
+    private int allottedHours, status; //TODO make into Enum
+    private Timestamp deadline, dateCreated;
+    private boolean isArchived;
 
     public Project(){}
 
-    public Project(String name, String description, int team_id, Timestamp deadline,
-                   int allotted_hours, int status, int parent_id){
+    public Project(long projectId,
+                   String name,
+                   String description,
+                   long teamId,
+                   Timestamp dateCreated,
+                   Timestamp deadline,
+                   int allottedHours,
+                   int status,
+                   long parentId,
+                   boolean isArchived){
+        this.projectId = projectId;
         this.name = name;
         this.description = description;
-        this.team_id = team_id;
+        this.teamId = teamId;
+        this.dateCreated = dateCreated;
         this.deadline = deadline;
-        this.allotted_hours = allotted_hours;
+        this.allottedHours = allottedHours;
         this.status = status;
-        this.parent_id = parent_id;
+        this.parentId = parentId;
+        this.isArchived = isArchived;
     }
 
     public String getName() {
@@ -37,28 +50,36 @@ public class Project {
         this.description = description;
     }
 
-    public int getTeam_id() {
-        return team_id;
+    public long getTeamId() {
+        return teamId;
     }
 
-    public void setTeam_id(int team_id) {
-        this.team_id = team_id;
+    public void setTeamId(long teamId) {
+        this.teamId = teamId;
     }
 
-    public int getParent_id() {
-        return parent_id;
+    public Timestamp getDateCreated() {
+        return dateCreated;
     }
 
-    public void setParent_id(int parent_id) {
-        this.parent_id = parent_id;
+    public void setDateCreated(Timestamp dateCreated) {
+        this.dateCreated = dateCreated;
     }
 
-    public int getAllotted_hours() {
-        return allotted_hours;
+    public long getParentId() {
+        return parentId;
     }
 
-    public void setAllotted_hours(int allotted_hours) {
-        this.allotted_hours = allotted_hours;
+    public void setParentId(long parentId) {
+        this.parentId = parentId;
+    }
+
+    public int getAllottedHours() {
+        return allottedHours;
+    }
+
+    public void setAllottedHours(int allottedHours) {
+        this.allottedHours = allottedHours;
     }
 
     public int getStatus() {
@@ -75,5 +96,21 @@ public class Project {
 
     public void setDeadline(Timestamp deadline) {
         this.deadline = deadline;
+    }
+
+    public long getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(long projectId) {
+        this.projectId = projectId;
+    }
+
+    public boolean isArchived() {
+        return isArchived;
+    }
+
+    public void setArchived(boolean archived) {
+        isArchived = archived;
     }
 }
