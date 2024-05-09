@@ -1,9 +1,6 @@
 package dev.tolana.projectcalculationtool.controller;
 
-import dev.tolana.projectcalculationtool.dto.ProjectDto;
-import dev.tolana.projectcalculationtool.dto.UserEntityRoleDto;
 import dev.tolana.projectcalculationtool.model.Project;
-import dev.tolana.projectcalculationtool.service.DashboardService;
 import dev.tolana.projectcalculationtool.service.ProjectService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -19,7 +16,7 @@ import java.util.List;
 @RequestMapping("/project")
 public class ProjectController {
 
-    private ProjectService projectService;
+    private final ProjectService projectService;
 
     public ProjectController(ProjectService projectService) {
         this.projectService = projectService;
@@ -44,9 +41,9 @@ public class ProjectController {
     @GetMapping("/overview")
     public String getProjectOverview(Model model, Authentication authentication) {
         String username = authentication.getName();
-        List<ProjectDto> projectDtoList = projectService.getAllProjects(username);
+        List<Project> projectList = projectService.getAllProjects(username);
 
-        model.addAttribute("projectList", projectDtoList);
+        model.addAttribute("projectList", projectList);
         return "project/viewAllProjects";
     }
 }
