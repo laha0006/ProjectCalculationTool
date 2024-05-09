@@ -1,7 +1,7 @@
 package dev.tolana.projectcalculationtool.repository;
 
-import dev.tolana.projectcalculationtool.constant.AccessLevel;
-import dev.tolana.projectcalculationtool.constant.Permission;
+import dev.tolana.projectcalculationtool.enums.AccessLevel;
+import dev.tolana.projectcalculationtool.enums.Permission;
 import dev.tolana.projectcalculationtool.dto.HierarchyDto;
 import dev.tolana.projectcalculationtool.dto.UserEntityRoleDto;
 import dev.tolana.projectcalculationtool.model.Role;
