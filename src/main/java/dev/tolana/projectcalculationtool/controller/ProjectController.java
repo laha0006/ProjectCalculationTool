@@ -1,5 +1,6 @@
 package dev.tolana.projectcalculationtool.controller;
 
+import dev.tolana.projectcalculationtool.dto.ProjectOverviewDto;
 import dev.tolana.projectcalculationtool.model.Project;
 import dev.tolana.projectcalculationtool.service.ProjectService;
 import org.springframework.security.core.Authentication;
@@ -41,7 +42,7 @@ public class ProjectController {
     @GetMapping("/overview")
     public String getProjectOverview(Model model, Authentication authentication) {
         String username = authentication.getName();
-        List<Project> projectList = projectService.getAllProjects(username);
+        List<ProjectOverviewDto> projectList = projectService.getAllProjects(username);
 
         model.addAttribute("projectList", projectList);
         return "project/viewAllProjects";
