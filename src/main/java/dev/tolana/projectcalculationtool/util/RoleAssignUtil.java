@@ -1,7 +1,7 @@
 package dev.tolana.projectcalculationtool.util;
 
-import dev.tolana.projectcalculationtool.constant.AccessLevel;
-import dev.tolana.projectcalculationtool.constant.UserRole;
+import dev.tolana.projectcalculationtool.enums.AccessLevel;
+import dev.tolana.projectcalculationtool.enums.UserRole;
 import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
