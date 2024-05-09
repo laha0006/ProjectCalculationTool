@@ -64,6 +64,7 @@ INSERT INTO users(username,password) VALUES('tolana','password');
 INSERT INTO users(username,password) VALUES('vz','password');
 INSERT INTO users(username,password) VALUES('masiomasu','password');
 INSERT INTO users(username,password) VALUES('dosei','password');
+INSERT INTO users(username,password) VALUES('TheNewGuy','password');
 
 INSERT INTO user_entity_role(username,role_id,organisation_id) VALUES('tolana',1,1);
 INSERT INTO user_entity_role(username,role_id,organisation_id) VALUES('masiomasu',2,1);
