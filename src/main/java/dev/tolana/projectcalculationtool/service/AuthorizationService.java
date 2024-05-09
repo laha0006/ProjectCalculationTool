@@ -2,6 +2,7 @@ package dev.tolana.projectcalculationtool.service;
 
 import dev.tolana.projectcalculationtool.constant.AccessLevel;
 import dev.tolana.projectcalculationtool.constant.Permission;
+import dev.tolana.projectcalculationtool.constant.UserRole;
 import dev.tolana.projectcalculationtool.dto.HierarchyDto;
 import dev.tolana.projectcalculationtool.dto.UserEntityRoleDto;
 import dev.tolana.projectcalculationtool.dto.WeightedPermissionSetDto;
@@ -19,14 +20,34 @@ public class AuthorizationService {
     private AuthorizationRepository authorizationRepository;
     private Map<Long, Role> roles;
     private List<Permission> weigthedPermissions;
+    private Map<UserRole,Long> stringLongMap;
 
     public AuthorizationService(AuthorizationRepository authorizationRepository) {
         this.authorizationRepository = authorizationRepository;
         weigthedPermissions = new ArrayList<>(List.of(Permission.EDIT,Permission.DELETE));
     }
 
+    private void init() {
+        initRoles();
+        initRoleNameToIdMap();
+    }
+
     private void initRoles() {
         roles = authorizationRepository.getRoles();
+    }
+
+    private void initRoleNameToIdMap() {
+        stringLongMap = new HashMap<>();
+        for (Role role : roles.values()) {
+            stringLongMap.put(UserRole.valueOf(role.getRoleName()), role.getId());
+        }
+    }
+
+    public long roleId(UserRole userRole) {
+        if (stringLongMap == null) {
+            init();
+        }
+        return stringLongMap.get(userRole);
     }
 
     public boolean hasAccess(long id, AccessLevel accessLevel, Permission permission) {
@@ -54,10 +75,12 @@ public class AuthorizationService {
 
     private boolean hasWeightedPermission(List<UserEntityRoleDto> userRoles, AccessLevel accessLevel, Permission permission) {
         Map<AccessLevel, List<WeightedPermissionSetDto>> permissions = getWeigthedPermissionMap(userRoles,accessLevel);
+        System.out.println("permissions: " + permissions);
         boolean hasWeightedPermission = false;
         for (var entry : permissions.entrySet()) {
             for (WeightedPermissionSetDto weightedPermissionSetDto : entry.getValue()) {
                 if (entry.getKey().equals(accessLevel)) {
+                    System.out.println("weight yo");
                     hasWeightedPermission = (weightedPermissionSetDto.permissions().contains(permission) && weightedPermissionSetDto.weight() == 255);
                 } else {
                     hasWeightedPermission = weightedPermissionSetDto.permissions().contains(permission);
