@@ -48,7 +48,51 @@ public class JDBCProjectRepository implements ProjectRepository {
         return projectId;
     }
 
+    @Override
+    public List<Project> getAllProjectsOnUsername(String username) {
+        List<Project> projectList = new ArrayList<>();
+        String getAllProjects = """
+                SELECT\s
+                project.id,\s
+                project.name,\s
+                project.description,\s
+                project.team_id,\s
+                project.date_created,\s
+                project.deadline,\s
+                project.allotted_hours,\s
+                project.status,\s
+                project.parent_id,\s
+                project.archived\s
+                
+                FROM project
+                JOIN user_entity_role ON user_entity_role.project_id = project.id
+                JOIN user ON user_entity_role.username = users.username
+                WHERE users.username = ?;
+                """;
 
+        try (Connection connection = dataSource.getConnection()){
+            PreparedStatement pstmt = connection.prepareStatement(getAllProjects);
+            pstmt.setString(1, username);
+            ResultSet projectsRs = pstmt.executeQuery();
 
-
+            while (projectsRs.next()) {
+                Project project = new Project(
+                        projectsRs.getLong(1),
+                        projectsRs.getString(2),
+                        projectsRs.getString(3),
+                        projectsRs.getLong(4),
+                        projectsRs.getTimestamp(5),
+                        projectsRs.getTimestamp(6),
+                        projectsRs.getInt(7),
+                        projectsRs.getInt(8),
+                        projectsRs.getLong(9),
+                        projectsRs.getBoolean(10)
+                );
+                projectList.add(project);
+            }
+        }catch (SQLException sqlException) {
+            throw new RuntimeException();
+        }
+        return projectList;
+    }
 }
