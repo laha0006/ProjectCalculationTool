@@ -50,18 +50,13 @@ public class AuthorizationService {
     }
 
     private boolean hasWeightedPermission(List<UserEntityRoleDto> userRoles, AccessLevel accessLevel, Permission permission) {
-        System.out.println("Entered hasWeightedPermission");
         Map<AccessLevel, List<WeightedPermissionSetDto>> permissions = getWeigthedPermissionMap(userRoles,accessLevel);
-        System.out.println("Permissions" + permissions);
-        System.out.println("Count: " + permissions.size());
         boolean hasWeightedPermission = false;
         for (var entry : permissions.entrySet()) {
             for (WeightedPermissionSetDto weightedPermissionSetDto : entry.getValue()) {
                 if (entry.getKey().equals(accessLevel)) {
-                    System.out.println("weigthed check");
                     hasWeightedPermission = (weightedPermissionSetDto.permissions().contains(permission) && weightedPermissionSetDto.weight() == 255);
                 } else {
-                    System.out.println("else check");
                     hasWeightedPermission = weightedPermissionSetDto.permissions().contains(permission);
                 }
             }
