@@ -1,6 +1,5 @@
 package dev.tolana.projectcalculationtool.repository;
 
-import dev.tolana.projectcalculationtool.dto.UserEntityRoleDto;
 import dev.tolana.projectcalculationtool.model.Project;
 import org.springframework.stereotype.Repository;
 
@@ -32,8 +31,8 @@ public class JDBCProjectRepository implements ProjectRepository {
 
             pstmt.setString(1, project.getName());
             pstmt.setString(2, project.getDescription());
-            pstmt.setInt(3, project.getTeam_id());
-            pstmt.setInt(4, project.getAllotted_hours());
+            pstmt.setLong(3, project.getTeamId());
+            pstmt.setLong(4, project.getAllottedHours());
             pstmt.setInt(5, project.getStatus());
             pstmt.executeUpdate();
 
@@ -47,5 +46,9 @@ public class JDBCProjectRepository implements ProjectRepository {
         }
 
         return projectId;
-    };
+    }
+
+
+
+
 }
