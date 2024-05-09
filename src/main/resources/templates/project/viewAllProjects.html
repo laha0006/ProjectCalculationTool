@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All projects</title>
+</head>
+<body>
+
+<table >
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Deadline</th>
+            <th>Progress</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr th:each="project : ${projectList}">
+            <td th:text="${project.name}"></td>
+            <td th:text="${project.deadline}"></td>
+<!--&lt;!&ndash;            <td th:text="${project.getDeadline()}"></td>&ndash;&gt; TODO MAKE LOGIC THAT CALCULATES PROGRESSION IN PERCENTAGE-->
+            <td th:text="${project.status}"></td>
+        </tr>
+    </tbody>
+</table>
+
+<a href=""> <!--TODO DEFINE THE BACK DESTINATION-->
+    <button>back</button>
+</a>
+</body>
+</html>
