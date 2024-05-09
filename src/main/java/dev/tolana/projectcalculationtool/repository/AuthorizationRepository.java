@@ -55,7 +55,7 @@ public class AuthorizationRepository {
             case PROJECT -> PROJECT_HIERARCHY_SQL;
             case TEAM -> TEAM_HIERARCHY_SQL;
             case DEPARTMENT -> DEPARTMENT_HIERARCHY_SQL;
-            case ORGANIZATION -> ORGANIZATION_HIERARCHY_SQL;
+            case ORGANISATION -> ORGANIZATION_HIERARCHY_SQL;
         };
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(SQL);
@@ -110,7 +110,7 @@ public class AuthorizationRepository {
             case PROJECT -> PROJECT_ROLE_SQL;
             case TEAM -> TEAM_ROLE_SQL;
             case DEPARTMENT -> DEPARTMENT_ROLE_SQL;
-            case ORGANIZATION -> ORGANIZATION_ROLE_SQL;
+            case ORGANISATION -> ORGANIZATION_ROLE_SQL;
         };
         try (Connection con = dataSource.getConnection()) {
             PreparedStatement preparedStatement = con.prepareStatement(SQL);
@@ -138,7 +138,7 @@ public class AuthorizationRepository {
                     preparedStatement.setLong(2, hierarchy.organizationId());
                     preparedStatement.setLong(3, hierarchy.departmentId());
                 }
-                case ORGANIZATION -> {
+                case ORGANISATION -> {
                     preparedStatement.setLong(2, hierarchy.organizationId());
                 }
             }
