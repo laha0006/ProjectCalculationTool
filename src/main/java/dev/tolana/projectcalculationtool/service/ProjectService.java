@@ -27,4 +27,8 @@ public class ProjectService {
         List<Project> projectList = projectRepository.getAllProjectsOnUsername(username);
         return projectDtoMapper.toProjectOverviewDtoList(projectList);
     }
+
+    public long getTeamIdFromUsername(String username) {
+        return projectRepository.getTeamIdFromUsername(username);
+    }
 }
