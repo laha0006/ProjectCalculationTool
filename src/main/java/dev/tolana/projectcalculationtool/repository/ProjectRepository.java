@@ -10,4 +10,6 @@ public interface ProjectRepository {
     int addProject(Project project);
 
     List<Project> getAllProjectsOnUsername(String username);
+
+    long getTeamIdFromUsername(String username);
 }
