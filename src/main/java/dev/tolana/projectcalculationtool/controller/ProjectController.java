@@ -1,15 +1,14 @@
 package dev.tolana.projectcalculationtool.controller;
 
 import dev.tolana.projectcalculationtool.dto.ProjectOverviewDto;
+import dev.tolana.projectcalculationtool.dto.RegisterUserDto;
+import dev.tolana.projectcalculationtool.dto.UserInformationDto;
 import dev.tolana.projectcalculationtool.model.Project;
 import dev.tolana.projectcalculationtool.service.ProjectService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -46,5 +45,16 @@ public class ProjectController {
 
         model.addAttribute("projectList", projectList);
         return "project/viewAllProjects";
+    }
+
+    @GetMapping("/{projectId}/assign/members")
+    public String getAllMembersFromTeamId(@PathVariable long projectId, Model model, Authentication authentication) {
+        String username = authentication.getName();
+        long teamId = projectService.getTeamIdFromUsername(username);
+
+        List<UserInformationDto> memberList = projectService.getAllTeamMembersFremTeamId(teamId);
+        model.addAttribute("teamMembers", memberList);
+
+        return "project/viewAllTeamMembers";
     }
 }
