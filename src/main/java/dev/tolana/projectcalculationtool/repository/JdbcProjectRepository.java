@@ -91,8 +91,33 @@ public class JdbcProjectRepository implements ProjectRepository {
                 projectList.add(project);
             }
         }catch (SQLException sqlException) {
-            throw new RuntimeException();
+            throw new RuntimeException(sqlException);
         }
         return projectList;
+    }
+
+    @Override
+    public long getTeamIdFromUsername(String username) {
+        long teamId = -1;
+        String getTeamIdFromUsername = """
+                SELECT t.id FROM team t
+                JOIN user_entity_role uer ON uer.team_id = t.id
+                JOIN users ON users.username = uer.username\s
+                WHERE users.username = ?;
+                """;
+
+        try (Connection connection = dataSource.getConnection()){
+            PreparedStatement pstmt = connection.prepareStatement(getTeamIdFromUsername);
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                teamId = rs.getLong(1);
+            }
+
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+        return teamId;
     }
 }
