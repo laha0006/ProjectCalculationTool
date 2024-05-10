@@ -18,7 +18,8 @@ public class ProjectDtoMapper {
                     project.getName(),
                     project.getDeadline(),
                     project.getAllottedHours(),
-                    project.getStatus()
+                    project.getStatus(),
+                    project.getProjectId()
             );
             projectOverviewDtoList.add(projectOverviewDto);
         }
