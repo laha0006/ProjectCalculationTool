@@ -7,6 +7,8 @@
 </head>
 
 <body>
+<div th:replace="~{fragments/errorPanel :: errorPanel}"></div>
+<h1 th:text="${test}"></h1>
   <form th:action="@{/user/register}" method="post" th:object="${newUser}">
 
     <p>
