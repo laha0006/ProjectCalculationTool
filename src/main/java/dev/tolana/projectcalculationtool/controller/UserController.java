@@ -1,6 +1,6 @@
 package dev.tolana.projectcalculationtool.controller;
 
-import dev.tolana.projectcalculationtool.dto.UserDto;
+import dev.tolana.projectcalculationtool.dto.RegisterUserDto;
 import dev.tolana.projectcalculationtool.service.UserService;
 import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
@@ -26,13 +26,13 @@ public class UserController {
 
     @GetMapping("/register")
     public String registerForm(Model model) {
-        model.addAttribute("newUser", new UserDto("username", "password"));
+        model.addAttribute("newUser", new RegisterUserDto("username", "password"));
 
         return "user/register";
     }
 
     @PostMapping("/register")
-    public String registerUser(@ModelAttribute UserDto newUser) {
+    public String registerUser(@ModelAttribute RegisterUserDto newUser) {
         userService.registerUser(newUser);
 
         return "redirect:/user/login";
