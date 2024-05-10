@@ -1,6 +1,7 @@
 package dev.tolana.projectcalculationtool.service;
 
 import dev.tolana.projectcalculationtool.dto.ProjectOverviewDto;
+import dev.tolana.projectcalculationtool.dto.UserInformationDto;
 import dev.tolana.projectcalculationtool.mapper.ProjectDtoMapper;
 import dev.tolana.projectcalculationtool.model.Project;
 import dev.tolana.projectcalculationtool.repository.ProjectRepository;
@@ -30,5 +31,13 @@ public class ProjectService {
 
     public long getTeamIdFromUsername(String username) {
         return projectRepository.getTeamIdFromUsername(username);
+    }
+
+    public List<UserInformationDto> getAllTeamMembersFromTeamId(long teamId) {
+        return projectRepository.getTeamMembersFromTeamId(teamId);
+    }
+
+    public void assignTeamMembersToProject(long projectId, List<String> selectedTeamMembers) {
+        projectRepository.assignTeamMembersToProject(projectId, selectedTeamMembers);
     }
 }
