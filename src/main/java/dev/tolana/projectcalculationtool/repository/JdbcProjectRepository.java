@@ -1,5 +1,6 @@
 package dev.tolana.projectcalculationtool.repository;
 
+import dev.tolana.projectcalculationtool.dto.UserInformationDto;
 import dev.tolana.projectcalculationtool.model.Project;
 import org.springframework.stereotype.Repository;
 
@@ -18,13 +19,13 @@ public class JdbcProjectRepository implements ProjectRepository {
     }
 
     @Override
-    public int addProject(Project project){
+    public int addProject(Project project) {
         int projectId = -1;
 
         try (Connection connection = dataSource.getConnection()) {
             String insertNewProject = "INSERT INTO project (name, description, team_id," +
-                                      "allotted_hours, status) " +
-                                      "VALUES (?,?,?,?,?);";
+                    "allotted_hours, status) " +
+                    "VALUES (?,?,?,?,?);";
 
             PreparedStatement pstmt = connection.prepareStatement(insertNewProject,
                     Statement.RETURN_GENERATED_KEYS);
@@ -63,14 +64,14 @@ public class JdbcProjectRepository implements ProjectRepository {
                 project.status,\s
                 project.parent_id,\s
                 project.archived\s
-                
+                                
                 FROM project
                 JOIN user_entity_role ON user_entity_role.project_id = project.id
                 JOIN user ON user_entity_role.username = users.username
                 WHERE users.username = ?;
                 """;
 
-        try (Connection connection = dataSource.getConnection()){
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement pstmt = connection.prepareStatement(getAllProjects);
             pstmt.setString(1, username);
             ResultSet projectsRs = pstmt.executeQuery();
@@ -90,7 +91,7 @@ public class JdbcProjectRepository implements ProjectRepository {
                 );
                 projectList.add(project);
             }
-        }catch (SQLException sqlException) {
+        } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
         }
         return projectList;
@@ -106,7 +107,7 @@ public class JdbcProjectRepository implements ProjectRepository {
                 WHERE users.username = ?;
                 """;
 
-        try (Connection connection = dataSource.getConnection()){
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement pstmt = connection.prepareStatement(getTeamIdFromUsername);
             pstmt.setString(1, username);
             ResultSet rs = pstmt.executeQuery();
@@ -119,5 +120,62 @@ public class JdbcProjectRepository implements ProjectRepository {
             throw new RuntimeException(sqlException);
         }
         return teamId;
+    }
+
+    @Override
+    public List<UserInformationDto> getTeamMembersFromTeamId(long teamId) {
+        List<UserInformationDto> userInformationDtoList = new ArrayList<>();
+        String getTeamMembersFromTeamId = """
+                SELECT u.username AS user
+                FROM users u
+                JOIN user_entity_role uer ON u.username = uer.username
+                JOIN team t ON t.id = uer.team_id\s
+                WHERE team_id = ?;
+                """;
+
+        try (Connection connection = dataSource.getConnection()) {
+            PreparedStatement pstmt = connection.prepareStatement(getTeamMembersFromTeamId);
+            pstmt.setLong(1, teamId);
+            ResultSet teamMembersRs = pstmt.executeQuery();
+
+            while (teamMembersRs.next()) {
+                UserInformationDto member = new UserInformationDto(
+                        teamMembersRs.getString(1)
+                );
+                userInformationDtoList.add(member);
+            }
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+
+        return userInformationDtoList;
+    }
+
+    @Override
+    public void assignTeamMembersToProject(long projectId, List<String> selectedTeamMembers) {
+        String assignTeamMembersToProject = """
+                INSERT INTO user_entity_role (project_id) VALUES (?)
+                WHERE username = ?;
+                """;
+
+        try (Connection connection = dataSource.getConnection()) {
+            try{
+                connection.setAutoCommit(false);
+
+                for (String member :selectedTeamMembers) {
+                    PreparedStatement pstmt = connection.prepareStatement(assignTeamMembersToProject);
+                    pstmt.setLong(1, projectId);
+                    pstmt.setString(2, member);
+                    pstmt.executeUpdate();
+                }
+
+
+            } catch (Exception exception) {
+                connection.rollback();
+                connection.setAutoCommit(true);
+            }
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
     }
 }
