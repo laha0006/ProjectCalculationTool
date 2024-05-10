@@ -1,7 +1,6 @@
 package dev.tolana.projectcalculationtool.controller;
 
 import dev.tolana.projectcalculationtool.dto.ProjectOverviewDto;
-import dev.tolana.projectcalculationtool.dto.RegisterUserDto;
 import dev.tolana.projectcalculationtool.dto.UserInformationDto;
 import dev.tolana.projectcalculationtool.model.Project;
 import dev.tolana.projectcalculationtool.service.ProjectService;
@@ -10,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -35,7 +35,7 @@ public class ProjectController {
     public String addProject(@ModelAttribute Project newProject) {
         projectService.addProject(newProject);
 
-        return "user/dashboard";
+        return "redirect:/dashboard";
     }
 
     @GetMapping("/overview")
@@ -52,9 +52,21 @@ public class ProjectController {
         String username = authentication.getName();
         long teamId = projectService.getTeamIdFromUsername(username);
 
-        List<UserInformationDto> memberList = projectService.getAllTeamMembersFremTeamId(teamId);
+        List<UserInformationDto> memberList = projectService.getAllTeamMembersFromTeamId(teamId);
+        model.addAttribute("teamId", teamId);
         model.addAttribute("teamMembers", memberList);
+        model.addAttribute("projectId", projectId);
 
         return "project/viewAllTeamMembers";
+    }
+
+    @PostMapping("/{projectId}/assign/members")
+    public String assignTeamMembersToProject(@RequestParam List<String> selectedTeamMembers, @PathVariable long projectId) {
+        if (!selectedTeamMembers.isEmpty()) {
+            projectService.assignTeamMembersToProject(projectId, selectedTeamMembers);
+        }
+
+        String url = projectId + "/assign/members";
+        return "redirect:/" + url;
     }
 }
