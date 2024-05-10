@@ -67,7 +67,7 @@ public class JdbcProjectRepository implements ProjectRepository {
                                 
                 FROM project
                 JOIN user_entity_role ON user_entity_role.project_id = project.id
-                JOIN user ON user_entity_role.username = users.username
+                JOIN users ON user_entity_role.username = users.username
                 WHERE users.username = ?;
                 """;
 
