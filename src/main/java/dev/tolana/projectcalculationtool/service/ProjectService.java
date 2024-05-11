@@ -20,8 +20,8 @@ public class ProjectService {
         this.projectDtoMapper = projectDtoMapper;
     }
 
-    public int addProject(Project project) {
-        return projectRepository.addProject(project);
+    public void addProject(Project project) {
+        projectRepository.addProject(project);
     }
 
     public List<ProjectOverviewDto> getAllProjects(String username) {
