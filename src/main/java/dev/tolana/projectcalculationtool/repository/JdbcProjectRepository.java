@@ -1,6 +1,5 @@
 package dev.tolana.projectcalculationtool.repository;
 
-import dev.tolana.projectcalculationtool.dto.ProjectOverviewDto;
 import dev.tolana.projectcalculationtool.dto.UserInformationDto;
 import dev.tolana.projectcalculationtool.model.Project;
 import org.springframework.stereotype.Repository;
