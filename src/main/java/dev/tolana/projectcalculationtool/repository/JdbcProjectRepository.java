@@ -126,11 +126,13 @@ public class JdbcProjectRepository implements ProjectRepository {
     public List<UserInformationDto> getTeamMembersFromTeamId(long teamId) {
         List<UserInformationDto> userInformationDtoList = new ArrayList<>();
         String getTeamMembersFromTeamId = """
-                SELECT u.username AS user
-                FROM users u
-                JOIN user_entity_role uer ON u.username = uer.username
-                JOIN team t ON t.id = uer.team_id\s
-                WHERE team_id = ?;
+                SELECT uer.username
+                FROM user_entity_role AS uer
+                WHERE uer.team_id = ?
+                AND uer.username NOT IN (
+                SELECT username
+                FROM user_entity_role
+                WHERE project_id IS NOT NULL);
                 """;
 
         try (Connection connection = dataSource.getConnection()) {
@@ -154,8 +156,7 @@ public class JdbcProjectRepository implements ProjectRepository {
     @Override
     public void assignTeamMembersToProject(long projectId, List<String> selectedTeamMembers) {
         String assignTeamMembersToProject = """
-                INSERT INTO user_entity_role (project_id) VALUES (?)
-                WHERE username = ?;
+                INSERT INTO user_entity_role (username, project_id) VALUES (?, ?);
                 """;
 
         try (Connection connection = dataSource.getConnection()) {
@@ -164,11 +165,13 @@ public class JdbcProjectRepository implements ProjectRepository {
 
                 for (String member :selectedTeamMembers) {
                     PreparedStatement pstmt = connection.prepareStatement(assignTeamMembersToProject);
-                    pstmt.setLong(1, projectId);
-                    pstmt.setString(2, member);
+                    pstmt.setString(1, member);
+                    pstmt.setLong(2, projectId);
                     pstmt.executeUpdate();
                 }
 
+                connection.commit();
+                connection.setAutoCommit(true);
 
             } catch (Exception exception) {
                 connection.rollback();
