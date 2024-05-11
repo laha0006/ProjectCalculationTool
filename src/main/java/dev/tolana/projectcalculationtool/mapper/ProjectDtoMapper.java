@@ -26,4 +26,14 @@ public class ProjectDtoMapper {
 
         return projectOverviewDtoList;
     }
+
+    public ProjectOverviewDto toProjectOverviewDto(Project project) {
+        return new ProjectOverviewDto(
+                project.getName(),
+                project.getDeadline(),
+                project.getAllottedHours(),
+                project.getStatus(),
+                project.getProjectId()
+        );
+    }
 }
