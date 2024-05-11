@@ -51,9 +51,10 @@ public class ProjectController {
     public String getAllMembersFromTeamId(@PathVariable long projectId, Model model, Authentication authentication) {
         String username = authentication.getName();
         long teamId = projectService.getTeamIdFromUsername(username);
+        ProjectOverviewDto project = projectService.getProjectOnId(projectId);
 
-        List<UserInformationDto> memberList = projectService.getAllTeamMembersFromTeamId(teamId);
-        model.addAttribute("teamId", teamId);
+        List<UserInformationDto> memberList = projectService.getAllTeamMembersFromTeamId(teamId, projectId);
+        model.addAttribute("projectName", project.name());
         model.addAttribute("teamMembers", memberList);
         model.addAttribute("projectId", projectId);
 
@@ -61,12 +62,12 @@ public class ProjectController {
     }
 
     @PostMapping("/{projectId}/assign/members")
-    public String assignTeamMembersToProject(@RequestParam List<String> selectedTeamMembers, @PathVariable long projectId) {
+    public String assignTeamMembersToProject(@RequestParam(value="teamMember", required = false) List<String> selectedTeamMembers,
+                                             @PathVariable long projectId) {
         if (!selectedTeamMembers.isEmpty()) {
             projectService.assignTeamMembersToProject(projectId, selectedTeamMembers);
         }
 
-        String url = projectId + "/assign/members";
-        return "redirect:/" + url;
+        return "redirect:/project/overview";
     }
 }
