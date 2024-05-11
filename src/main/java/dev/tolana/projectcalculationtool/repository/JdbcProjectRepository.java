@@ -1,5 +1,6 @@
 package dev.tolana.projectcalculationtool.repository;
 
+import dev.tolana.projectcalculationtool.dto.ProjectOverviewDto;
 import dev.tolana.projectcalculationtool.dto.UserInformationDto;
 import dev.tolana.projectcalculationtool.model.Project;
 import org.springframework.stereotype.Repository;
@@ -123,7 +124,7 @@ public class JdbcProjectRepository implements ProjectRepository {
     }
 
     @Override
-    public List<UserInformationDto> getTeamMembersFromTeamId(long teamId) {
+    public List<UserInformationDto> getTeamMembersFromTeamId(long teamId, long projectId) {
         List<UserInformationDto> userInformationDtoList = new ArrayList<>();
         String getTeamMembersFromTeamId = """
                 SELECT uer.username
@@ -132,12 +133,13 @@ public class JdbcProjectRepository implements ProjectRepository {
                 AND uer.username NOT IN (
                 SELECT username
                 FROM user_entity_role
-                WHERE project_id IS NOT NULL);
+                WHERE project_id = ?);
                 """;
 
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement pstmt = connection.prepareStatement(getTeamMembersFromTeamId);
             pstmt.setLong(1, teamId);
+            pstmt.setLong(2, projectId);
             ResultSet teamMembersRs = pstmt.executeQuery();
 
             while (teamMembersRs.next()) {
@@ -156,9 +158,9 @@ public class JdbcProjectRepository implements ProjectRepository {
     @Override
     public void assignTeamMembersToProject(long projectId, List<String> selectedTeamMembers) {
         String assignTeamMembersToProject = """
-                INSERT INTO user_entity_role (username, project_id) VALUES (?, ?);
+                INSERT INTO user_entity_role (username, role_id, project_id) VALUES (?, ?, ?);
                 """;
-
+        int roleUser = 3;
         try (Connection connection = dataSource.getConnection()) {
             try{
                 connection.setAutoCommit(false);
@@ -166,7 +168,8 @@ public class JdbcProjectRepository implements ProjectRepository {
                 for (String member :selectedTeamMembers) {
                     PreparedStatement pstmt = connection.prepareStatement(assignTeamMembersToProject);
                     pstmt.setString(1, member);
-                    pstmt.setLong(2, projectId);
+                    pstmt.setLong(2, roleUser);
+                    pstmt.setLong(3, projectId);
                     pstmt.executeUpdate();
                 }
 
@@ -180,5 +183,39 @@ public class JdbcProjectRepository implements ProjectRepository {
         } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
         }
+    }
+
+    @Override
+    public Project getProjectOnId(long projectId) {
+       Project project = null;
+        String selectProjectOnId = """
+                SELECT * FROM project
+                WHERE id = ?;
+                """;
+
+        try(Connection connection = dataSource.getConnection()) {
+            PreparedStatement pstmt = connection.prepareStatement(selectProjectOnId);
+            pstmt.setLong(1, projectId);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                project = new Project(
+                        rs.getLong(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getLong(4),
+                        rs.getTimestamp(5),
+                        rs.getTimestamp(6),
+                        rs.getInt(7),
+                        rs.getInt(8),
+                        rs.getLong(9),
+                        rs.getBoolean(10)
+                );
+            }
+        }catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+
+        return project;
     }
 }
