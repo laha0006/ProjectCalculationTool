@@ -33,11 +33,16 @@ public class ProjectService {
         return projectRepository.getTeamIdFromUsername(username);
     }
 
-    public List<UserInformationDto> getAllTeamMembersFromTeamId(long teamId) {
-        return projectRepository.getTeamMembersFromTeamId(teamId);
+    public List<UserInformationDto> getAllTeamMembersFromTeamId(long teamId, long projectId) {
+        return projectRepository.getTeamMembersFromTeamId(teamId, projectId);
     }
 
     public void assignTeamMembersToProject(long projectId, List<String> selectedTeamMembers) {
         projectRepository.assignTeamMembersToProject(projectId, selectedTeamMembers);
+    }
+
+    public ProjectOverviewDto getProjectOnId(long projectId) {
+        Project project = projectRepository.getProjectOnId(projectId);
+        return projectDtoMapper.toProjectOverviewDto(project);
     }
 }
