@@ -22,6 +22,11 @@
             <td th:text="${project.deadline}"></td>
 <!--&lt;!&ndash;            <td th:text="${project.getDeadline()}"></td>&ndash;&gt; TODO MAKE LOGIC THAT CALCULATES PROGRESSION IN PERCENTAGE-->
             <td th:text="${project.status}"></td>
+            <td >
+                <a th:href="@{/project/{projectId}/assign/members (projectId=${project.projectId})}">
+                    <button>Assign members</button>
+                </a>
+            </td>
         </tr>
     </tbody>
 </table>

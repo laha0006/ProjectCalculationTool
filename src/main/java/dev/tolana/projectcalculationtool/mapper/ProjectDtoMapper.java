@@ -18,11 +18,22 @@ public class ProjectDtoMapper {
                     project.getName(),
                     project.getDeadline(),
                     project.getAllottedHours(),
-                    project.getStatus()
+                    project.getStatus(),
+                    project.getProjectId()
             );
             projectOverviewDtoList.add(projectOverviewDto);
         }
 
         return projectOverviewDtoList;
+    }
+
+    public ProjectOverviewDto toProjectOverviewDto(Project project) {
+        return new ProjectOverviewDto(
+                project.getName(),
+                project.getDeadline(),
+                project.getAllottedHours(),
+                project.getStatus(),
+                project.getProjectId()
+        );
     }
 }

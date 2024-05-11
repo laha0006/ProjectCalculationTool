@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Team members</title>
+</head>
+<body>
+<h1 th:text="'Assign members to project: ' + ${projectName}"></h1>
+
+<div th:if="${teamMembers.isEmpty()}">
+    <p>
+        There are no team members to assign.
+    </p>
+</div>
+
+<form th:action="@{/project/{projectId}/assign/members (projectId=${projectId})}" method="post" th:object="${teamMembers}">
+
+    <table>
+        <tr th:each="teamMember : ${teamMembers}">
+            <td>
+                <label>
+                    <input type="checkbox" name="teamMember" th:value="${teamMember.username}" th:text="${teamMember.username}">
+                </label>
+            </td>
+        </tr>
+    </table>
+
+    <button type="submit">Assign</button>
+</form>
+
+<a th:href="@{/project/overview}">
+    <button>back</button>
+</a>
+
+</body>
+</html>
