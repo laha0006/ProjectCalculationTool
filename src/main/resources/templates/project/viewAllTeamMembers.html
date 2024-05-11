@@ -5,20 +5,32 @@
     <title>Team members</title>
 </head>
 <body>
-<h1 th:text="'Assign members to team ' + ${teamId}"></h1>
-<form th:action="@{/project/{projectId}/assign/members (projectId=${projectId})}" method="post" th:object="${teamMembers}">
-    <div th:if="${teamMembers.isEmpty()}">
-        <p>
-            There are no one on your team.
-        </p>
-    </div>
+<h1 th:text="'Assign members to project: ' + ${projectName}"></h1>
 
-    <label>
-        <input type="checkbox" name="teamMember" th:each="teamMember : ${teamMembers}" th:value="${teamMember.username}">
-    </label>
+<div th:if="${teamMembers.isEmpty()}">
+    <p>
+        There are no team members to assign.
+    </p>
+</div>
+
+<form th:action="@{/project/{projectId}/assign/members (projectId=${projectId})}" method="post" th:object="${teamMembers}">
+
+    <table>
+        <tr th:each="teamMember : ${teamMembers}">
+            <td>
+                <label>
+                    <input type="checkbox" name="teamMember" th:value="${teamMember.username}" th:text="${teamMember.username}">
+                </label>
+            </td>
+        </tr>
+    </table>
 
     <button type="submit">Assign</button>
 </form>
+
+<a th:href="@{/project/overview}">
+    <button>back</button>
+</a>
 
 </body>
 </html>
