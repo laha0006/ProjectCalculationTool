@@ -1,5 +1,6 @@
 package dev.tolana.projectcalculationtool.repository;
 
+import dev.tolana.projectcalculationtool.dto.ProjectOverviewDto;
 import dev.tolana.projectcalculationtool.dto.UserEntityRoleDto;
 import dev.tolana.projectcalculationtool.dto.UserInformationDto;
 import dev.tolana.projectcalculationtool.model.Project;
@@ -14,7 +15,9 @@ public interface ProjectRepository {
 
     long getTeamIdFromUsername(String username);
 
-    List<UserInformationDto> getTeamMembersFromTeamId(long teamId);
+    List<UserInformationDto> getTeamMembersFromTeamId(long teamId, long projectId);
 
     void assignTeamMembersToProject(long projectId, List<String> selectedTeamMembers);
+
+    Project getProjectOnId(long projectId);
 }
