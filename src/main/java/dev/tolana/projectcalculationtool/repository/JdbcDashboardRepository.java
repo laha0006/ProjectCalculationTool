@@ -38,7 +38,7 @@ public class JdbcDashboardRepository implements DashboardRepository {
                         resultSet.getInt("project_id"),
                         resultSet.getInt("team_id"),
                         resultSet.getInt("department_id"),
-                        resultSet.getInt("organization_id")
+                        resultSet.getInt("organisation_id")
                 );
                 userEntityRoleDtoList.add(userEntityRoleDto);
             }

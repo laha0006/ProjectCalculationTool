@@ -1,15 +1,13 @@
 package dev.tolana.projectcalculationtool.controller;
 
 import dev.tolana.projectcalculationtool.dto.ProjectOverviewDto;
+import dev.tolana.projectcalculationtool.dto.UserInformationDto;
 import dev.tolana.projectcalculationtool.model.Project;
 import dev.tolana.projectcalculationtool.service.ProjectService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -36,7 +34,7 @@ public class ProjectController {
     public String addProject(@ModelAttribute Project newProject) {
         projectService.addProject(newProject);
 
-        return "user/dashboard";
+        return "redirect:/dashboard";
     }
 
     @GetMapping("/overview")
@@ -46,5 +44,29 @@ public class ProjectController {
 
         model.addAttribute("projectList", projectList);
         return "project/viewAllProjects";
+    }
+
+    @GetMapping("/{projectId}/assign/members")
+    public String getAllMembersFromTeamId(@PathVariable long projectId, Model model, Authentication authentication) {
+        String username = authentication.getName();
+        long teamId = projectService.getTeamIdFromUsername(username);
+        ProjectOverviewDto project = projectService.getProjectOnId(projectId);
+
+        List<UserInformationDto> memberList = projectService.getAllTeamMembersFromTeamId(teamId, projectId);
+        model.addAttribute("projectName", project.name());
+        model.addAttribute("teamMembers", memberList);
+        model.addAttribute("projectId", projectId);
+
+        return "project/viewAllTeamMembers";
+    }
+
+    @PostMapping("/{projectId}/assign/members")
+    public String assignTeamMembersToProject(@RequestParam(value="teamMember", required = false) List<String> selectedTeamMembers,
+                                             @PathVariable long projectId) {
+        if (!selectedTeamMembers.isEmpty()) {
+            projectService.assignTeamMembersToProject(projectId, selectedTeamMembers);
+        }
+
+        return "redirect:/project/overview";
     }
 }

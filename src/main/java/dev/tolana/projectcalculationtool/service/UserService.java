@@ -1,6 +1,6 @@
 package dev.tolana.projectcalculationtool.service;
 
-import dev.tolana.projectcalculationtool.dto.UserDto;
+import dev.tolana.projectcalculationtool.dto.RegisterUserDto;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,7 +17,7 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public void registerUser(UserDto newUser) {
+    public void registerUser(RegisterUserDto newUser) {
         UserDetails userToRegister = User.builder()
                 .username(newUser.username())
                 .password(passwordEncoder.encode(newUser.password())).roles("USER")

@@ -6,5 +6,6 @@ public record ProjectOverviewDto (
         String name,
         Timestamp deadline,
         int allottedHours,
-        int status) {
+        int status,
+        long projectId) {
 }
