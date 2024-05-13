@@ -2,6 +2,11 @@
     width: 200px;
 }
 
+.breadcrumb-panel {
+    margin-top: -40px !important;
+    /*margin-bottom: 0 !important;*/
+}
+
 .alertPanel {
     margin-top: -30px !important;
 }
