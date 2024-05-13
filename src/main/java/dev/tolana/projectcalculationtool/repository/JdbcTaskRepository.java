@@ -23,19 +23,27 @@ public class JdbcTaskRepository implements TaskRepository {
         boolean isCreated = false;
 
         try (Connection connection = dataSource.getConnection()) {
-            //query for task creation only concerns values that are not default
-            String createTask = """
-                    INSERT INTO task (name, description, project_id, deadline, estimated_hours) VALUES (?,?,?,?,?);
-                    """;
-            PreparedStatement pstmt = connection.prepareStatement(createTask);
-            pstmt.setString(1, task.getTaskName());
-            pstmt.setString(2, task.getTaskDescription());
-            pstmt.setLong(3, task.getProjectId());
-            pstmt.setDate(4, Date.valueOf(task.getDeadline()));
-            pstmt.setInt(5, task.getEstimatedHours());
-            int affectedRows = pstmt.executeUpdate();
+            try {//query for task creation only concerns values that are not default
+                connection.setAutoCommit(false);
+                String createTask = """
+                        INSERT INTO task (name, description, project_id, deadline, estimated_hours) VALUES (?,?,?,?,?);
+                        """;
+                PreparedStatement pstmt = connection.prepareStatement(createTask);
+                pstmt.setString(1, task.getTaskName());
+                pstmt.setString(2, task.getTaskDescription());
+                pstmt.setLong(3, task.getProjectId());
+                pstmt.setDate(4, Date.valueOf(task.getDeadline()));
+                pstmt.setInt(5, task.getEstimatedHours());
+                int affectedRows = pstmt.executeUpdate();
 
-            isCreated = affectedRows > 0;
+                isCreated = affectedRows > 0;
+                connection.commit();
+                connection.setAutoCommit(true);
+
+            }catch (Exception exception) {
+                connection.rollback();
+                connection.setAutoCommit(true);
+            }
 
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
