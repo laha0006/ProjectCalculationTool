@@ -24,5 +24,7 @@ public class TaskService {
     }
 
     public List<TaskDto> getAllProjectTasks(long projectId, String username) {
+        List<Task> taskList = taskRepository.getAllProjectTasks(projectId, username);
+        return taskDtoMapper.toTaskDtoList(taskList);
     }
 }
