@@ -36,7 +36,7 @@
     <button type="submit">Create</button>
 </form>
 
-<a th:href="@{/}"> <!--TODO: Specify endpoint for overview of project for project leader-->
+<a th:href="@{/task/overview/{projectId} (projectId=${projectId})}"> <!--TODO: Specify endpoint for overview of project for project leader-->
     <button>Back</button>
 </a>
 
