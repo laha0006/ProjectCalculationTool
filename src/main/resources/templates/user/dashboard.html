@@ -1,24 +1,26 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en" data-bs-theme="dark">
 <head>
-    <meta charset="UTF-8">
+    <th:block th:insert="~{fragments/head :: headFiles}"></th:block>
     <title>Dashboard</title>
 </head>
 
 <body>
-<header th:replace="~{fragments/header :: header}"></header>
+<div class="container">
+    <header th:replace="~{fragments/header :: header}"></header>
+    <main>
 
-<h2 th:value=" 'Welcome ' + ${username}"></h2>
+        <h2 th:value=" 'Welcome ' + ${username}"></h2>
 
-<a href="organisation/create" >
-    Create Organization
-    </a>
-
-
+        <a href="organisation/create">
+            Create Organization
+        </a>
 
 
-<form th:action="@{/project/addproject}" method="get">
-    <button type="submit">Create Project</button>
-</form>
+        <form th:action="@{/project/addproject}" method="get">
+            <button type="submit">Create Project</button>
+        </form>
+    </main>
+</div>
 </body>
 </html>
