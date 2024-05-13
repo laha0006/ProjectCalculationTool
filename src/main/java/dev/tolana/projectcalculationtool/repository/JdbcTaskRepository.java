@@ -77,7 +77,7 @@ public class JdbcTaskRepository implements TaskRepository {
         List<Task> taskList = new ArrayList<>();
         String retrieveAllTaskOnProjectId = """
                 SELECT * FROM task t
-                JOIN user_entiry_role uer ON uer.project_id = t.project_id
+                JOIN user_entity_role uer ON uer.project_id = t.project_id
                 WHERE t.project_id = ? AND uer.username = ?;
                 """;
 
