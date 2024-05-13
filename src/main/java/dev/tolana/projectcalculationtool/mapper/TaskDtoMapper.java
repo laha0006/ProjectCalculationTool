@@ -4,7 +4,9 @@ import dev.tolana.projectcalculationtool.dto.TaskDto;
 import dev.tolana.projectcalculationtool.model.Task;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class TaskDtoMapper{
@@ -13,12 +15,13 @@ public class TaskDtoMapper{
         String taskName = task.getTaskName();
         String taskDescription = task.getTaskDescription();
         long projectId = task.getProjectId();
-        LocalDate deadline = task.getDeadline();
+        LocalDateTime deadline = task.getDeadline();
         int estimatedHours = task.getEstimatedHours();
         int status = task.getStatus();
         long parentId = task.getParentId();
+        long taskId = task.getTaskId();
 
-        return new TaskDto(taskName, taskDescription, projectId, deadline, estimatedHours, status, parentId);
+        return new TaskDto(taskName, taskDescription, projectId, deadline, estimatedHours, status, parentId, taskId);
     }
 
     public Task convertToTask(TaskDto taskDto) {
@@ -29,8 +32,28 @@ public class TaskDtoMapper{
                 taskDto.deadline(),
                 taskDto.estimatedHours(),
                 taskDto.status(),
-                taskDto.parentId()
-
+                taskDto.parentId(),
+                taskDto.taskId()
         );
+    }
+
+    public List<TaskDto> toTaskDtoList(List<Task> taskList) {
+        List<TaskDto> taskDtoList = new ArrayList<>();
+
+        for (Task task : taskList) {
+            TaskDto taskDto = new TaskDto(
+                    task.getTaskName(),
+                    task.getTaskDescription(),
+                    task.getProjectId(),
+                    task.getDeadline(),
+                    task.getEstimatedHours(),
+                    task.getStatus(),
+                    task.getParentId(),
+                    task.getTaskId()
+            );
+            taskDtoList.add(taskDto);
+        }
+
+        return taskDtoList;
     }
 }

@@ -6,6 +6,8 @@ import dev.tolana.projectcalculationtool.model.Task;
 import dev.tolana.projectcalculationtool.repository.TaskRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class TaskService {
 
@@ -19,5 +21,10 @@ public class TaskService {
     public void createTask(TaskDto newTask, String username) {
         Task task =  taskDtoMapper.convertToTask(newTask);
         taskRepository.createParentTask(task, username);
+    }
+
+    public List<TaskDto> getAllProjectTasks(long projectId, String username) {
+        List<Task> taskList = taskRepository.getAllProjectTasks(projectId, username);
+        return taskDtoMapper.toTaskDtoList(taskList);
     }
 }

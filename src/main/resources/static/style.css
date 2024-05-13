@@ -1,0 +1,27 @@
+#login {
+    width: 200px;
+}
+
+.breadcrumb-panel {
+    margin-top: -40px !important;
+    /*margin-bottom: 0 !important;*/
+}
+
+.alertPanel {
+    margin-top: -30px !important;
+}
+
+.box-200 {
+    min-width: 200px !important;
+    max-width: 200px !important;
+}
+
+.box-400 {
+    min-width: 400px !important;
+    max-width: 400px !important;
+}
+
+.box-600 {
+    min-width: 600px !important;
+    max-width: 600px !important;
+}
