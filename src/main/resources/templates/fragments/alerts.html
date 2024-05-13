@@ -7,15 +7,21 @@
 </head>
 <body>
 
-<div th:fragment="alerts">
-    <div th:if="${alert-succes != null}" class="alert alert-success" role="alert">
-        A simple success alert—check it out!
+<div th:fragment="alerts" class="text-center">
+
+    <div th:if="${param.error}" class="alert alert-danger alertPanel">
+        Invalid username or password
     </div>
-    <div class="alert alert-danger" role="alert">
-        A simple danger alert—check it out!
+
+    <div th:if="${param.logout}" class="alert alert-success alertPanel">
+        You have successfully logged out.
     </div>
-    <div class="alert alert-warning" role="alert">
-        A simple warning alert—check it out!
+
+    <div th:if="${alertSuccess != null}" th:text="${alertSuccess}" class="alert alert-success alertPanel" role="alert">
+    </div>
+    <div th:if="${alertDanger != null}" th:text="${alertDanger}" class="alert alert-danger alertPanel" role="alert">
+    </div>
+    <div th:if="${alertWarning != null}" th:text="${alertWarning}" class="alert alert-warning alertPanel" role="alert">
     </div>
 </div>
 
