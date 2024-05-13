@@ -17,7 +17,7 @@ public class GlobalExceptionHandler {
 //    we know it's a 'username already exists' error, and send that back.
     @ExceptionHandler(DuplicateKeyException.class)
     public String sqlException(SQLException ex, HttpServletRequest request, RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute("error", "username already exsits!");
+        redirectAttributes.addFlashAttribute("alertWarning", "username already exists!");
         return "redirect:/user/register";
     }
 
