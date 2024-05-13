@@ -5,14 +5,21 @@
     <title>Title</title>
 </head>
 <body>
-    <header th:fragment="header">
-        <nav>
-            <form th:action="@{/user/logout}" method="post">
-                <button type="submit">Logout</button>
-            </form>
-
-
-        </nav>
-    </header>
+<header class="d-flex py-3 px-3 justify-content-between bg-secondary-subtle mb-5 mt-2 rounded" th:fragment="header">
+    <div class="box-200"></div>
+    <nav>
+        <ul class="nav nav-pills">
+            <li class="nav-item"><a href="#" class="nav-link active" aria-current="page">Home</a></li>
+            <li class="nav-item"><a href="#" class="nav-link">Features</a></li>
+            <li class="nav-item"><a href="#" class="nav-link">Pricing</a></li>
+            <li class="nav-item"><a href="#" class="nav-link">FAQs</a></li>
+            <li class="nav-item"><a href="#" class="nav-link">About</a></li>
+        </ul>
+    </nav>
+    <div id="login" class="col-md-3 text-end">
+        <button type="button" class="btn btn-outline-primary me-2">Login</button>
+        <button type="button" class="btn btn-primary">Sign-up</button>
+    </div>
+</header>
 </body>
 </html>
