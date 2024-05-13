@@ -17,8 +17,9 @@ public class TaskDtoMapper{
         int estimatedHours = task.getEstimatedHours();
         int status = task.getStatus();
         long parentId = task.getParentId();
+        long taskId = task.getTaskId();
 
-        return new TaskDto(taskName, taskDescription, projectId, deadline, estimatedHours, status, parentId);
+        return new TaskDto(taskName, taskDescription, projectId, deadline, estimatedHours, status, parentId, taskId);
     }
 
     public Task convertToTask(TaskDto taskDto) {
@@ -29,8 +30,8 @@ public class TaskDtoMapper{
                 taskDto.deadline(),
                 taskDto.estimatedHours(),
                 taskDto.status(),
-                taskDto.parentId()
-
+                taskDto.parentId(),
+                taskDto.taskId()
         );
     }
 }

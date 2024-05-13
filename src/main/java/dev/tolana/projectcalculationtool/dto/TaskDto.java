@@ -11,6 +11,7 @@ public record TaskDto(
         LocalDate deadline,
         int estimatedHours,
         int status,
-        long parentId
+        long parentId,
+        long taskId
 ) {
 }
