@@ -85,8 +85,8 @@ public class JdbcTaskRepository implements TaskRepository {
                         rs.getString(2),
                         rs.getString(3),
                         rs.getLong(4),
-                        rs.getTimestamp(5), //TODO figure out time attribute
-                        rs.getTimestamp(6),
+                        rs.getTimestamp(5).toLocalDateTime(), //TODO figure out time attribute
+                        rs.getTimestamp(6).toLocalDateTime(),
                         rs.getInt(7),
                         rs.getInt(8),
                         rs.getLong(9),

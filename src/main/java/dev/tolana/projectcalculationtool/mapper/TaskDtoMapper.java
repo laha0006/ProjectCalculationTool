@@ -5,6 +5,7 @@ import dev.tolana.projectcalculationtool.model.Task;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class TaskDtoMapper{
         String taskName = task.getTaskName();
         String taskDescription = task.getTaskDescription();
         long projectId = task.getProjectId();
-        LocalDate deadline = task.getDeadline();
+        LocalDateTime deadline = task.getDeadline();
         int estimatedHours = task.getEstimatedHours();
         int status = task.getStatus();
         long parentId = task.getParentId();

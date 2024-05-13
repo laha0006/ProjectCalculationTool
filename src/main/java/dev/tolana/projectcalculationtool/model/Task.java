@@ -1,6 +1,7 @@
 package dev.tolana.projectcalculationtool.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Task {
 
@@ -8,8 +9,8 @@ public class Task {
     private String taskName;
     private String taskDescription;
     private long projectId;
-    private LocalDate dateCreated;
-    private LocalDate deadline;
+    private LocalDateTime dateCreated;
+    private LocalDateTime deadline;
     private int estimatedHours;
     private int status;
     private long parentId;
@@ -19,8 +20,8 @@ public class Task {
                 String taskName,
                 String taskDescription,
                 long projectId,
-                LocalDate dateCreated,
-                LocalDate deadline,
+                LocalDateTime dateCreated,
+                LocalDateTime deadline,
                 int estimatedHours,
                 int status,
                 long parentId,
@@ -41,7 +42,7 @@ public class Task {
     public Task(String taskName,
                 String taskDescription,
                 long projectId,
-                LocalDate deadline,
+                LocalDateTime deadline,
                 int estimatedHours,
                 int status,
                 long parentId,
@@ -89,19 +90,19 @@ public class Task {
         this.projectId = projectId;
     }
 
-    public LocalDate getDateCreated() {
+    public LocalDateTime getDateCreated() {
         return dateCreated;
     }
 
-    public void setDateCreated(LocalDate dateCreated) {
+    public void setDateCreated(LocalDateTime dateCreated) {
         this.dateCreated = dateCreated;
     }
 
-    public LocalDate getDeadline() {
+    public LocalDateTime getDeadline() {
         return deadline;
     }
 
-    public void setDeadline(LocalDate deadline) {
+    public void setDeadline(LocalDateTime deadline) {
         this.deadline = deadline;
     }
 
