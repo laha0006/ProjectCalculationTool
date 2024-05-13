@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 public class Task {
 
+    private long taskId;
     private String taskName;
     private String taskDescription;
     private long projectId;
@@ -14,7 +15,8 @@ public class Task {
     private long parentId;
     private boolean isArchived;
 
-    public Task(String taskName,
+    public Task(long taskId,
+                String taskName,
                 String taskDescription,
                 long projectId,
                 LocalDate dateCreated,
@@ -24,6 +26,7 @@ public class Task {
                 long parentId,
                 boolean isArchived) {
 
+        this.taskId = taskId;
         this.taskName = taskName;
         this.taskDescription = taskDescription;
         this.projectId = projectId;
@@ -41,7 +44,8 @@ public class Task {
                 LocalDate deadline,
                 int estimatedHours,
                 int status,
-                long parentId) {
+                long parentId,
+                long taskId) {
 
         this.taskName = taskName;
         this.taskDescription = taskDescription;
@@ -50,6 +54,15 @@ public class Task {
         this.estimatedHours = estimatedHours;
         this.status = status;
         this.parentId = parentId;
+        this.taskId = taskId;
+    }
+
+    public long getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(long taskId) {
+        this.taskId = taskId;
     }
 
     public String getTaskName() {
