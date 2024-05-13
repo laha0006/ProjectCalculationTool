@@ -1,26 +1,43 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html th:fragment="" lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      data-bs-theme="dark">
 <head>
-    <meta charset="UTF-8">
+    <th:block th:insert="~{fragments/head :: head}"></th:block>
     <title>Register</title>
-
 </head>
-
 <body>
-  <form th:action="@{/user/register}" method="post" th:object="${newUser}">
+<div class="container">
+    <header th:replace="~{fragments/header :: header}"></header>
+    <main class="d-flex justify-content-center text-center bg-secondary-subtle py-3 px-5 rounded shadow">
+        <div class="box-400">
+            <div>
+                <h1>Register</h1>
+            </div>
+            <form th:action="@{/user/register}" method="post" th:object="${newUser}">
 
-    <p>
-    <label for="username">Username: </label>
-    <input id="username" type="text" th:name="username" required>
-    </p>
+                <div class="form-group">
+                    <label class="form-label" for="username">Username: </label>
+                    <input class="form-control" id="username" type="text" th:name="username" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="password">Password: </label>
+                    <input class="form-control" id="password" type="password" th:name="password" required>
+                </div>
+                <div class="form-group mt-2">
 
-    <p>
-      <label for="password">Password: </label>
-      <input id="password" type="password" th:name="password" required>
-    </p>
-
-    <button type="submit">create account</button>
-  </form>
-
+                    <button class="btn btn-success fw-bold" type="submit">Register</button>
+                </div>
+                <div class="form-group">
+                    Already have an account?
+                    <a th:href="@{/user/login}">
+                        Log in
+                    </a>
+                </div>
+            </form>
+        </div>
+    </main>
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+</div>
 </body>
 </html>
