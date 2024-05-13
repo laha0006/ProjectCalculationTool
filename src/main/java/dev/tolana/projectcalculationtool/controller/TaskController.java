@@ -7,7 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -21,7 +21,7 @@ public class TaskController {
 
     @GetMapping("/{projectId}/create")
     public String createForm(Model model, @PathVariable long projectId) {
-        model.addAttribute("taskDto", new TaskDto("", "", projectId, LocalDate.now(), 0, 0, 0, -1));
+        model.addAttribute("taskDto", new TaskDto("", "", projectId, LocalDateTime.now(), 0, 0, 0, -1));
         return "task/createTask";
     }
 
