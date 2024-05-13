@@ -22,6 +22,7 @@ public class TaskController {
     @GetMapping("/{projectId}/create")
     public String createForm(Model model, @PathVariable long projectId) {
         model.addAttribute("taskDto", new TaskDto("", "", projectId, LocalDateTime.now(), 0, 0, 0, -1));
+        model.addAttribute("projectId", projectId);
         return "task/createTask";
     }
 
