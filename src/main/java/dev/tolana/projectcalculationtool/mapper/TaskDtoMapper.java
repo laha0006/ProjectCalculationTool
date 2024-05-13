@@ -1,10 +1,14 @@
 package dev.tolana.projectcalculationtool.mapper;
 
+import dev.tolana.projectcalculationtool.dto.ProjectOverviewDto;
 import dev.tolana.projectcalculationtool.dto.TaskDto;
+import dev.tolana.projectcalculationtool.model.Project;
 import dev.tolana.projectcalculationtool.model.Task;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class TaskDtoMapper{
@@ -33,5 +37,25 @@ public class TaskDtoMapper{
                 taskDto.parentId(),
                 taskDto.taskId()
         );
+    }
+
+    public List<TaskDto> toTaskDtoList(List<Task> taskList) {
+        List<TaskDto> taskDtoList = new ArrayList<>();
+
+        for (Task task : taskList) {
+            TaskDto taskDto = new TaskDto(
+                    task.getTaskName(),
+                    task.getTaskDescription(),
+                    task.getProjectId(),
+                    task.getDeadline(),
+                    task.getEstimatedHours(),
+                    task.getStatus(),
+                    task.getParentId(),
+                    task.getTaskId()
+            );
+            taskDtoList.add(taskDto);
+        }
+
+        return taskDtoList;
     }
 }
