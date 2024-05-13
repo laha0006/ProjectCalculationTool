@@ -11,7 +11,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 
-import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -39,9 +38,6 @@ class TaskControllerTest {
     @Test
     @WithMockUser()
     void createTask() throws Exception {
-        long projectId = 1;
-        TaskDto newTask = new TaskDto("", "", projectId, LocalDateTime.now(), 0, 0, 0 , 0);
-
         mockMvc.perform(post("/task/create")
                         .with(csrf())
                         .param("taskName","1")

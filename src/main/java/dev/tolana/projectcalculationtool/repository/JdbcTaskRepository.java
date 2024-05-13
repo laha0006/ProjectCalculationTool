@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public class JdbcTaskRepository implements TaskRepository {
 
-    private DataSource dataSource;
+    private final DataSource dataSource;
 
     public JdbcTaskRepository(DataSource dataSource) {
         this.dataSource = dataSource;
