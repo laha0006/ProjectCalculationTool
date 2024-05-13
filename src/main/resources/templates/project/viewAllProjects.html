@@ -19,7 +19,9 @@
 
     <tbody>
         <tr th:each="project : ${projectList}">
-            <td th:text="${project.name}"></td>
+            <td>
+                <a th:text="${project.name}" th:href="@{/task/overview/{projectId} (projectId=${project.projectId})}"></a>
+            </td>
             <td th:text="${project.deadline}"></td>
 <!--&lt;!&ndash;            <td th:text="${project.getDeadline()}"></td>&ndash;&gt; TODO MAKE LOGIC THAT CALCULATES PROGRESSION IN PERCENTAGE-->
             <td th:text="${project.status}"></td>
