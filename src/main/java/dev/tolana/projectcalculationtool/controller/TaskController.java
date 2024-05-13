@@ -1,6 +1,5 @@
 package dev.tolana.projectcalculationtool.controller;
 
-import dev.tolana.projectcalculationtool.dto.ProjectOverviewDto;
 import dev.tolana.projectcalculationtool.dto.TaskDto;
 import dev.tolana.projectcalculationtool.service.TaskService;
 import org.springframework.security.core.Authentication;
@@ -30,7 +29,9 @@ public class TaskController {
     public String createTask(@ModelAttribute TaskDto newTask, Authentication authentication) {
         String username = authentication.getName();
         taskService.createTask(newTask, username);
-        return "redirect:/dashboard"; //TODO redirect to a summary page.
+
+        long projectId = newTask.projectId();
+        return "redirect:/task/overview/" + projectId; //TODO UNDERSØG OM redirect:/ skal matche et endpoint i get mappingen kun eller om den også skal indrage request mapping for controlleren i endpoint
     }
 
     @GetMapping("/overview/{projectId}")

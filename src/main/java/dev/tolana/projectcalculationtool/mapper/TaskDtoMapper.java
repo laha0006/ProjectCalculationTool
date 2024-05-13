@@ -1,8 +1,6 @@
 package dev.tolana.projectcalculationtool.mapper;
 
-import dev.tolana.projectcalculationtool.dto.ProjectOverviewDto;
 import dev.tolana.projectcalculationtool.dto.TaskDto;
-import dev.tolana.projectcalculationtool.model.Project;
 import dev.tolana.projectcalculationtool.model.Task;
 import org.springframework.stereotype.Component;
 
