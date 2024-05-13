@@ -41,6 +41,7 @@ public class TaskController {
 
         String username = authentication.getName();
         List<TaskDto> taskList = taskService.getAllProjectTasks(projectId, username);
+        model.addAttribute("projectId", projectId);
 
         model.addAttribute("taskList", taskList);
         return "task/viewAllTasks";
