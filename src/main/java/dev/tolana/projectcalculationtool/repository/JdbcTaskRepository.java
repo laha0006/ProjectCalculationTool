@@ -32,7 +32,7 @@ public class JdbcTaskRepository implements TaskRepository {
                 pstmt.setString(1, task.getTaskName());
                 pstmt.setString(2, task.getTaskDescription());
                 pstmt.setLong(3, task.getProjectId());
-                pstmt.setDate(4, Date.valueOf(task.getDeadline()));
+                pstmt.setDate(4, Date.valueOf(task.getDeadline().toLocalDate()));
                 pstmt.setInt(5, task.getEstimatedHours());
                 int affectedRows = pstmt.executeUpdate();
 
