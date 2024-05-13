@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<nav th:fragment="breadcrumb" th:class="breadcrumb-panel-disabled">
+  <ol class="breadcrumb">
+    <li th:each="breadcrumb : ${breadcrumbs}"
+    th:classappend="${breadcrumb.active ? 'breadcrumb-item active' : 'breadcrumb-item'}">
+      <a th:unless="${breadcrumb.active}" th:href="${breadcrumb.url}" th:text="${breadcrumb.name}"></a>
+        <th:block th:if="${breadcrumb.active}" th:text="${breadcrumb.name}"></th:block>
+    </li>
+  </ol>
+</nav>
+
+</body>
+</html>
