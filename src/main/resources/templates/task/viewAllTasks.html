@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tasks Overview</title>
+</head>
+<body>
+
+<h1>Tasks overview</h1>
+<table >
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Deadline</th>
+        <th>Progress</th>
+        <th>Status</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="task : ${taskList}">
+        <td th:text="${task.taskName}"></td>
+        <td th:text="${task.deadline}"></td>
+        <td th:text="${task.estimatedHours}"></td>
+        <td th:text="${task.status}"></td>
+        <td >
+            <a th:href="@{/task/{taskId}/create/subtask (taskId=${task.taskId})}">
+                <button>Create sub-task</button>
+            </a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<a href="/project/overview"> <!--TODO MAKE A PROJECT OVERVIEW TAILORED THE PROJECT MEMBER (CURRENT STATE TAILORED PROJECT LEADER)-->
+    <button>back</button>
+</a>
+
+</body>
+</html>
