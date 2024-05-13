@@ -1,16 +1,16 @@
 package dev.tolana.projectcalculationtool.dto;
 
-import org.springframework.cglib.core.Local;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public record TaskDto(
         String taskName,
         String taskDescription,
         long projectId,
-        LocalDate deadline,
+        LocalDateTime deadline,
         int estimatedHours,
         int status,
-        long parentId
+        long parentId,
+        long taskId
 ) {
 }
