@@ -2,6 +2,14 @@
     width: 200px;
 }
 
+.alertPanel {
+    margin-top: -30px !important;
+}
+
+.neg-m-4 {
+
+}
+
 .box-200 {
     min-width: 200px !important;
     max-width: 200px !important;
