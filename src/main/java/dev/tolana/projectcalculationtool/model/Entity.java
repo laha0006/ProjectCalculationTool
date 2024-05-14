@@ -2,7 +2,7 @@ package dev.tolana.projectcalculationtool.model;
 
 import java.time.LocalDateTime;
 
-public abstract class HierarchicalEntity {
+public abstract class Entity {
 
     private final long id;
     private final String name;
@@ -10,7 +10,7 @@ public abstract class HierarchicalEntity {
     private final LocalDateTime dateCreated;
     private final boolean archived;
 
-    public HierarchicalEntity(long id, String name, String description, LocalDateTime dateCreated, boolean archived) {
+    public Entity(long id, String name, String description, LocalDateTime dateCreated, boolean archived) {
         this.id = id;
         this.name = name;
         this.description = description;
