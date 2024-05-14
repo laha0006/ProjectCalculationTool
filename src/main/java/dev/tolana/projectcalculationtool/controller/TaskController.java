@@ -19,22 +19,6 @@ public class TaskController {
         this.taskService = taskService;
     }
 
-    @GetMapping("/{projectId}/create")
-    public String createForm(Model model, @PathVariable long projectId) {
-        model.addAttribute("taskDto", new TaskDto("", "", projectId, LocalDateTime.now(), 0, 0, 0, -1));
-        model.addAttribute("projectId", projectId);
-        return "task/createTask";
-    }
-
-    @PostMapping("/create")
-    public String createTask(@ModelAttribute TaskDto newTask, Authentication authentication) {
-        String username = authentication.getName();
-        taskService.createTask(newTask, username);
-
-        long projectId = newTask.projectId();
-        return "redirect:/task/overview/" + projectId; //TODO UNDERSØG OM redirect:/ skal matche et endpoint i get mappingen kun eller om den også skal indrage request mapping for controlleren i endpoint
-    }
-
     @GetMapping("/overview/{projectId}")
     public String getTaskOverview(Model model,
                                   Authentication authentication,
@@ -46,5 +30,32 @@ public class TaskController {
 
         model.addAttribute("taskList", taskList);
         return "task/viewAllTasks";
+    }
+
+    @GetMapping("/{projectId}/create")
+    public String sendCreateForm(Model model, @PathVariable long projectId) {
+        model.addAttribute("taskDto", new TaskDto("", "", projectId, LocalDateTime.now(), 0, 0, 0, -1));
+        model.addAttribute("projectId", projectId);
+        return "task/createTask";
+    }
+
+    @GetMapping("/{taskId}/create/subtask/{projectId}")
+    public String sendCreateSubTaskForm(@PathVariable long taskId,
+                                        @PathVariable long projectId,
+                                        Model model) {
+        model.addAttribute("taskDto", new TaskDto("", "", projectId, LocalDateTime.now(), 0, 0, taskId, -1));
+        model.addAttribute("projectId", projectId);
+        return "task/createTask";
+    }
+
+    @PostMapping("/{projectId}/create")
+    public String createTask(@PathVariable long projectId,
+                             @ModelAttribute TaskDto newTask,
+                             Authentication authentication) {
+
+        String username = authentication.getName();
+        taskService.createTask(newTask, username);
+
+        return "redirect:/task/overview/" + projectId; //TODO UNDERSØG OM redirect:/ skal matche et endpoint i get mappingen kun eller om den også skal indrage request mapping for controlleren i endpoint
     }
 }
