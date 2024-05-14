@@ -62,6 +62,11 @@ CREATE TABLE IF NOT EXISTS team(
     FOREIGN KEY (department_id) REFERENCES department(id)
     );
 
+CREATE TABLE IF NOT EXISTS status(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL
+    );
+
 CREATE TABLE IF NOT EXISTS project(
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -113,10 +118,6 @@ CREATE TABLE IF NOT EXISTS user_entity_role(
     FOREIGN KEY (organisation_id) REFERENCES organisation(id)
     );
 
-CREATE TABLE IF NOT EXISTS status(
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(50) NOT NULL
-);
 
 
 
