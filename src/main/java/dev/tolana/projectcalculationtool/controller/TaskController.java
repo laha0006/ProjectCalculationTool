@@ -43,8 +43,11 @@ public class TaskController {
     public String sendCreateSubTaskForm(@PathVariable long taskId,
                                         @PathVariable long projectId,
                                         Model model) {
+
+        TaskDto parentTask = taskService.getTaskOnId(taskId);
         model.addAttribute("taskDto", new TaskDto("", "", projectId, LocalDateTime.now(), 0, 0, taskId, -1));
         model.addAttribute("projectId", projectId);
+        model.addAttribute("parentTask", parentTask);
         return "task/createTask";
     }
 
