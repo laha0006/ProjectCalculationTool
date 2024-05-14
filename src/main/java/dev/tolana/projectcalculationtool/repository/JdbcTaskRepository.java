@@ -17,6 +17,20 @@ public class JdbcTaskRepository implements TaskRepository {
         this.dataSource = dataSource;
     }
 
+    private String isParentOrChildTask(Task task) {
+        String sql = "";
+        if (task.getParentId() == 0) {
+            sql = """
+                    INSERT INTO task (name, description, project_id, deadline, estimated_hours) VALUES (?,?,?,?,?);
+                    """;
+        } else {
+            sql = """
+                    INSERT INTO task (name, description, deadline, estimated_hours, parent) VALUES (?, ?, ?, ?, ?);
+                    """;
+        }
+
+        return sql;
+    }
 
     @Override
     public boolean createParentTask(Task task, String username) {
@@ -25,22 +39,29 @@ public class JdbcTaskRepository implements TaskRepository {
         try (Connection connection = dataSource.getConnection()) {
             try {//query for task creation only concerns values that are not default
                 connection.setAutoCommit(false);
-                String createTask = """
-                        INSERT INTO task (name, description, project_id, deadline, estimated_hours) VALUES (?,?,?,?,?);
-                        """;
+                String createTask = isParentOrChildTask(task);
                 PreparedStatement pstmt = connection.prepareStatement(createTask);
-                pstmt.setString(1, task.getTaskName());
-                pstmt.setString(2, task.getTaskDescription());
-                pstmt.setLong(3, task.getProjectId());
-                pstmt.setDate(4, Date.valueOf(task.getDeadline().toLocalDate()));
-                pstmt.setInt(5, task.getEstimatedHours());
+
+                if (task.getParentId() == 0) {
+                    pstmt.setString(1, task.getTaskName());
+                    pstmt.setString(2, task.getTaskDescription());
+                    pstmt.setLong(3, task.getProjectId());
+                    pstmt.setDate(4, Date.valueOf(task.getDeadline().toLocalDate()));
+                    pstmt.setInt(5, task.getEstimatedHours());
+                } else {
+                    pstmt.setString(1, task.getTaskName());
+                    pstmt.setString(2, task.getTaskDescription());
+                    pstmt.setDate(3, Date.valueOf(task.getDeadline().toLocalDate()));
+                    pstmt.setInt(4, task.getEstimatedHours());
+                    pstmt.setLong(5, task.getParentId());
+                }
                 int affectedRows = pstmt.executeUpdate();
 
                 isCreated = affectedRows > 0;
                 connection.commit();
                 connection.setAutoCommit(true);
 
-            }catch (Exception exception) {
+            } catch (Exception exception) {
                 connection.rollback();
                 connection.setAutoCommit(true);
             }
