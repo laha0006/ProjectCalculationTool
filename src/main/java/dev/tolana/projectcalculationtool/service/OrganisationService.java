@@ -33,4 +33,8 @@ public class OrganisationService {
     public void createOrganisation(String username, String organisationName, String organisationDescription) {
     organisationRepository.createOrganisation(username, organisationName, organisationDescription);
     }
+
+    public Organisation getOrganisationsById(long id) {
+        return organisationRepository.getOrganisationById(id);
+    }
 }
