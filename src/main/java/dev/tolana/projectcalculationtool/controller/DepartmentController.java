@@ -12,6 +12,6 @@ public class DepartmentController {
 
     @GetMapping("/{dept_id}")
     public String department(@PathVariable int dept_id,@PathVariable int org_id, Model model) {
-        return ""
+        return "department/department";
     }
 }
