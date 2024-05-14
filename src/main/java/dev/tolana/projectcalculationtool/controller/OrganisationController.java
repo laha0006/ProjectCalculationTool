@@ -32,7 +32,8 @@ public class OrganisationController {
     @GetMapping("/{id}")
     public String organisationPage(@PathVariable long id, Model model, Authentication authentication) {
         Organisation organisation = organisationService.getOrganisationsById(id);
-        return "organisation/userOrganisations";
+        model.addAttribute("organisation", organisation);
+        return "organisation/organisationView";
     }
 
     @GetMapping("/create")
