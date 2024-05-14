@@ -69,26 +69,36 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
     public void createOrganisation(String username, String organisationName, String organisationDescription) {
 
         try (Connection connection = datasource.getConnection()) {
-            String createOrganisation = "INSERT INTO organisation(name, description) VALUES (?, ?)";
-            PreparedStatement pstmtAdd = connection.prepareStatement(createOrganisation, Statement.RETURN_GENERATED_KEYS);
-            pstmtAdd.setString(1, organisationName);
-            pstmtAdd.setString(2, organisationDescription);
+            try {
+                connection.setAutoCommit(false);
 
-            pstmtAdd.executeUpdate();
-            ResultSet rs = pstmtAdd.getGeneratedKeys();
+                String createOrganisation = "INSERT INTO organisation(name, description) VALUES (?, ?)";
+                PreparedStatement pstmtAdd = connection.prepareStatement(createOrganisation, Statement.RETURN_GENERATED_KEYS);
+                pstmtAdd.setString(1, organisationName);
+                pstmtAdd.setString(2, organisationDescription);
+
+                pstmtAdd.executeUpdate();
+                ResultSet rs = pstmtAdd.getGeneratedKeys();
 
 
-            long organisationId = -1;
-            if (rs.next()) {
-                organisationId = rs.getLong(1);
+                long organisationId = -1;
+                if (rs.next()) {
+                    organisationId = rs.getLong(1);
+                }
+                String assignOrganisationToUser = "INSERT INTO user_entity_role(username, role_id, organisation_id) VALUES (?, ?, ?)";
+                PreparedStatement pstmtAssign = connection.prepareStatement(assignOrganisationToUser);
+                pstmtAssign.setString(1, username);
+                pstmtAssign.setLong(2, 1);
+                pstmtAssign.setLong(3, organisationId);
+                pstmtAssign.executeUpdate();
+
+                connection.commit();
+                connection.setAutoCommit(true);
+
+            } catch (Exception exception) {
+                connection.rollback();
+                connection.setAutoCommit(true);
             }
-            String assignOrganisationToUser = "INSERT INTO user_entity_role(username, role_id, organisation_id) VALUES (?, ?, ?)";
-            PreparedStatement pstmtAssign = connection.prepareStatement(assignOrganisationToUser);
-            pstmtAssign.setString(1, username);
-            pstmtAssign.setLong(2, 1);
-            pstmtAssign.setLong(3, organisationId);
-            pstmtAssign.executeUpdate();
-
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
         }
