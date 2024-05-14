@@ -1,8 +1,11 @@
 package dev.tolana.projectcalculationtool.controller;
 
 import dev.tolana.projectcalculationtool.dto.CreateOrganisationFormDto;
+import dev.tolana.projectcalculationtool.dto.CreateTeamFormDto;
 import dev.tolana.projectcalculationtool.model.Organisation;
+import dev.tolana.projectcalculationtool.model.Team;
 import dev.tolana.projectcalculationtool.service.OrganisationService;
+import dev.tolana.projectcalculationtool.service.TeamService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,39 +17,39 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 
 @Controller
-@RequestMapping("/organisation")
+@RequestMapping("/team")
 public class TeamController {
 
-    private final OrganisationService organisationService;
+    private final TeamService teamService;
 
-    public TeamController(OrganisationService organisationService) {
-        this.organisationService = organisationService;
+    public TeamController(TeamService teamService) {
+        this.teamService = teamService;
     }
 
     @GetMapping("")
-    public String organisationMainPage(Model model, Authentication authentication) {
+    public String teamMainPage(Model model, Authentication authentication) {
         String username = authentication.getName();
-        List<Organisation> listOfUserOrgs = organisationService.getNotArchivedOrganisationsByUser(username);
-        model.addAttribute("allUserOrgs", listOfUserOrgs);
+        List<Team> listOfUserTeams = teamService.getNotArchivedTeamsByUser(username);
+        model.addAttribute("allUserTeams", listOfUserTeams);
 
-        return "organisation/userOrganisations";
+        return "team/userTeams";
     }
 
     @GetMapping("/create")
-    public String createOrganisation(Model model) {
-        CreateOrganisationFormDto emptyOrganisationDto = new CreateOrganisationFormDto("", "");
-        model.addAttribute("organisation", emptyOrganisationDto);
+    public String createTeam(Model model) {
+        CreateTeamFormDto emptyTeamDto = new CreateTeamFormDto("", "");
+        model.addAttribute("team", emptyTeamDto);
 
-        return "organisation/createOrganisation";
+        return "team/createTeam";
     }
 
     @PostMapping("/create")
-    public String createOrganisation(@ModelAttribute CreateOrganisationFormDto organisationDto, Authentication authentication) {
+    public String createOrganisation(@ModelAttribute CreateTeamFormDto teamFormDto, Authentication authentication) {
         String username = authentication.getName();
-        String orgName = organisationDto.orgName();
-        String orgDescription = organisationDto.orgDescription();
-        organisationService.createOrganisation(username, orgName, orgDescription);
-        return "redirect:/organisation";
+        String orgName = teamFormDto.teamName();
+        String orgDescription = teamFormDto.teamDescription();
+        teamService.createTeam(username, orgName, orgDescription);
+        return "redirect:/team";
     }
 
 }

@@ -1,4 +1,4 @@
 package dev.tolana.projectcalculationtool.dto;
 
-public record CreateTeamFormDto(String orgName, String orgDescription) {
+public record CreateTeamFormDto(String teamName, String teamDescription) {
 }
