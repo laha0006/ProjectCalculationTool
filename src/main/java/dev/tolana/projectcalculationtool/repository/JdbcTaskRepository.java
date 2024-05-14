@@ -18,7 +18,7 @@ public class JdbcTaskRepository implements TaskRepository {
     }
 
     private String isParentOrChildTask(Task task) {
-        String sql = "";
+        String sql;
         if (task.getParentId() == 0) {
             sql = """
                     INSERT INTO task (name, description, project_id, deadline, estimated_hours) VALUES (?,?,?,?,?);
@@ -34,7 +34,7 @@ public class JdbcTaskRepository implements TaskRepository {
 
     @Override
     public boolean createTask(Task task, String username) {
-        boolean isCreated = false;
+        boolean isCreated;
 
         try (Connection connection = dataSource.getConnection()) {
             try {//query for task creation only concerns values that are not default
