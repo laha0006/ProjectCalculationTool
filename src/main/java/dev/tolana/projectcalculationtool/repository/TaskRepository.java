@@ -12,7 +12,7 @@ public interface TaskRepository {
 
     boolean editTask(long taskId, String username);
 
-    Task getTask(long taskId, String username);
+    Task getTaskOnId(long taskId);
 
     List<Task> getAllTasks(String username);
 
