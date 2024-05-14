@@ -93,8 +93,38 @@ public class JdbcTaskRepository implements TaskRepository {
     }
 
     @Override
-    public Task getTask(long taskId, String username) {
-        return null;
+    public Task getTaskOnId(long taskId) {
+        Task task = null;
+        String getTaskOnId = """
+                SELECT * FROM task
+                WHERE id = ?
+                """;
+
+        try(Connection connection = dataSource.getConnection()) {
+            PreparedStatement pstmt = connection.prepareStatement(getTaskOnId);
+            pstmt.setLong(1, taskId);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                task = new Task(
+                        rs.getLong(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getLong(4),
+                        rs.getTimestamp(5).toLocalDateTime(),
+                        rs.getTimestamp(6).toLocalDateTime(),
+                        rs.getInt(7),
+                        rs.getInt(8),
+                        rs.getLong(9),
+                        rs.getBoolean(10)
+                );
+            }
+
+        }catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+
+        return task;
     }
 
     @Override
