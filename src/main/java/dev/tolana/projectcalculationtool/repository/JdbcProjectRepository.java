@@ -1,6 +1,7 @@
 package dev.tolana.projectcalculationtool.repository;
 
 import dev.tolana.projectcalculationtool.dto.UserInformationDto;
+import dev.tolana.projectcalculationtool.enums.Status;
 import dev.tolana.projectcalculationtool.model.Project;
 import org.springframework.stereotype.Repository;
 
@@ -34,7 +35,7 @@ public class JdbcProjectRepository implements ProjectRepository {
             pstmt.setString(2, project.getDescription());
             pstmt.setLong(3, project.getTeamId());
             pstmt.setLong(4, project.getAllottedHours());
-            pstmt.setInt(5, project.getStatus());
+            pstmt.setLong(5, project.getStatus().getId());
             pstmt.executeUpdate();
 
             ResultSet generatedKeys = pstmt.getGeneratedKeys();
@@ -53,21 +54,23 @@ public class JdbcProjectRepository implements ProjectRepository {
     public List<Project> getAllProjectsOnUsername(String username) {
         List<Project> projectList = new ArrayList<>();
         String getAllProjects = """
-                SELECT\s
-                project.id,\s
-                project.name,\s
-                project.description,\s
-                project.team_id,\s
-                project.date_created,\s
-                project.deadline,\s
-                project.allotted_hours,\s
-                project.status,\s
-                project.parent_id,\s
-                project.archived\s
-                                
-                FROM project
-                JOIN user_entity_role ON user_entity_role.project_id = project.id
-                JOIN users ON user_entity_role.username = users.username
+                SELECT p.id,
+                       p.name,
+                       p.description,
+                       p.team_id,
+                       p.date_created,
+                       p.deadline,
+                       p.allotted_hours,
+                       s.name,
+                       p.parent_id,
+                       p.archived
+                FROM project p
+                     JOIN      user_entity_role uer
+                               ON uer.project_id = p.id
+                     JOIN      users
+                               ON uer.username = users.username
+                     LEFT JOIN status s
+                               ON p.status = s.id
                 WHERE users.username = ?;
                 """;
 
@@ -85,7 +88,7 @@ public class JdbcProjectRepository implements ProjectRepository {
                         projectsRs.getTimestamp(5),
                         projectsRs.getTimestamp(6),
                         projectsRs.getInt(7),
-                        projectsRs.getInt(8),
+                        Status.valueOf(projectsRs.getString(8)),
                         projectsRs.getLong(9),
                         projectsRs.getBoolean(10)
                 );
@@ -188,8 +191,20 @@ public class JdbcProjectRepository implements ProjectRepository {
     public Project getProjectOnId(long projectId) {
        Project project = null;
         String selectProjectOnId = """
-                SELECT * FROM project
-                WHERE id = ?;
+                SELECT p.id,
+                       p.name,
+                       p.description,
+                       p.team_id,
+                       p.date_created,
+                       p.deadline,
+                       p.allotted_hours,
+                       s.name,
+                       p.parent_id,
+                       p.archived
+                FROM project p
+                     LEFT JOIN status s
+                          ON p.status = s.id
+                WHERE p.id = ?;
                 """;
 
         try(Connection connection = dataSource.getConnection()) {
@@ -206,7 +221,7 @@ public class JdbcProjectRepository implements ProjectRepository {
                         rs.getTimestamp(5),
                         rs.getTimestamp(6),
                         rs.getInt(7),
-                        rs.getInt(8),
+                        Status.valueOf(rs.getString(8)),
                         rs.getLong(9),
                         rs.getBoolean(10)
                 );
