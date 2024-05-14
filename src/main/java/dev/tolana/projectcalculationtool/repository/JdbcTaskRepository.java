@@ -33,7 +33,7 @@ public class JdbcTaskRepository implements TaskRepository {
     }
 
     @Override
-    public boolean createParentTask(Task task, String username) {
+    public boolean createTask(Task task, String username) {
         boolean isCreated = false;
 
         try (Connection connection = dataSource.getConnection()) {
@@ -41,37 +41,45 @@ public class JdbcTaskRepository implements TaskRepository {
                 connection.setAutoCommit(false);
                 String createTask = isParentOrChildTask(task);
                 PreparedStatement pstmt = connection.prepareStatement(createTask);
+                setTaskAttributeValues(pstmt, task);
 
-                if (task.getParentId() == 0) {
-                    pstmt.setString(1, task.getTaskName());
-                    pstmt.setString(2, task.getTaskDescription());
-                    pstmt.setLong(3, task.getProjectId());
-                    pstmt.setDate(4, Date.valueOf(task.getDeadline().toLocalDate()));
-                    pstmt.setInt(5, task.getEstimatedHours());
-                } else {
-                    pstmt.setString(1, task.getTaskName());
-                    pstmt.setString(2, task.getTaskDescription());
-                    pstmt.setLong(3, task.getProjectId());
-                    pstmt.setDate(4, Date.valueOf(task.getDeadline().toLocalDate()));
-                    pstmt.setInt(5, task.getEstimatedHours());
-                    pstmt.setLong(6, task.getParentId());
-                }
                 int affectedRows = pstmt.executeUpdate();
                 isCreated = affectedRows > 0;
                 connection.commit();
                 connection.setAutoCommit(true);
 
-            } catch (Exception exception) {
+            } catch (SQLException sqlException) {
                 connection.rollback();
                 connection.setAutoCommit(true);
-                throw new RuntimeException(exception);
+                throw new RuntimeException(sqlException);
             }
 
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            throw new RuntimeException(sqlException);
         }
 //TODO WHEN TASK GETS CREATED IT IS BY DEFAULT UNASSIGEN A PROJECT MEMBER, THEREFORE CREATE METHOD WHERE MEMBER GET ASSIGEND A TASK TOO AND NOT ONLY A PROJECT
         return isCreated;
+    }
+
+    private void setTaskAttributeValues(PreparedStatement pstmt, Task task) {
+        try {
+            if (task.getParentId() == 0) {
+                pstmt.setString(1, task.getTaskName());
+                pstmt.setString(2, task.getTaskDescription());
+                pstmt.setLong(3, task.getProjectId());
+                pstmt.setDate(4, Date.valueOf(task.getDeadline().toLocalDate()));
+                pstmt.setInt(5, task.getEstimatedHours());
+            } else {
+                pstmt.setString(1, task.getTaskName());
+                pstmt.setString(2, task.getTaskDescription());
+                pstmt.setLong(3, task.getProjectId());
+                pstmt.setDate(4, Date.valueOf(task.getDeadline().toLocalDate()));
+                pstmt.setInt(5, task.getEstimatedHours());
+                pstmt.setLong(6, task.getParentId());
+            }
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
     }
 
     @Override
@@ -115,7 +123,7 @@ public class JdbcTaskRepository implements TaskRepository {
                         rs.getString(2),
                         rs.getString(3),
                         rs.getLong(4),
-                        rs.getTimestamp(5).toLocalDateTime(), //TODO figure out time attribute
+                        rs.getTimestamp(5).toLocalDateTime(),
                         rs.getTimestamp(6).toLocalDateTime(),
                         rs.getInt(7),
                         rs.getInt(8),
