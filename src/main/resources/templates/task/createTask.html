@@ -1,106 +1,116 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html th:fragment="" lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      data-bs-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <title>task creation</title>
+    <th:block th:insert="~{fragments/head :: headFiles}"></th:block>
+    <title>Opret opgave</title>
 </head>
 <body>
+<div class="container">
+    <div class="d-flex flex-column justify-content-between min-vh-100">
+        <div>
+            <header th:replace="~{fragments/header :: header}"></header>
+            <main class="d-flex justify-content-center text-center bg-secondary-subtle py-3 px-5 rounded shadow">
+                <div th:if="${taskDto.parentId == 0}">
+                    <form th:action="@{/task/{projectId}/create (projectId=${projectId})}" method="post" th:object="${taskDto}">
+                        <p>
+                            <label>Navn:
+                                <input type="text" th:field="*{taskName}" required>
+                            </label>
+                        </p>
 
-<div th:if="${taskDto.parentId == 0}">
-    <form th:action="@{/task/{projectId}/create (projectId=${projectId})}" method="post" th:object="${taskDto}">
-        <p>
-            <label>Name:
-                <input type="text" th:field="*{taskName}" required>
-            </label>
-        </p>
+                        <p>
+                            <label>Beskrivelse:
+                                <input type="text" th:field="*{taskDescription}" required>
+                            </label>
+                        </p>
 
-        <p>
-            <label>Description:
-                <input type="text" th:field="*{taskDescription}" required>
-            </label>
-        </p>
+                        <label>
+                            <input type="number" th:field="*{projectId}" hidden="hidden">
+                        </label>
 
-        <label>
-            <input type="number" th:field="*{projectId}" hidden="hidden">
-        </label>
+                        <p>
+                            <label>Deadline:
+                                <input type="datetime-local" th:field="*{deadline}" required>
+                            </label>
+                        </p>
 
-        <p>
-            <label>Deadline:
-                <input type="datetime-local" th:field="*{deadline}" required>
-            </label>
-        </p>
+                        <p>
+                            <label>Estimeret antal timer for færdiggørelse:
+                                <input type="number" th:name="estimatedHours" required>
+                            </label>
+                        </p>
 
-        <p>
-            <label>Estimated hours for completion:
-                <input type="number" th:name="estimatedHours" required>
-            </label>
-        </p>
+                        <label>
+                            <input type="number" th:field="*{status}" hidden="hidden">
+                        </label>
 
-        <label>
-            <input type="number" th:field="*{status}" hidden="hidden">
-        </label>
+                        <label>
+                            <input type="number" th:field="*{parentId}" hidden="hidden">
+                        </label>
 
-        <label>
-            <input type="number" th:field="*{parentId}" hidden="hidden">
-        </label>
+                        <label>
+                            <input type="number" th:field="*{taskId}" hidden="hidden">
+                        </label>
 
-        <label>
-            <input type="number" th:field="*{taskId}" hidden="hidden">
-        </label>
+                        <button type="submit">Opret</button>
+                    </form>
+                </div>
 
-        <button type="submit">Create</button>
-    </form>
+                <div th:unless="${taskDto.parentId == 0}">
+                    <form th:action="@{/task/{projectId}/create (projectId=${projectId})}" method="post" th:object="${taskDto}">
+                        <p>
+                            <label>Navn:
+                                <input type="text" th:field="*{taskName}" required>
+                            </label>
+                        </p>
+
+                        <p>
+                            <label>Beskrivelse:
+                                <input type="text" th:field="*{taskDescription}" required>
+                            </label>
+                        </p>
+
+                        <label>
+                            <input type="number" th:field="*{projectId}" hidden="hidden">
+                        </label>
+
+                        <p>
+                            <label>Deadline:
+                                <input type="datetime-local" th:field="*{deadline}" required>
+                            </label>
+                        </p>
+
+                        <p>
+                            <label>Estimeret antal timer for færdiggørelse:
+                                <input type="number" th:name="estimatedHours" required>
+                            </label>
+                        </p>
+
+                        <label>
+                            <input type="number" th:field="*{status}" hidden="hidden">
+                        </label>
+
+                        <label>
+                            <input type="number" th:field="*{parentId}" hidden="hidden">
+                        </label>
+
+                        <label>
+                            <input type="number" th:field="*{taskId}" hidden="hidden">
+                        </label>
+
+                        <button type="submit">Opret underopgave</button>
+                    </form>
+                </div>
+
+                <a th:href="@{/task/overview/{projectId} (projectId=${projectId})}"> <!--TODO: Specify endpoint for overview of project for project leader-->
+                    <button>Tilbage</button>
+                </a>
+            </main>
+        </div>
+        <footer th:replace="~{fragments/footer :: footer}"></footer>
+    </div>
 </div>
-
-<div th:unless="${taskDto.parentId == 0}">
-    <form th:action="@{/task/{projectId}/create (projectId=${projectId})}" method="post" th:object="${taskDto}">
-        <p>
-            <label>Name:
-                <input type="text" th:field="*{taskName}" required>
-            </label>
-        </p>
-
-        <p>
-            <label>Description:
-                <input type="text" th:field="*{taskDescription}" required>
-            </label>
-        </p>
-
-        <label>
-            <input type="number" th:field="*{projectId}" hidden="hidden">
-        </label>
-
-        <p>
-            <label>Deadline:
-                <input type="datetime-local" th:field="*{deadline}" required>
-            </label>
-        </p>
-
-        <p>
-            <label>Estimated hours for completion:
-                <input type="number" th:name="estimatedHours" required>
-            </label>
-        </p>
-
-        <label>
-            <input type="number" th:field="*{status}" hidden="hidden">
-        </label>
-
-        <label>
-            <input type="number" th:field="*{parentId}" hidden="hidden">
-        </label>
-
-        <label>
-            <input type="number" th:field="*{taskId}" hidden="hidden">
-        </label>
-
-        <button type="submit">Create Subtask</button>
-    </form>
-</div>
-
-<a th:href="@{/task/overview/{projectId} (projectId=${projectId})}"> <!--TODO: Specify endpoint for overview of project for project leader-->
-    <button>Back</button>
-</a>
-
 </body>
 </html>
