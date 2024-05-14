@@ -28,9 +28,9 @@ VALUES (1, 1),
        (3, 3) # member
 
 INSERT INTO status(name)
-VALUES ("I gang"),
-       ("Afsluttet"),
-       ("Til gennemsyn")
+VALUES ("IN_PROGRESS"),
+       ("DONE"),
+       ("IN_REVIEW")
 
 
 
