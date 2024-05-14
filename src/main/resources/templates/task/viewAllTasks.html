@@ -24,7 +24,7 @@
         <td th:text="${task.estimatedHours}"></td>
         <td th:text="${task.status}"></td>
         <td >
-            <a th:href="@{/task/{taskId}/create/subtask (taskId=${task.taskId})}">
+            <a th:href="@{/task/{taskId}/create/subtask/{projectId} (taskId=${task.taskId}, projectId=${projectId})}">
                 <button>Create sub-task</button>
             </a>
         </td>
