@@ -20,7 +20,7 @@ public class TaskService {
 
     public void createTask(TaskDto newTask, String username) {
         Task task =  taskDtoMapper.convertToTask(newTask);
-        taskRepository.createParentTask(task, username);
+        taskRepository.createTask(task, username);
     }
 
     public List<TaskDto> getAllProjectTasks(long projectId, String username) {
