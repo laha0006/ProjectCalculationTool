@@ -25,7 +25,7 @@ public class JdbcTaskRepository implements TaskRepository {
                     """;
         } else {
             sql = """
-                    INSERT INTO task (name, description, deadline, estimated_hours, parent) VALUES (?, ?, ?, ?, ?);
+                    INSERT INTO task (name, description, project_id, deadline, estimated_hours, parent_id) VALUES (?, ?, ?, ?, ?, ?);
                     """;
         }
 
@@ -51,12 +51,12 @@ public class JdbcTaskRepository implements TaskRepository {
                 } else {
                     pstmt.setString(1, task.getTaskName());
                     pstmt.setString(2, task.getTaskDescription());
-                    pstmt.setDate(3, Date.valueOf(task.getDeadline().toLocalDate()));
-                    pstmt.setInt(4, task.getEstimatedHours());
-                    pstmt.setLong(5, task.getParentId());
+                    pstmt.setLong(3, task.getProjectId());
+                    pstmt.setDate(4, Date.valueOf(task.getDeadline().toLocalDate()));
+                    pstmt.setInt(5, task.getEstimatedHours());
+                    pstmt.setLong(6, task.getParentId());
                 }
                 int affectedRows = pstmt.executeUpdate();
-
                 isCreated = affectedRows > 0;
                 connection.commit();
                 connection.setAutoCommit(true);
@@ -64,6 +64,7 @@ public class JdbcTaskRepository implements TaskRepository {
             } catch (Exception exception) {
                 connection.rollback();
                 connection.setAutoCommit(true);
+                throw new RuntimeException(exception);
             }
 
         } catch (SQLException sqlException) {
@@ -99,7 +100,7 @@ public class JdbcTaskRepository implements TaskRepository {
         String retrieveAllTaskOnProjectId = """
                 SELECT * FROM task t
                 JOIN user_entity_role uer ON uer.project_id = t.project_id
-                WHERE t.project_id = ? AND uer.username = ?;
+                WHERE t.project_id = ? AND uer.username = ? AND t.parent_id IS NULL;
                 """;
 
         try (Connection connection = dataSource.getConnection()) {
