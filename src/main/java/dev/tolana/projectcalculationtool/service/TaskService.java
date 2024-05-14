@@ -20,11 +20,16 @@ public class TaskService {
 
     public void createTask(TaskDto newTask, String username) {
         Task task =  taskDtoMapper.convertToTask(newTask);
-        taskRepository.createParentTask(task, username);
+        taskRepository.createTask(task, username);
     }
 
     public List<TaskDto> getAllProjectTasks(long projectId, String username) {
         List<Task> taskList = taskRepository.getAllProjectTasks(projectId, username);
         return taskDtoMapper.toTaskDtoList(taskList);
+    }
+
+    public TaskDto getTaskOnId(long taskId) {
+        Task task = taskRepository.getTaskOnId(taskId);
+        return taskDtoMapper.convertToDto(task);
     }
 }

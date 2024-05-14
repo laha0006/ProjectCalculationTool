@@ -6,13 +6,13 @@ import java.util.List;
 
 public interface TaskRepository {
 
-    boolean createParentTask(Task task, String username);
+    boolean createTask(Task task, String username);
 
     boolean deleteTask(long taskId, String username);
 
     boolean editTask(long taskId, String username);
 
-    Task getTask(long taskId, String username);
+    Task getTaskOnId(long taskId);
 
     List<Task> getAllTasks(String username);
 
