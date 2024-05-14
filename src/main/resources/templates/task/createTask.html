@@ -13,6 +13,7 @@
             <header th:replace="~{fragments/header :: header}"></header>
             <main class="d-flex justify-content-center text-center bg-secondary-subtle py-3 px-5 rounded shadow">
                 <div th:if="${taskDto.parentId == 0}">
+                    <h1>Opret opgave</h1>
                     <form th:action="@{/task/{projectId}/create (projectId=${projectId})}" method="post" th:object="${taskDto}">
                         <p>
                             <label>Navn:
@@ -54,11 +55,12 @@
                             <input type="number" th:field="*{taskId}" hidden="hidden">
                         </label>
 
-                        <button type="submit">Opret</button>
+                        <button type="submit" class="btn btn-success fw-bold">Opret</button>
                     </form>
                 </div>
 
                 <div th:unless="${taskDto.parentId == 0}">
+                    <h1 th:text="'Opret underopgave for: ' + ${parentTask.taskName}"></h1>
                     <form th:action="@{/task/{projectId}/create (projectId=${projectId})}" method="post" th:object="${taskDto}">
                         <p>
                             <label>Navn:
@@ -100,12 +102,12 @@
                             <input type="number" th:field="*{taskId}" hidden="hidden">
                         </label>
 
-                        <button type="submit">Opret underopgave</button>
+                        <button class="btn btn-success fw-bold" type="submit">Opret</button>
                     </form>
                 </div>
 
                 <a th:href="@{/task/overview/{projectId} (projectId=${projectId})}"> <!--TODO: Specify endpoint for overview of project for project leader-->
-                    <button>Tilbage</button>
+                    <button class="btn btn-secondary fw-bold">Tilbage</button>
                 </a>
             </main>
         </div>
