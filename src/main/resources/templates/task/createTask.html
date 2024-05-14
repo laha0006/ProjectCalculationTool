@@ -6,49 +6,97 @@
 </head>
 <body>
 
-<form th:action="@{/task/create}" method="post" th:object="${taskDto}">
-    <p>
-        <label>Name:
-            <input type="text" th:field="*{taskName}" required>
+<div th:if="${taskDto.parentId == 0}">
+    <form th:action="@{/task/{projectId}/create (projectId=${projectId})}" method="post" th:object="${taskDto}">
+        <p>
+            <label>Name:
+                <input type="text" th:field="*{taskName}" required>
+            </label>
+        </p>
+
+        <p>
+            <label>Description:
+                <input type="text" th:field="*{taskDescription}" required>
+            </label>
+        </p>
+
+        <label>
+            <input type="number" th:field="*{projectId}" hidden="hidden">
         </label>
-    </p>
 
-    <p>
-        <label>Description:
-            <input type="text" th:field="*{taskDescription}" required>
+        <p>
+            <label>Deadline:
+                <input type="datetime-local" th:field="*{deadline}" required>
+            </label>
+        </p>
+
+        <p>
+            <label>Estimated hours for completion:
+                <input type="number" th:name="estimatedHours" required>
+            </label>
+        </p>
+
+        <label>
+            <input type="number" th:field="*{status}" hidden="hidden">
         </label>
-    </p>
 
-    <label>
-        <input type="number" th:field="*{projectId}" hidden="hidden">
-    </label>
-
-    <p>
-        <label>Deadline:
-            <input type="datetime-local" th:field="*{deadline}" required>
+        <label>
+            <input type="number" th:field="*{parentId}" hidden="hidden">
         </label>
-    </p>
 
-    <p>
-        <label>Estimated hours for completion:
-            <input type="number" th:name="estimatedHours" required>
+        <label>
+            <input type="number" th:field="*{taskId}" hidden="hidden">
         </label>
-    </p>
 
-    <label>
-        <input type="number" th:field="*{status}" hidden="hidden">
-    </label>
+        <button type="submit">Create</button>
+    </form>
+</div>
 
-    <label>
-        <input type="number" th:field="*{parentId}" hidden="hidden">
-    </label>
+<div th:unless="${taskDto.parentId == 0}">
+    <form th:action="@{/task/{projectId}/create (projectId=${projectId})}" method="post" th:object="${taskDto}">
+        <p>
+            <label>Name:
+                <input type="text" th:field="*{taskName}" required>
+            </label>
+        </p>
 
-    <label>
-        <input type="number" th:field="*{taskId}" hidden="hidden">
-    </label>
+        <p>
+            <label>Description:
+                <input type="text" th:field="*{taskDescription}" required>
+            </label>
+        </p>
 
-    <button type="submit">Create</button>
-</form>
+        <label>
+            <input type="number" th:field="*{projectId}" hidden="hidden">
+        </label>
+
+        <p>
+            <label>Deadline:
+                <input type="datetime-local" th:field="*{deadline}" required>
+            </label>
+        </p>
+
+        <p>
+            <label>Estimated hours for completion:
+                <input type="number" th:name="estimatedHours" required>
+            </label>
+        </p>
+
+        <label>
+            <input type="number" th:field="*{status}" hidden="hidden">
+        </label>
+
+        <label>
+            <input type="number" th:field="*{parentId}" hidden="hidden">
+        </label>
+
+        <label>
+            <input type="number" th:field="*{taskId}" hidden="hidden">
+        </label>
+
+        <button type="submit">Create Subtask</button>
+    </form>
+</div>
 
 <a th:href="@{/task/overview/{projectId} (projectId=${projectId})}"> <!--TODO: Specify endpoint for overview of project for project leader-->
     <button>Back</button>
