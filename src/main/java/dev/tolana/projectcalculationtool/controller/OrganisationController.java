@@ -6,10 +6,7 @@ import dev.tolana.projectcalculationtool.service.OrganisationService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -29,6 +26,12 @@ public class OrganisationController {
         List<Organisation> listOfUserOrgs = organisationService.getNotArchivedOrganisationsByUser(username);
         model.addAttribute("allUserOrgs", listOfUserOrgs);
 
+        return "organisation/userOrganisations";
+    }
+
+    @GetMapping("/{id}")
+    public String organisationPage(@PathVariable long id, Model model, Authentication authentication) {
+        Organisation organisation = organisationService.getOrganisationsById(id);
         return "organisation/userOrganisations";
     }
 
