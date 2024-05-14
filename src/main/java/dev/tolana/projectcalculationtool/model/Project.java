@@ -1,12 +1,15 @@
 package dev.tolana.projectcalculationtool.model;
 
+import dev.tolana.projectcalculationtool.enums.Status;
+
 import java.sql.Time;
 import java.sql.Timestamp;
 
 public class Project {
     private String name, description;
     private long teamId, parentId, projectId;
-    private int allottedHours, status; //TODO make into Enum
+    private int allottedHours;
+    private Status status;
     private Timestamp deadline, dateCreated;
     private boolean isArchived;
 
@@ -19,7 +22,7 @@ public class Project {
                    Timestamp dateCreated,
                    Timestamp deadline,
                    int allottedHours,
-                   int status,
+                   Status status,
                    long parentId,
                    boolean isArchived){
         this.projectId = projectId;
@@ -82,11 +85,11 @@ public class Project {
         this.allottedHours = allottedHours;
     }
 
-    public int getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 

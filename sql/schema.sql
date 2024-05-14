@@ -74,7 +74,8 @@ CREATE TABLE IF NOT EXISTS project(
     parent_id INT,
     archived BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (team_id) REFERENCES team(id),
-    FOREIGN KEY (parent_id) REFERENCES project(id)
+    FOREIGN KEY (parent_id) REFERENCES project(id),
+    FOREIGN KEY (status) REFERENCES status(id)
     );
 
 CREATE TABLE IF NOT EXISTS task(
@@ -90,7 +91,8 @@ CREATE TABLE IF NOT EXISTS task(
     parent_id INT,
     archived BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (project_id) REFERENCES project(id),
-    FOREIGN KEY (parent_id) REFERENCES task(id)
+    FOREIGN KEY (parent_id) REFERENCES task(id),
+    FOREIGN KEY (status) REFERENCES status(id)
     );
 
 CREATE TABLE IF NOT EXISTS user_entity_role(
@@ -110,6 +112,13 @@ CREATE TABLE IF NOT EXISTS user_entity_role(
     FOREIGN KEY (department_id) REFERENCES department(id),
     FOREIGN KEY (organisation_id) REFERENCES organisation(id)
     );
+
+CREATE TABLE IF NOT EXISTS status(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL
+);
+
+
 
 CREATE VIEW hierarchy AS
 SELECT tsk.id AS task_id,
