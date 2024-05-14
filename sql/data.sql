@@ -25,7 +25,7 @@ VALUES (1, 1),
        (2, 4),
        (2, 5),
        (2, 6), # admin
-       (3, 3) # member
+       (3, 3); # member
 
 INSERT INTO status(name)
 VALUES ("IN_PROGRESS"),
