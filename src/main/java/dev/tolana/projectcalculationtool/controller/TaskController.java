@@ -1,6 +1,7 @@
 package dev.tolana.projectcalculationtool.controller;
 
 import dev.tolana.projectcalculationtool.dto.TaskDto;
+import dev.tolana.projectcalculationtool.enums.Status;
 import dev.tolana.projectcalculationtool.service.TaskService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -21,11 +22,9 @@ public class TaskController {
 
     @GetMapping("/overview/{projectId}")
     public String getTaskOverview(Model model,
-                                  Authentication authentication,
                                   @PathVariable long projectId) {
 
-        String username = authentication.getName();
-        List<TaskDto> taskList = taskService.getAllProjectTasks(projectId, username);
+        List<TaskDto> taskList = taskService.getAllProjectTasks(projectId);
         model.addAttribute("projectId", projectId);
 
         model.addAttribute("taskList", taskList);
@@ -34,7 +33,7 @@ public class TaskController {
 
     @GetMapping("/{projectId}/create")
     public String sendCreateForm(Model model, @PathVariable long projectId) {
-        model.addAttribute("taskDto", new TaskDto("", "", projectId, LocalDateTime.now(), 0, 0, 0, -1));
+        model.addAttribute("taskDto", new TaskDto("", "", projectId, LocalDateTime.now(), 0, Status.TODO, 0, -1));
         model.addAttribute("projectId", projectId);
         return "task/createTask";
     }
@@ -45,7 +44,7 @@ public class TaskController {
                                         Model model) {
 
         TaskDto parentTask = taskService.getTaskOnId(taskId);
-        model.addAttribute("taskDto", new TaskDto("", "", projectId, LocalDateTime.now(), 0, 0, taskId, -1));
+        model.addAttribute("taskDto", new TaskDto("", "", projectId, LocalDateTime.now(), 0, Status.TODO, taskId, -1));
         model.addAttribute("projectId", projectId);
         model.addAttribute("parentTask", parentTask);
         return "task/createTask";
@@ -57,7 +56,7 @@ public class TaskController {
                              Authentication authentication) {
 
         String username = authentication.getName();
-        taskService.createTask(newTask, username);
+        taskService.createTask(username, newTask);
 
         return "redirect:/task/overview/" + projectId; //TODO UNDERSØG OM redirect:/ skal matche et endpoint i get mappingen kun eller om den også skal indrage request mapping for controlleren i endpoint
     }
