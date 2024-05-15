@@ -1,9 +1,11 @@
 package dev.tolana.projectcalculationtool.service;
 
-import dev.tolana.projectcalculationtool.mapper.TaskDtoMapper;
+import dev.tolana.projectcalculationtool.mapper.EntityDtoMapper;
 import dev.tolana.projectcalculationtool.dto.TaskDto;
+import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.Task;
-import dev.tolana.projectcalculationtool.repository.TaskRepository;
+import dev.tolana.projectcalculationtool.repository.ResourceEntityCrudOperations;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,25 +13,32 @@ import java.util.List;
 @Service
 public class TaskService {
 
-    private final TaskRepository taskRepository;
-    private final TaskDtoMapper taskDtoMapper;
-    public TaskService(TaskRepository taskRepository, TaskDtoMapper taskDtoMapper) {
+    private final ResourceEntityCrudOperations taskRepository;
+    private final EntityDtoMapper entityDtoMapper;
+    public TaskService(ResourceEntityCrudOperations taskRepository, EntityDtoMapper entityDtoMapper) {
         this.taskRepository = taskRepository;
-        this.taskDtoMapper = taskDtoMapper;
+        this.entityDtoMapper = entityDtoMapper;
     }
 
-    public void createTask(TaskDto newTask, String username) {
-        Task task =  taskDtoMapper.convertToTask(newTask);
-        taskRepository.createTask(task, username);
+    @PreAuthorize("@auth.hasTaskAccess(#newTask.projectId(), " +
+            "T(dev.tolana.projectcalculationtool.enums.Permission).TASK_CREATE)")
+    public void createTask(String username, TaskDto newTask) {
+        Entity task =  entityDtoMapper.convertToEntity(newTask);
+        taskRepository.createEntity(username, task);
     }
 
-    public List<TaskDto> getAllProjectTasks(long projectId, String username) {
-        List<Task> taskList = taskRepository.getAllProjectTasks(projectId, username);
-        return taskDtoMapper.toTaskDtoList(taskList);
+    @PreAuthorize("@auth.hasTaskAccess(#projectId(), " +
+            "T(dev.tolana.projectcalculationtool.enums.Permission).TASK_READ)")
+
+    public List<TaskDto> getAllProjectTasks(long projectId) {
+        List<Entity> taskList = taskRepository.getAllEntitiesOnId(projectId);
+        return entityDtoMapper.toTaskDtoList(taskList);
     }
 
+    @PreAuthorize("@auth.hasTaskAccess(#taskId, " +
+            "T(dev.tolana.projectcalculationtool.enums.Permission).TASK_READ)")
     public TaskDto getTaskOnId(long taskId) {
-        Task task = taskRepository.getTaskOnId(taskId);
-        return taskDtoMapper.convertToDto(task);
+        Entity task = taskRepository.getEntityOnId(taskId);
+        return entityDtoMapper.convertToDto((Task) task);
     }
 }
