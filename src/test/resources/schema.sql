@@ -148,8 +148,8 @@ CREATE TABLE IF NOT EXISTS user_entity_role
 
 CREATE VIEW hierarchy AS
 SELECT tsk.id AS task_id,
-       tm.id  AS team_id,
        pjt.id AS project_id,
+       tm.id  AS team_id,
        dpt.id AS department_id,
        org.id AS organisation_id
 FROM organisation org
