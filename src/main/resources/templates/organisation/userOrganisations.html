@@ -27,7 +27,10 @@
                         <tbody>
                         <tr th:each="organisation : ${allUserOrgs}">
 
-                            <td th:text="${organisation.name}"></td>
+                            <td>
+                                <a th:href="@{/organisation/{orgId} (orgId=${organisation.id})}" th:text="${organisation.name}">
+                                </a>
+                            </td>
                             <td th:text="${organisation.description}"></td>
                             <td th:text="${organisation.dateCreated}"></td>
 
