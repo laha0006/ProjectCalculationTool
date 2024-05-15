@@ -28,9 +28,12 @@ public class AuthorizationServiceTests {
 
     private Connection con;
 
+
     @BeforeEach
     public void setUp() throws SQLException {
-        con = dataSource.getConnection();
+        if (con == null) {
+            con = dataSource.getConnection();
+        }
     }
 
     @WithMockUser("masiomasu")
@@ -82,13 +85,14 @@ public class AuthorizationServiceTests {
         RoleAssignUtil.assignProjectRole(con, 1, UserRole.PROJECT_ADMIN, "TheNewGuy");  // admin of project 1
         assertFalse(auth.hasAccess(1, Permission.PROJECT_DELETE));
     }
+
     //userA trys to kick userB, should fail since userB is Owner, and A is only Admin.
     @Test
     @WithMockUser("userA")
-    public void cannotKickOwner() throws SQLException {
-        RoleAssignUtil.assignOrganisationRole(con,1, UserRole.ORGANISATION_ADMIN,"userA");
-        RoleAssignUtil.assignOrganisationRole(con,1, UserRole.ORGANISATION_OWNER,"userB");
-        assertFalse(auth.canPerform(1,"userB",Permission.ORGANISATION_KICK));
+    public void xcannotKickOwner() throws SQLException {
+        RoleAssignUtil.assignOrganisationRole(con, 1, UserRole.ORGANISATION_ADMIN, "userA");
+        RoleAssignUtil.assignOrganisationRole(con, 1, UserRole.ORGANISATION_OWNER, "userB");
+        assertFalse(auth.canPerform(1, "userB", Permission.ORGANISATION_KICK));
     }
 
 
