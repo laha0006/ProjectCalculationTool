@@ -2,9 +2,11 @@ package dev.tolana.projectcalculationtool.service;
 
 import dev.tolana.projectcalculationtool.dto.ProjectOverviewDto;
 import dev.tolana.projectcalculationtool.dto.UserInformationDto;
-import dev.tolana.projectcalculationtool.mapper.ProjectDtoMapper;
+import dev.tolana.projectcalculationtool.enums.UserRole;
+import dev.tolana.projectcalculationtool.mapper.EntityDtoMapper;
+import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.Project;
-import dev.tolana.projectcalculationtool.repository.ProjectRepository;
+import dev.tolana.projectcalculationtool.repository.ResourceEntityCrudOperations;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,37 +14,33 @@ import java.util.List;
 @Service
 public class ProjectService {
 
-    private final ProjectRepository projectRepository;
-    private final ProjectDtoMapper projectDtoMapper;
+    private final ResourceEntityCrudOperations projectRepository;
+    private final EntityDtoMapper entityDtoMapper;
 
-    public ProjectService(ProjectRepository projectRepository, ProjectDtoMapper projectDtoMapper) {
+    public ProjectService(ResourceEntityCrudOperations projectRepository, EntityDtoMapper entityDtoMapper) {
         this.projectRepository = projectRepository;
-        this.projectDtoMapper = projectDtoMapper;
+        this.entityDtoMapper = entityDtoMapper;
     }
 
-    public void addProject(Project project) {
-        projectRepository.addProject(project);
+    public void addProject(String username, Entity project) {
+        projectRepository.createEntity(username, project);
     }
 
     public List<ProjectOverviewDto> getAllProjects(String username) {
-        List<Project> projectList = projectRepository.getAllProjectsOnUsername(username);
-        return projectDtoMapper.toProjectOverviewDtoList(projectList);
+        List<Entity> projectList = projectRepository.getAllEntitiesOnUsername(username);
+        return entityDtoMapper.toProjectOverviewDtoList(projectList);
     }
 
-    public long getTeamIdFromUsername(String username) {
-        return projectRepository.getTeamIdFromUsername(username);
+    public List<UserInformationDto> getAllTeamMembersFromTeamId(long teamId) {
+        return projectRepository.getUsersFromEntityId(teamId);
     }
 
-    public List<UserInformationDto> getAllTeamMembersFromTeamId(long teamId, long projectId) {
-        return projectRepository.getTeamMembersFromTeamId(teamId, projectId);
-    }
-
-    public void assignTeamMembersToProject(long projectId, List<String> selectedTeamMembers) {
-        projectRepository.assignTeamMembersToProject(projectId, selectedTeamMembers);
+    public void assignTeamMembersToProject(long projectId, List<String> selectedTeamMembers, UserRole userRole) {
+        projectRepository.assignUser(projectId, selectedTeamMembers, userRole);
     }
 
     public ProjectOverviewDto getProjectOnId(long projectId) {
-        Project project = projectRepository.getProjectOnId(projectId);
-        return projectDtoMapper.toProjectOverviewDto(project);
+        Entity project = projectRepository.getEntityOnId(projectId);
+        return entityDtoMapper.toProjectOverviewDto((Project) project);
     }
 }
