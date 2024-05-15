@@ -2,7 +2,7 @@ package dev.tolana.projectcalculationtool.model;
 
 import java.time.LocalDateTime;
 
-public abstract class Entity {
+public class Entity {
 
     private final long id;
     private final String name;
