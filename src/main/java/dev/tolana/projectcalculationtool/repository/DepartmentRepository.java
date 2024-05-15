@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public class DepartmentRepository {
@@ -35,5 +37,25 @@ public class DepartmentRepository {
             throw new RuntimeException(e);
         }
         return department;
+    }
+
+    public List<Department> getAll(long id) {
+        List<Department> departments = new ArrayList<>();
+        try(Connection connection = dataSource.getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement("select * from department where organisation_id = ?");
+            preparedStatement.setLong(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                departments.add(new Department(
+                        resultSet.getLong(1),
+                        resultSet.getString(2),
+                        resultSet.getString(3)
+                ));
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return departments;
     }
 }
