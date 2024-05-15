@@ -18,6 +18,14 @@ public class Entity {
         this.archived = archived;
     }
 
+    public Entity(long id, String name, String description) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.dateCreated = LocalDateTime.now();
+        this.archived = false;
+    }
+
     public long getId() {
         return id;
     }

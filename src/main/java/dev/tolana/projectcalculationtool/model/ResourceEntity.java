@@ -24,6 +24,19 @@ public class ResourceEntity extends Entity{
         this.parentId = parentId;
     }
 
+    public ResourceEntity(long id,
+                          String name,
+                          String description,
+                          LocalDateTime deadline,
+                          Status status,
+                          long parentId) {
+
+        super(id, name, description);
+        this.deadline = deadline;
+        this.status = status;
+        this.parentId = parentId;
+    }
+
     public LocalDateTime getDeadline() {
         return deadline;
     }

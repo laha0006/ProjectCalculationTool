@@ -27,6 +27,20 @@ public class Task extends ResourceEntity {
         this.actualHours = actualHours;
     }
 
+    public Task(
+            long id,
+            String name,
+            String description,
+            LocalDateTime deadline,
+            Status status,
+            long parentId,
+            long projectId,
+            int estimatedHours) {
+        super(id, name, description, deadline, status, parentId);
+        this.projectId = projectId;
+        this.estimatedHours = estimatedHours;
+    }
+
     public long getProjectId() {
         return projectId;
     }
