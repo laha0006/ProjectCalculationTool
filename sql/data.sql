@@ -245,7 +245,9 @@ VALUES (17, 25),
 INSERT INTO status(name)
 VALUES ('IN_PROGRESS'),
        ('DONE'),
-       ('IN_REVIEW');
+       ('IN_REVIEW'),
+       ('TODO');
+
 
 
 
