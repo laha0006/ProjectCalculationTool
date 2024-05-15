@@ -39,6 +39,7 @@ public class AuthorizationService {
     }
 
     public boolean hasProjectAccess(long projectId, Permission requiredPermission) {
+        System.out.println("PROJECT");
         return hasAccess(projectId, AccessLevel.PROJECT, requiredPermission);
     }
 
