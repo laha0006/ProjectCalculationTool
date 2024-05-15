@@ -1,5 +1,6 @@
 package dev.tolana.projectcalculationtool.repository;
 
+import dev.tolana.projectcalculationtool.enums.UserRole;
 import dev.tolana.projectcalculationtool.model.Entity;
 
 import java.util.List;
@@ -11,6 +12,8 @@ public interface EntityCrudOperations {
     Entity getEntityOnId(long id);
     List<Entity> getAllEntitiesOnUsername(String username);
 
+    List<Entity> getAllEntitiesOnId(long entityId);
+
     boolean editEntity(Entity entity);
 
     boolean deleteEntity(long entityId);
@@ -18,4 +21,6 @@ public interface EntityCrudOperations {
     boolean inviteToEntity(String inviteeUsername);
 
     boolean archiveEntity(long entityId, boolean isArchived);
+
+    boolean assignUser(long entityId, String username, UserRole role);
 }
