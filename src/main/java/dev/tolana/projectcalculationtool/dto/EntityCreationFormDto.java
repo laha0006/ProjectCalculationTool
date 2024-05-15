@@ -1,6 +1,6 @@
 package dev.tolana.projectcalculationtool.dto;
 
-public record EntityFormDto(
+public record EntityCreationFormDto(
         String entityName,
         String description
 ) {
