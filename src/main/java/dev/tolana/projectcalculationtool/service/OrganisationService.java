@@ -2,6 +2,7 @@ package dev.tolana.projectcalculationtool.service;
 
 import dev.tolana.projectcalculationtool.model.Organisation;
 import dev.tolana.projectcalculationtool.repository.OrganisationRepository;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -33,8 +34,10 @@ public class OrganisationService {
     public void createOrganisation(String username, String organisationName, String organisationDescription) {
     organisationRepository.createOrganisation(username, organisationName, organisationDescription);
     }
-
-    public Organisation getOrganisationsById(long id) {
-        return organisationRepository.getOrganisationById(id);
+    //spring expression language...
+    @PreAuthorize("@auth.hasOrgansiationAccess(#organisationId, " +
+                  "T(dev.tolana.projectcalculationtool.enums.Permission).ORGANISATION_READ )")
+    public Organisation getOrganisationsById(long organisationId) {
+        return organisationRepository.getOrganisationById(organisationId);
     }
 }
