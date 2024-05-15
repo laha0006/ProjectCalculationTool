@@ -6,6 +6,7 @@ import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -22,9 +23,11 @@ public class DepartmentService {
     }
 
 
-    @PreAuthorize("@auth.hasAccess(#id, T(dev.tolana.projectcalculationtool.enums.Permission).ORGANISATION_READ)")
-    @PostFilter("@auth.hasAccess(filterObject.id, T(dev.tolana.projectcalculationtool.enums.Permission).DEPARTMENT_READ)")
-    public List<Department> getAll(long id) {
-        return departmentRepository.getAll(id);
+//    @PreAuthorize("@auth.hasAccess(#id, T(dev.tolana.projectcalculationtool.enums.Permission).ORGANISATION_READ)")
+
+    //filterObject referes to the current object of the collection, when looping.
+    @PostFilter("@auth.hasDepartmentAccess(filterObject.id, T(dev.tolana.projectcalculationtool.enums.Permission).DEPARTMENT_READ)")
+    public List<Department> getAll(long organsationId) {
+        return departmentRepository.getAll(organsationId);
     }
 }
