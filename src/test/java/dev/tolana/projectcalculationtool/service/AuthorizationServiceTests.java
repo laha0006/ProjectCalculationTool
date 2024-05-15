@@ -86,13 +86,12 @@ public class AuthorizationServiceTests {
         assertFalse(auth.hasAccess(1, Permission.PROJECT_DELETE));
     }
 
-    //userA trys to kick userB, should fail since userB is Owner, and A is only Admin.
     @Test
     @WithMockUser("userA")
-    public void xcannotKickOwner() throws SQLException {
-        RoleAssignUtil.assignOrganisationRole(con, 1, UserRole.ORGANISATION_ADMIN, "userA");
-        RoleAssignUtil.assignOrganisationRole(con, 1, UserRole.ORGANISATION_OWNER, "userB");
-        assertFalse(auth.canPerform(1, "userB", Permission.ORGANISATION_KICK));
+    public void canKickOrgMemberFromProjectAsProjectAdmin() throws SQLException {
+        RoleAssignUtil.assignProjectRole(con, 1, UserRole.PROJECT_ADMIN, "userA");
+        RoleAssignUtil.assignOrganisationRole(con, 1, UserRole.ORGANISATION_MEMBER, "userB");
+        assertTrue(auth.canPerform(1, "userB", Permission.PROJECT_KICK));
     }
 
 
