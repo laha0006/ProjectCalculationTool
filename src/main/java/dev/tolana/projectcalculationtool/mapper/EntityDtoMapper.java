@@ -86,15 +86,15 @@ public class EntityDtoMapper {
         return taskDtoList;
     }
 
-    public List<ProjectOverviewDto> toProjectOverviewDtoList(List<Project> projectList) {
+    public List<ProjectOverviewDto> toProjectOverviewDtoList(List<Entity> projectList) {
         List<ProjectOverviewDto> projectOverviewDtoList = new ArrayList<>();
 
-        for (Project project : projectList) {
+        for (Entity project : projectList) {
             ProjectOverviewDto projectOverviewDto = new ProjectOverviewDto(
                     project.getName(),
-                    project.getDeadline(),
-                    project.getAllottedHours(),
-                    project.getStatus(),
+                    ((ResourceEntity)project).getDeadline(),
+                    ((Project)project).getAllottedHours(),
+                    ((ResourceEntity)project).getStatus(),
                     project.getId()
             );
             projectOverviewDtoList.add(projectOverviewDto);
