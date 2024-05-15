@@ -1,5 +1,6 @@
 package dev.tolana.projectcalculationtool.repository;
 
+import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.Organisation;
 import org.springframework.stereotype.Repository;
 
@@ -10,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class JdbcOrganisationRepository implements OrganisationRepository {
+public class JdbcOrganisationRepository implements EntityCrudOperations {
 
     private DataSource datasource;
 
@@ -19,9 +20,55 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
     }
 
     @Override
-    public List<Organisation> getOrganisationsByUser(String username) {
+    public boolean createEntity(String username, Entity entity) {
+        boolean isCreated = false;
 
-        List<Organisation> organisations = new ArrayList<>();
+        try (Connection connection = datasource.getConnection()) {
+            try {
+                connection.setAutoCommit(false);
+
+                String createOrganisation = "INSERT INTO organisation(name, description) VALUES (?, ?)";
+                PreparedStatement pstmtAdd = connection.prepareStatement(createOrganisation, Statement.RETURN_GENERATED_KEYS);
+                pstmtAdd.setString(1, entity.getName());
+                pstmtAdd.setString(2, entity.getDescription());
+
+                pstmtAdd.executeUpdate();
+                ResultSet rs = pstmtAdd.getGeneratedKeys();
+
+
+                long organisationId = -1;
+                if (rs.next()) {
+                    organisationId = rs.getLong(1);
+                }
+                String assignOrganisationToUser = "INSERT INTO user_entity_role(username, role_id, organisation_id) VALUES (?, ?, ?)";
+                PreparedStatement pstmtAssign = connection.prepareStatement(assignOrganisationToUser);
+                pstmtAssign.setString(1, username);
+                pstmtAssign.setLong(2, 1);
+                pstmtAssign.setLong(3, organisationId);
+                int affectedRows = pstmtAssign.executeUpdate();
+                isCreated = affectedRows > 0;
+
+                connection.commit();
+                connection.setAutoCommit(true);
+
+            } catch (Exception exception) {
+                connection.rollback();
+                connection.setAutoCommit(true);
+            }
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+        return isCreated;
+    }
+
+    @Override
+    public Entity getEntityOnId(long id) {
+        return null;
+    }
+
+    @Override
+    public List<Entity> getAllEntitiesOnUsername(String username) {
+        List<Entity> organisations = new ArrayList<>();
 
         try (Connection connection = datasource.getConnection()) {
             String getAllOrganisations = """
@@ -62,47 +109,25 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
         }
 
         return organisations;
-
     }
 
     @Override
-    public void createOrganisation(String username, String organisationName, String organisationDescription) {
-
-        try (Connection connection = datasource.getConnection()) {
-            try {
-                connection.setAutoCommit(false);
-
-                String createOrganisation = "INSERT INTO organisation(name, description) VALUES (?, ?)";
-                PreparedStatement pstmtAdd = connection.prepareStatement(createOrganisation, Statement.RETURN_GENERATED_KEYS);
-                pstmtAdd.setString(1, organisationName);
-                pstmtAdd.setString(2, organisationDescription);
-
-                pstmtAdd.executeUpdate();
-                ResultSet rs = pstmtAdd.getGeneratedKeys();
-
-
-                long organisationId = -1;
-                if (rs.next()) {
-                    organisationId = rs.getLong(1);
-                }
-                String assignOrganisationToUser = "INSERT INTO user_entity_role(username, role_id, organisation_id) VALUES (?, ?, ?)";
-                PreparedStatement pstmtAssign = connection.prepareStatement(assignOrganisationToUser);
-                pstmtAssign.setString(1, username);
-                pstmtAssign.setLong(2, 1);
-                pstmtAssign.setLong(3, organisationId);
-                pstmtAssign.executeUpdate();
-
-                connection.commit();
-                connection.setAutoCommit(true);
-
-            } catch (Exception exception) {
-                connection.rollback();
-                connection.setAutoCommit(true);
-            }
-        } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
-        }
-
+    public boolean editEntity(Entity entity) {
+        return false;
     }
 
+    @Override
+    public boolean deleteEntity(long entityId) {
+        return false;
+    }
+
+    @Override
+    public boolean inviteToEntity(String inviteeUsername) {
+        return false;
+    }
+
+    @Override
+    public boolean archiveEntity(long entityId, boolean isArchived) {
+        return false;
+    }
 }
