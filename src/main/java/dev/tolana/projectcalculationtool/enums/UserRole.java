@@ -27,6 +27,7 @@ public enum UserRole {
     UserRole(long value) {
         roleId = value;
     }
+
     public long getRoleId() {
         return roleId;
     }
