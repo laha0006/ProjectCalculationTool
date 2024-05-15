@@ -275,6 +275,9 @@ INSERT INTO project(name,description,team_id) VALUES('Frontend Project','a proje
 INSERT INTO project(name,description,team_id) VALUES('Backend Project','a project',6);
 INSERT INTO project(name,description,team_id) VALUES('Frontend Project','a project',7);
 INSERT INTO project(name,description,team_id) VALUES('Backend Project','a project',8);
+INSERT INTO project(name,description,team_id, parent_id) VALUES('sub one','one',8, 1);
+INSERT INTO project(name,description,team_id, parent_id) VALUES('sub two','two',8, 9);
+INSERT INTO project(name,description,team_id, parent_id) VALUES('sub three','three',8,10);
 
 INSERT INTO task(name,description,project_id) VALUES('Frontend Task','Task',1);
 INSERT INTO task(name,description,project_id) VALUES('Backend Task','Task',2);
