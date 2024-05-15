@@ -1,6 +1,8 @@
 package dev.tolana.projectcalculationtool.dto;
 
 
+import dev.tolana.projectcalculationtool.enums.Status;
+
 import java.time.LocalDateTime;
 
 public record TaskDto(
@@ -9,7 +11,7 @@ public record TaskDto(
         long projectId,
         LocalDateTime deadline,
         int estimatedHours,
-        int status,
+        Status status,
         long parentId,
         long taskId
 ) {
