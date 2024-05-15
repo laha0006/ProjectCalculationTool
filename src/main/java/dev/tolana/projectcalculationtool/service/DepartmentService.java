@@ -22,12 +22,8 @@ public class DepartmentService {
     }
 
 
-    @PreAuthorize("@auth.hasAccess(#id," +
-                  "T(dev.tolana.projectcalculationtool.enums.AccessLevel).ORGANISATION," +
-                  "T(dev.tolana.projectcalculationtool.enums.Permission).READ)")
-    @PostFilter("@auth.hasAccess(filterObject.id," +
-                  "T(dev.tolana.projectcalculationtool.enums.AccessLevel).DEPARTMENT," +
-                  "T(dev.tolana.projectcalculationtool.enums.Permission).READ)")
+    @PreAuthorize("@auth.hasAccess(#id, T(dev.tolana.projectcalculationtool.enums.Permission).ORGANISATION_READ)")
+    @PostFilter("@auth.hasAccess(filterObject.id, T(dev.tolana.projectcalculationtool.enums.Permission).DEPARTMENT_READ)")
     public List<Department> getAll(long id) {
         return departmentRepository.getAll(id);
     }
