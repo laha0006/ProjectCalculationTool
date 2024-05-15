@@ -291,6 +291,8 @@ INSERT INTO users(username,password) VALUES('masiomasu','password');
 INSERT INTO users(username,password) VALUES('dosei','password');
 INSERT INTO users(username,password) VALUES('TheNewGuy','password');
 INSERT INTO users(username,password) VALUES('someguy','password');
+INSERT INTO users(username,password) VALUES('userA','password');
+INSERT INTO users(username,password) VALUES('userB','password');
 
 INSERT INTO user_entity_role(username,role_id,organisation_id) VALUES('tolana',1,1);
 INSERT INTO user_entity_role(username,role_id,organisation_id) VALUES('masiomasu',2,1);
