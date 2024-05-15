@@ -21,12 +21,14 @@ public class AuthorizationRepository {
     private final String TEAM_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE team_id = ? LIMIT 1";
     private final String DEPARTMENT_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE department_id = ? LIMIT 1";
     private final String ORGANIZATION_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE organisation_id = ? LIMIT 1";
+    private final String HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE task_id = ? OR project_id = ? OR team_id = ? OR department_id = ? OR organisation_id = ? LIMIT 1;";
 
     private final String ORGANIZATION_ROLE_SQL = "SELECT * FROM user_entity_role WHERE username = ? AND organisation_id = ?";
     private final String DEPARTMENT_ROLE_SQL = "SELECT * FROM user_entity_role WHERE username = ? AND (organisation_id = ? OR department_id = ?)";
     private final String TEAM_ROLE_SQL = "SELECT * FROM user_entity_role WHERE username = ? AND (organisation_id = ? OR department_id = ? OR team_id = ?)";
     private final String PROJECT_ROLE_SQL = "SELECT * FROM user_entity_role WHERE username = ? AND (organisation_id = ? OR department_id = ? OR team_id = ? OR project_id = ?)";
     private final String TASK_ROLE_SQL = "SELECT * FROM user_entity_role WHERE username = ? AND (organisation_id = ? OR department_id = ? OR team_id = ? OR project_id = ? OR task_id = ?)";
+    private final String USER_ENTITY_ROLE_SQL = "SELECT role_id FROM user_entity_role WHERE username = ? AND (organisation_id = ? OR department_id = ? OR team_id = ? OR project_id = ? OR task_id = ?)";
 
     private final String ROLES_PERMISSIONS_SQL = """
             SELECT r.id   AS role_id,
@@ -48,18 +50,42 @@ public class AuthorizationRepository {
     }
 
 
-    public HierarchyDto getHierarchy(long id, AccessLevel accessLevel) {
+//    public HierarchyDto getHierarchy(long id, AccessLevel accessLevel) {
+//        HierarchyDto hierarchyDto = null;
+//        String SQL = switch (accessLevel) {
+//            case TASK -> TASK_HIERARCHY_SQL;
+//            case PROJECT -> PROJECT_HIERARCHY_SQL;
+//            case TEAM -> TEAM_HIERARCHY_SQL;
+//            case DEPARTMENT -> DEPARTMENT_HIERARCHY_SQL;
+//            case ORGANISATION -> ORGANIZATION_HIERARCHY_SQL;
+//        };
+//        try (Connection connection = dataSource.getConnection()) {
+//            PreparedStatement preparedStatement = connection.prepareStatement(SQL);
+//            preparedStatement.setLong(1, id);
+//            ResultSet resultSet = preparedStatement.executeQuery();
+//            if (resultSet.next()) {
+//                hierarchyDto = new HierarchyDto(
+//                        resultSet.getLong(1),
+//                        resultSet.getLong(2),
+//                        resultSet.getLong(3),
+//                        resultSet.getLong(4),
+//                        resultSet.getByte(5)
+//                );
+//            }
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//        return hierarchyDto;
+//    }
+
+    public HierarchyDto getHierarchy(long id) {
         HierarchyDto hierarchyDto = null;
-        String SQL = switch (accessLevel) {
-            case TASK -> TASK_HIERARCHY_SQL;
-            case PROJECT -> PROJECT_HIERARCHY_SQL;
-            case TEAM -> TEAM_HIERARCHY_SQL;
-            case DEPARTMENT -> DEPARTMENT_HIERARCHY_SQL;
-            case ORGANISATION -> ORGANIZATION_HIERARCHY_SQL;
-        };
         try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(SQL);
-            preparedStatement.setLong(1, id);
+            PreparedStatement preparedStatement = connection.prepareStatement(HIERARCHY_SQL);
+            for(int i = 1; i <= 5; i++) {
+                preparedStatement.setLong(i, id);
+            }
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 hierarchyDto = new HierarchyDto(
@@ -101,61 +127,84 @@ public class AuthorizationRepository {
     }
 
 
-    public List<UserEntityRoleDto> getRoleIdsMatchingHierarchy(String username, HierarchyDto hierarchy, AccessLevel accessLevel) {
-        List<UserEntityRoleDto> roles = new ArrayList<>();
-        String SQL = switch (accessLevel) {
-            case TASK -> TASK_ROLE_SQL;
-            case PROJECT -> PROJECT_ROLE_SQL;
-            case TEAM -> TEAM_ROLE_SQL;
-            case DEPARTMENT -> DEPARTMENT_ROLE_SQL;
-            case ORGANISATION -> ORGANIZATION_ROLE_SQL;
-        };
+//    public List<UserEntityRoleDto> getRoleIdsMatchingHierarchy(String username, HierarchyDto hierarchy, AccessLevel accessLevel) {
+//        List<UserEntityRoleDto> roles = new ArrayList<>();
+//        String SQL = switch (accessLevel) {
+//            case TASK -> TASK_ROLE_SQL;
+//            case PROJECT -> PROJECT_ROLE_SQL;
+//            case TEAM -> TEAM_ROLE_SQL;
+//            case DEPARTMENT -> DEPARTMENT_ROLE_SQL;
+//            case ORGANISATION -> ORGANIZATION_ROLE_SQL;
+//        };
+//        try (Connection con = dataSource.getConnection()) {
+//            PreparedStatement preparedStatement = con.prepareStatement(SQL);
+//            preparedStatement.setString(1, username);
+//            switch (accessLevel) {
+//                case TASK -> {
+//                    preparedStatement.setLong(2, hierarchy.organizationId());
+//                    preparedStatement.setLong(3, hierarchy.departmentId());
+//                    preparedStatement.setLong(4, hierarchy.teamId());
+//                    preparedStatement.setLong(5, hierarchy.projectId());
+//                    preparedStatement.setLong(6, hierarchy.taskId());
+//                }
+//                case PROJECT -> {
+//                    preparedStatement.setLong(2, hierarchy.organizationId());
+//                    preparedStatement.setLong(3, hierarchy.departmentId());
+//                    preparedStatement.setLong(4, hierarchy.teamId());
+//                    preparedStatement.setLong(5, hierarchy.projectId());
+//                }
+//                case TEAM -> {
+//                    preparedStatement.setLong(2, hierarchy.organizationId());
+//                    preparedStatement.setLong(3, hierarchy.departmentId());
+//                    preparedStatement.setLong(4, hierarchy.teamId());
+//                }
+//                case DEPARTMENT -> {
+//                    preparedStatement.setLong(2, hierarchy.organizationId());
+//                    preparedStatement.setLong(3, hierarchy.departmentId());
+//                }
+//                case ORGANISATION -> {
+//                    preparedStatement.setLong(2, hierarchy.organizationId());
+//                }
+//            }
+//            ResultSet resultSet = preparedStatement.executeQuery();
+//            while (resultSet.next()) {
+//                roles.add(new UserEntityRoleDto(
+//                        resultSet.getString(2),
+//                        resultSet.getLong(3),
+//                        resultSet.getLong(4),
+//                        resultSet.getLong(5),
+//                        resultSet.getLong(6),
+//                        resultSet.getLong(7),
+//                        resultSet.getLong(8)
+//                ));
+//            }
+//
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//        return roles;
+//    }
+
+
+    public List<Long> getRoleIdsMatchingHierarchy(String username, HierarchyDto hierarchy) {
+        List<Long> roleIds = new ArrayList<>();
         try (Connection con = dataSource.getConnection()) {
-            PreparedStatement preparedStatement = con.prepareStatement(SQL);
+            PreparedStatement preparedStatement = con.prepareStatement(USER_ENTITY_ROLE_SQL);
             preparedStatement.setString(1, username);
-            switch (accessLevel) {
-                case TASK -> {
-                    preparedStatement.setLong(2, hierarchy.organizationId());
-                    preparedStatement.setLong(3, hierarchy.departmentId());
-                    preparedStatement.setLong(4, hierarchy.teamId());
-                    preparedStatement.setLong(5, hierarchy.projectId());
-                    preparedStatement.setLong(6, hierarchy.taskId());
-                }
-                case PROJECT -> {
-                    preparedStatement.setLong(2, hierarchy.organizationId());
-                    preparedStatement.setLong(3, hierarchy.departmentId());
-                    preparedStatement.setLong(4, hierarchy.teamId());
-                    preparedStatement.setLong(5, hierarchy.projectId());
-                }
-                case TEAM -> {
-                    preparedStatement.setLong(2, hierarchy.organizationId());
-                    preparedStatement.setLong(3, hierarchy.departmentId());
-                    preparedStatement.setLong(4, hierarchy.teamId());
-                }
-                case DEPARTMENT -> {
-                    preparedStatement.setLong(2, hierarchy.organizationId());
-                    preparedStatement.setLong(3, hierarchy.departmentId());
-                }
-                case ORGANISATION -> {
-                    preparedStatement.setLong(2, hierarchy.organizationId());
-                }
-            }
+            preparedStatement.setLong(2, hierarchy.organizationId());
+            preparedStatement.setLong(3, hierarchy.departmentId());
+            preparedStatement.setLong(4, hierarchy.teamId());
+            preparedStatement.setLong(5, hierarchy.projectId());
+            preparedStatement.setLong(6, hierarchy.taskId());
+
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                roles.add(new UserEntityRoleDto(
-                        resultSet.getString(2),
-                        resultSet.getLong(3),
-                        resultSet.getLong(4),
-                        resultSet.getLong(5),
-                        resultSet.getLong(6),
-                        resultSet.getLong(7),
-                        resultSet.getLong(8)
-                ));
+                roleIds.add(resultSet.getLong(1));
             }
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return roles;
+        return roleIds;
     }
 }
