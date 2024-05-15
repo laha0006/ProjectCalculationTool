@@ -2,6 +2,7 @@ package dev.tolana.projectcalculationtool.controller;
 
 import dev.tolana.projectcalculationtool.dto.ProjectOverviewDto;
 import dev.tolana.projectcalculationtool.dto.UserInformationDto;
+import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.Project;
 import dev.tolana.projectcalculationtool.service.ProjectService;
 import org.springframework.security.core.Authentication;
@@ -31,8 +32,9 @@ public class ProjectController {
     }
 
     @PostMapping("/addproject")
-    public String addProject(@ModelAttribute Project newProject) {
-        projectService.addProject(newProject);
+    public String addProject(@ModelAttribute Entity newProject, Authentication authentication) {
+        String username = authentication.getName();
+        projectService.addProject(username, newProject);
 
         return "redirect:/dashboard";
     }
@@ -47,12 +49,10 @@ public class ProjectController {
     }
 
     @GetMapping("/{projectId}/assign/members")
-    public String getAllMembersFromTeamId(@PathVariable long projectId, Model model, Authentication authentication) {
-        String username = authentication.getName();
-        long teamId = projectService.getTeamIdFromUsername(username);
+    public String getAllMembersFromTeamId(@PathVariable long teamId, @PathVariable long projectId, Model model, Authentication authentication) {
         ProjectOverviewDto project = projectService.getProjectOnId(projectId);
 
-        List<UserInformationDto> memberList = projectService.getAllTeamMembersFromTeamId(teamId, projectId);
+        List<UserInformationDto> memberList = projectService.getAllTeamMembersFromTeamId(teamId);
         model.addAttribute("projectName", project.name());
         model.addAttribute("teamMembers", memberList);
         model.addAttribute("projectId", projectId);
@@ -65,7 +65,7 @@ public class ProjectController {
                                              @PathVariable long projectId) {
         if (!selectedTeamMembers.isEmpty()) {
             projectService.assignTeamMembersToProject(projectId, selectedTeamMembers);
-        }
+        } //TODO GIVE LEADER OPTION TO ASSIGN TYPE OF ROLE
 
         return "redirect:/project/overview";
     }
