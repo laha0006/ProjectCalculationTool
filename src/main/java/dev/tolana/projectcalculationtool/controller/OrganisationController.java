@@ -1,7 +1,9 @@
 package dev.tolana.projectcalculationtool.controller;
 
 import dev.tolana.projectcalculationtool.dto.CreateOrganisationFormDto;
+import dev.tolana.projectcalculationtool.model.Department;
 import dev.tolana.projectcalculationtool.model.Organisation;
+import dev.tolana.projectcalculationtool.service.DepartmentService;
 import dev.tolana.projectcalculationtool.service.OrganisationService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -15,9 +17,11 @@ import java.util.List;
 public class OrganisationController {
 
     private final OrganisationService organisationService;
+    private final DepartmentService departmentService;
 
-    public OrganisationController(OrganisationService organisationService) {
+    public OrganisationController(OrganisationService organisationService, DepartmentService departmentService) {
         this.organisationService = organisationService;
+        this.departmentService = departmentService;
     }
 
     @GetMapping("")
@@ -32,6 +36,8 @@ public class OrganisationController {
     @GetMapping("/{id}")
     public String organisationPage(@PathVariable long id, Model model, Authentication authentication) {
         Organisation organisation = organisationService.getOrganisationsById(id);
+        List<Department> departments = departmentService.getAll(id);
+        model.addAttribute("allDepartments", departments);
         model.addAttribute("organisation", organisation);
         return "organisation/organisationView";
     }
