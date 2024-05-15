@@ -105,4 +105,26 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
 
     }
 
+    @Override
+    public Organisation getOrganisationById(long organisationId) {
+        Organisation organisation = null;
+        try(Connection con = datasource.getConnection()) {
+            PreparedStatement pstmt = con.prepareStatement("SELECT * FROM organisation WHERE id = ?");
+            pstmt.setLong(1, organisationId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                organisation = new Organisation(
+                        rs.getLong(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getTimestamp(4).toLocalDateTime(),
+                        rs.getBoolean(5)
+                );
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return organisation;
+    }
+
 }

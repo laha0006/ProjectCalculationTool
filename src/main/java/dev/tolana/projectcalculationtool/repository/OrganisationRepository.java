@@ -8,4 +8,6 @@ public interface OrganisationRepository {
     List<Organisation> getOrganisationsByUser(String username);
 
     void createOrganisation(String username, String organisationName, String organisationDescription);
+
+    Organisation getOrganisationById(long id);
 }
