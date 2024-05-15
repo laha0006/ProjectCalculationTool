@@ -3,6 +3,7 @@ package dev.tolana.projectcalculationtool.controller;
 import dev.tolana.projectcalculationtool.dto.EntityCreationDto;
 import dev.tolana.projectcalculationtool.dto.CreateOrganisationFormDto;
 import dev.tolana.projectcalculationtool.model.Department;
+import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.Organisation;
 import dev.tolana.projectcalculationtool.service.DepartmentService;
 import dev.tolana.projectcalculationtool.service.OrganisationService;
@@ -35,8 +36,8 @@ public class OrganisationController {
     }
 
     @GetMapping("/{id}")
-    public String organisationPage(@PathVariable long id, Model model, Authentication authentication) {
-        Organisation organisation = organisationService.getOrganisationsById(id);
+    public String organisationPage(@PathVariable long id, Model model) {
+        Entity organisation = organisationService.getOrganisationsById(id);
         List<Department> departments = departmentService.getAll(id);
         if (departments.isEmpty()) {
             model.addAttribute("alertWarning", "You're not part of any department.");
