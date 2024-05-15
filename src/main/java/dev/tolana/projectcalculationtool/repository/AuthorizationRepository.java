@@ -103,8 +103,6 @@ public class AuthorizationRepository {
 
     public List<UserEntityRoleDto> getRoleIdsMatchingHierarchy(String username, HierarchyDto hierarchy, AccessLevel accessLevel) {
         List<UserEntityRoleDto> roles = new ArrayList<>();
-        System.out.println("GET ROLES ACCESS LEVEL " + accessLevel);
-        System.out.println("ROLES HIERARCHY " + hierarchy);
         String SQL = switch (accessLevel) {
             case TASK -> TASK_ROLE_SQL;
             case PROJECT -> PROJECT_ROLE_SQL;
@@ -158,7 +156,6 @@ public class AuthorizationRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        System.out.println("ROLES: " + roles);
         return roles;
     }
 }
