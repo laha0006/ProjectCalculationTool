@@ -1,6 +1,6 @@
 package dev.tolana.projectcalculationtool.controller;
 
-import dev.tolana.projectcalculationtool.dto.CreateOrganisationFormDto;
+import dev.tolana.projectcalculationtool.dto.EntityCreationDto;
 import dev.tolana.projectcalculationtool.model.Organisation;
 import dev.tolana.projectcalculationtool.service.OrganisationService;
 import org.springframework.security.core.Authentication;
@@ -34,18 +34,16 @@ public class OrganisationController {
 
     @GetMapping("/create")
     public String createOrganisation(Model model) {
-        CreateOrganisationFormDto emptyOrganisationDto = new CreateOrganisationFormDto("", "");
-        model.addAttribute("organisation", emptyOrganisationDto);
+        EntityCreationDto emptyCreationDto = new EntityCreationDto("", "");
+        model.addAttribute("organisation", emptyCreationDto);
 
         return "organisation/createOrganisation";
     }
 
     @PostMapping("/create")
-    public String createOrganisation(@ModelAttribute CreateOrganisationFormDto organisationDto, Authentication authentication) {
+    public String createOrganisation(@ModelAttribute EntityCreationDto creationInfo, Authentication authentication) {
         String username = authentication.getName();
-        String orgName = organisationDto.orgName();
-        String orgDescription = organisationDto.orgDescription();
-        organisationService.createOrganisation(username, orgName, orgDescription);
+        organisationService.createOrganisation(username, creationInfo);
         return "redirect:/organisation";
     }
 
