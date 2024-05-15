@@ -1,5 +1,7 @@
 package dev.tolana.projectcalculationtool.repository;
 
+import dev.tolana.projectcalculationtool.dto.UserInformationDto;
+import dev.tolana.projectcalculationtool.enums.UserRole;
 import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.Organisation;
 import org.springframework.stereotype.Repository;
@@ -62,8 +64,25 @@ public class JdbcOrganisationRepository implements EntityCrudOperations {
     }
 
     @Override
-    public Entity getEntityOnId(long id) {
-        return null;
+    public Entity getEntityOnId(long organisationId) {
+        Entity organisation = null;
+        try(Connection con = datasource.getConnection()) {
+            PreparedStatement pstmt = con.prepareStatement("SELECT * FROM organisation WHERE id = ?");
+            pstmt.setLong(1, organisationId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                organisation = new Organisation(
+                        rs.getLong(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getTimestamp(4).toLocalDateTime(),
+                        rs.getBoolean(5)
+                );
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return organisation;
     }
 
     @Override
@@ -112,6 +131,11 @@ public class JdbcOrganisationRepository implements EntityCrudOperations {
     }
 
     @Override
+    public List<Entity> getAllEntitiesOnId(long entityId) {
+        return null;
+    }
+
+    @Override
     public boolean editEntity(Entity entity) {
         return false;
     }
@@ -129,5 +153,15 @@ public class JdbcOrganisationRepository implements EntityCrudOperations {
     @Override
     public boolean archiveEntity(long entityId, boolean isArchived) {
         return false;
+    }
+
+    @Override
+    public boolean assignUser(long entityId, List<String> username, UserRole role) {
+        return false;
+    }
+
+    @Override
+    public List<UserInformationDto> getUsersFromEntityId(long entityId) {
+        return null;
     }
 }
