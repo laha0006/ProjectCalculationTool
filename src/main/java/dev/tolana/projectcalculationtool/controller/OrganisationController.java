@@ -37,6 +37,9 @@ public class OrganisationController {
     public String organisationPage(@PathVariable long id, Model model, Authentication authentication) {
         Organisation organisation = organisationService.getOrganisationsById(id);
         List<Department> departments = departmentService.getAll(id);
+        if (departments.isEmpty()) {
+            model.addAttribute("alertWarning", "You're not part of any department.");
+        }
         model.addAttribute("allDepartments", departments);
         model.addAttribute("organisation", organisation);
         return "organisation/organisationView";
