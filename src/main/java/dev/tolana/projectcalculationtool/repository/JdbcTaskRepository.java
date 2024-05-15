@@ -1,5 +1,6 @@
 package dev.tolana.projectcalculationtool.repository;
 
+import dev.tolana.projectcalculationtool.dto.UserInformationDto;
 import dev.tolana.projectcalculationtool.enums.Status;
 import dev.tolana.projectcalculationtool.enums.UserRole;
 import dev.tolana.projectcalculationtool.model.Entity;
@@ -185,8 +186,13 @@ public class JdbcTaskRepository implements ResourceEntityCrudOperations {
     }
 
     @Override
-    public boolean assignUser(long entityId, String username, UserRole role) {
+    public boolean assignUser(long entityId, List<String> username, UserRole role) {
         return false;
+    }
+
+    @Override
+    public List<UserInformationDto> getUsersFromEntityId(long entityId) {
+        return null;
     }
 
     @Override
