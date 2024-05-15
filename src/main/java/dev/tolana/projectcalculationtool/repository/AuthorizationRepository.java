@@ -16,7 +16,11 @@ import java.util.*;
 
 @Repository
 public class AuthorizationRepository {
-    private final String HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE task_id = ? OR project_id = ? OR team_id = ? OR department_id = ? OR organisation_id = ? LIMIT 1;";
+    private final String ORGANISATION_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE organisation_id = ? LIMIT 1;";
+    private final String DEPARTMENT_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE department_id = ? LIMIT 1;";
+    private final String TEAM_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE team_id = ? LIMIT 1;";
+    private final String PROJECT_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE project_id = ? LIMIT 1;";
+    private final String TASK_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE task_id = ? LIMIT 1;";
     private final String USER_ENTITY_ROLE_SQL = "SELECT role_id FROM user_entity_role WHERE username = ? AND (organisation_id = ? OR department_id = ? OR team_id = ? OR project_id = ? OR task_id = ?)";
     private final String ROLES_PERMISSIONS_SQL = """
             SELECT r.id   AS role_id,
@@ -36,13 +40,18 @@ public class AuthorizationRepository {
         this.dataSource = dataSource;
     }
 
-    public HierarchyDto getHierarchy(long id) {
+    public HierarchyDto getHierarchy(long id, AccessLevel accessLevel) {
         HierarchyDto hierarchyDto = null;
+        String SQL = switch (accessLevel) {
+            case TASK -> TASK_HIERARCHY_SQL;
+            case PROJECT -> PROJECT_HIERARCHY_SQL;
+            case TEAM -> TEAM_HIERARCHY_SQL;
+            case DEPARTMENT -> DEPARTMENT_HIERARCHY_SQL;
+            case ORGANISATION -> ORGANISATION_HIERARCHY_SQL;
+        };
         try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(HIERARCHY_SQL);
-            for (int i = 1; i <= 5; i++) {
-                preparedStatement.setLong(i, id);
-            }
+            PreparedStatement preparedStatement = connection.prepareStatement(SQL);
+            preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 hierarchyDto = new HierarchyDto(
