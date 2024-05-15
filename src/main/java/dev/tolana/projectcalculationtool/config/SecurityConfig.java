@@ -15,7 +15,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
+@EnableMethodSecurity // enables @PreAuthorize annotation. // giver også @PostFilter annotation
 public class SecurityConfig {
 
     @Bean

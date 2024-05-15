@@ -5,6 +5,8 @@ import dev.tolana.projectcalculationtool.mapper.EntityDtoMapper;
 import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.Organisation;
 import dev.tolana.projectcalculationtool.repository.EntityCrudOperations;
+import dev.tolana.projectcalculationtool.repository.OrganisationRepository;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -42,5 +44,11 @@ public class OrganisationService {
     public void createOrganisation(String username, EntityCreationDto creationInfo) {
         Entity organisation = entityDtoMapper.toEntity(creationInfo);
         organisationRepository.createEntity(username, organisation);
+    }
+    //spring expression language...
+    @PreAuthorize("@auth.hasOrgansiationAccess(#organisationId, " +
+                  "T(dev.tolana.projectcalculationtool.enums.Permission).ORGANISATION_READ )")
+    public Organisation getOrganisationsById(long organisationId) {
+        return organisationRepository.getOrganisationById(organisationId);
     }
 }
