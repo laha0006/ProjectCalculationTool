@@ -60,4 +60,8 @@ public class ResourceEntity extends Entity{
     public void setParentId(long parentId) {
         this.parentId = parentId;
     }
+
+    public long getStatusId() {
+        return status.getId();
+    }
 }
