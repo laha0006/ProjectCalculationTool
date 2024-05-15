@@ -1,5 +1,6 @@
 package dev.tolana.projectcalculationtool.repository;
 
+import dev.tolana.projectcalculationtool.dto.UserInformationDto;
 import dev.tolana.projectcalculationtool.enums.UserRole;
 import dev.tolana.projectcalculationtool.model.Entity;
 
@@ -22,5 +23,7 @@ public interface EntityCrudOperations {
 
     boolean archiveEntity(long entityId, boolean isArchived);
 
-    boolean assignUser(long entityId, String username, UserRole role);
+    boolean assignUser(long entityId, List<String> username, UserRole role);
+
+    List<UserInformationDto> getUsersFromEntityId(long entityId);
 }
