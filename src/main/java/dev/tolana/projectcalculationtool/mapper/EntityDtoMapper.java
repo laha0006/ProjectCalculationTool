@@ -1,12 +1,10 @@
 package dev.tolana.projectcalculationtool.mapper;
 
 import dev.tolana.projectcalculationtool.dto.EntityCreationDto;
+import dev.tolana.projectcalculationtool.dto.ProjectOverviewDto;
 import dev.tolana.projectcalculationtool.dto.TaskDto;
 import dev.tolana.projectcalculationtool.enums.Status;
-import dev.tolana.projectcalculationtool.model.Entity;
-import dev.tolana.projectcalculationtool.model.Organisation;
-import dev.tolana.projectcalculationtool.model.ResourceEntity;
-import dev.tolana.projectcalculationtool.model.Task;
+import dev.tolana.projectcalculationtool.model.*;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -86,5 +84,32 @@ public class EntityDtoMapper {
         }
 
         return taskDtoList;
+    }
+
+    public List<ProjectOverviewDto> toProjectOverviewDtoList(List<Project> projectList) {
+        List<ProjectOverviewDto> projectOverviewDtoList = new ArrayList<>();
+
+        for (Project project : projectList) {
+            ProjectOverviewDto projectOverviewDto = new ProjectOverviewDto(
+                    project.getName(),
+                    project.getDeadline(),
+                    project.getAllottedHours(),
+                    project.getStatus(),
+                    project.getId()
+            );
+            projectOverviewDtoList.add(projectOverviewDto);
+        }
+
+        return projectOverviewDtoList;
+    }
+
+    public ProjectOverviewDto toProjectOverviewDto(Project project) {
+        return new ProjectOverviewDto(
+                project.getName(),
+                project.getDeadline(),
+                project.getAllottedHours(),
+                project.getStatus(),
+                project.getId()
+        );
     }
 }
