@@ -2,7 +2,7 @@ package dev.tolana.projectcalculationtool.model;
 
 import java.time.LocalDateTime;
 
-public class Team extends HierarchicalEntity{
+public class Team extends Entity {
 
     private final long departmentId;
 
