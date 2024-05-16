@@ -135,9 +135,21 @@ public class JdbcTaskRepository implements TaskRepository {
     public List<Entity> getAllEntitiesOnId(long projectId) {
         List<Entity> taskList = new ArrayList<>();
         String retrieveAllTaskOnProjectId = """
-                SELECT * FROM task t
-                JOIN user_entity_role uer ON uer.project_id = t.project_id
-                WHERE t.project_id = ? AND t.parent_id IS NULL;
+                SELECT
+                t.id,
+                t.name,
+                t.description,
+                t.project_id,
+                t.date_created,
+                t.deadline,
+                t.estimated_hours,
+                t.actual_hours,
+                s.name,
+                t.parent_id,
+                t.archived
+                FROM task t
+                LEFT JOIN status s ON t.status = s.id
+                WHERE t.project_id = ? AND t.parent_id IS NULL
                 """;
 
         try (Connection connection = dataSource.getConnection()) {
