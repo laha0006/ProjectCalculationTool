@@ -1,10 +1,12 @@
-package dev.tolana.projectcalculationtool.repository;
+package dev.tolana.projectcalculationtool.repository.impl;
 
 import dev.tolana.projectcalculationtool.dto.UserInformationDto;
 import dev.tolana.projectcalculationtool.enums.Status;
 import dev.tolana.projectcalculationtool.enums.UserRole;
 import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.Project;
+import dev.tolana.projectcalculationtool.repository.EntityCrudOperations;
+import dev.tolana.projectcalculationtool.repository.ProjectRepository;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -15,7 +17,7 @@ import java.util.List;
 import java.util.Set;
 
 @Repository
-public class JdbcProjectRepository implements EntityCrudOperations {
+public class JdbcProjectRepository implements ProjectRepository {
 
     private DataSource dataSource;
 
@@ -268,5 +270,10 @@ public class JdbcProjectRepository implements EntityCrudOperations {
             throw new RuntimeException(sqlException);
         }
         return roles;
+    }
+
+    @Override
+    public boolean changeStatus(long resourceEntityId) {
+        return false;
     }
 }

@@ -1,4 +1,4 @@
-package dev.tolana.projectcalculationtool.repository;
+package dev.tolana.projectcalculationtool.repository.impl;
 
 import dev.tolana.projectcalculationtool.dto.UserInformationDto;
 import dev.tolana.projectcalculationtool.enums.Status;
@@ -6,6 +6,8 @@ import dev.tolana.projectcalculationtool.enums.UserRole;
 import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.ResourceEntity;
 import dev.tolana.projectcalculationtool.model.Task;
+import dev.tolana.projectcalculationtool.repository.ResourceEntityCrudOperations;
+import dev.tolana.projectcalculationtool.repository.TaskRepository;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -15,7 +17,7 @@ import java.util.List;
 import java.util.Set;
 
 @Repository
-public class JdbcTaskRepository implements ResourceEntityCrudOperations {
+public class JdbcTaskRepository implements TaskRepository {
 
     private final DataSource dataSource;
 
