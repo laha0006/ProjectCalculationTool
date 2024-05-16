@@ -13,6 +13,7 @@
             <header th:replace="~{fragments/header :: header}"></header>
             <main class="d-flex justify-content-center text-center bg-secondary-subtle py-3 px-5 rounded shadow">
                 <div class="" style="width: 800px">
+                    <h1>Dine Organisationer</h1>
                     <div class="row row-cols-1 row-cols-md-4 g-2">
                         <div class="col" th:each="organisation : ${allUserOrgs}">
                             <a class="text-decoration-none text-reset"
