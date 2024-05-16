@@ -19,7 +19,7 @@
                                th:href="@{organisation/{id}(id = ${organisation.id}) }">
                                 <div class="card overflow-hidden" style="min-height: 100px; max-height: 100px;">
                                     <div class="card-body">
-                                        <h5 class="card-title" th:text="${organisation.name}"></h5>
+                                        <h5 class="card-title" th:text="${organisation.entityName}"></h5>
                                         <p class="card-text" th:text="${organisation.description}"></p>
                                     </div>
                                 </div>
