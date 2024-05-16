@@ -21,23 +21,16 @@ public class TaskService {
         this.entityDtoMapper = entityDtoMapper;
     }
 
-    @PreAuthorize("@auth.hasTaskAccess(#newTask.projectId(), " +
-            "T(dev.tolana.projectcalculationtool.enums.Permission).TASK_CREATE)")
     public void createTask(String username, TaskDto newTask) {
         Entity task =  entityDtoMapper.convertToEntity(newTask);
         taskRepository.createEntity(username, task);
     }
-
-    @PreAuthorize("@auth.hasTaskAccess(#projectId(), " +
-            "T(dev.tolana.projectcalculationtool.enums.Permission).TASK_READ)")
 
     public List<TaskDto> getAllProjectTasks(long projectId) {
         List<Entity> taskList = taskRepository.getAllEntitiesOnId(projectId);
         return entityDtoMapper.toTaskDtoList(taskList);
     }
 
-    @PreAuthorize("@auth.hasTaskAccess(#taskId, " +
-            "T(dev.tolana.projectcalculationtool.enums.Permission).TASK_READ)")
     public TaskDto getTaskOnId(long taskId) {
         Entity task = taskRepository.getEntityOnId(taskId);
         return entityDtoMapper.convertToTaskDto((Task) task);
