@@ -249,13 +249,12 @@ public class JdbcProjectRepository implements EntityCrudOperations {
     }
 
     @Override
-    public Set<UserRole> getAllUserRoles() {
-        Set<UserRole> roles = new HashSet<>();
+    public List<UserRole> getAllUserRoles() {
+        List<UserRole> roles = new ArrayList<>(2);
         String getAllUserRoles = """
                 SELECT name
                 FROM role
-                WHERE name LIKE 'PROJECT%' AND name
-                NOT IN(SELECT name FROM role WHERE name = 'PROJECT_OWNER');;
+                WHERE name = 'PROJECT_ADMIN' OR name = 'PROJECT_MEMBER';
                 """;
         try(Connection connection = dataSource.getConnection()) {
             PreparedStatement pstmt = connection.prepareStatement(getAllUserRoles);

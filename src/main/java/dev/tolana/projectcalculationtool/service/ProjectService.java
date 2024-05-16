@@ -45,7 +45,7 @@ public class ProjectService {
         return entityDtoMapper.toProjectOverviewDto((Project) project);
     }
 
-    public Set<UserRole> getAllUserRoles() {
+    public List<UserRole> getAllUserRoles() {
         return projectRepository.getAllUserRoles();
     }
 }

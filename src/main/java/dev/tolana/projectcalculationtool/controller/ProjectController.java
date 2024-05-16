@@ -55,7 +55,7 @@ public class ProjectController {
         ProjectOverviewDto project = projectService.getProjectOnId(projectId);
 
         List<UserInformationDto> memberList = projectService.getAllTeamMembersFromTeamId(teamId);
-        Set<UserRole> userRoles = projectService.getAllUserRoles();
+        List<UserRole> userRoles = projectService.getAllUserRoles();
 
         model.addAttribute("projectName", project.name());
         model.addAttribute("teamMembers", memberList);
