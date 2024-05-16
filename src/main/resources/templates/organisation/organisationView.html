@@ -18,7 +18,7 @@
                     <h3 th:if="${allDepartments.isEmpty()}">
                         You're not part of any departments!
                     </h3>
-                    <h2 th:each="dept : ${allDepartments}" th:text="${dept.name}"></h2>
+                    <h2 th:each="dept : ${allDepartments}" th:text="${dept.entityName}"></h2>
                 </div>
             </main>
         </div>

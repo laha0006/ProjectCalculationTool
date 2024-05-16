@@ -25,6 +25,11 @@
                             <label for="description" class="form-label">Organisation beskrivelse: </label>
                             <input id="description" class="form-control" type="text" th:name="description" required>
                         </div>
+
+                        <label>
+                            <input th:field="*{foreignEntityId}" hidden="hidden">
+                        </label>
+
                         <div class="form-group mt-2">
                             <button class="btn btn-success fw-bold" type="submit">Opret</button>
                         </div>
