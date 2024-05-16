@@ -10,7 +10,9 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public class JdbcProjectRepository implements EntityCrudOperations {
@@ -244,5 +246,28 @@ public class JdbcProjectRepository implements EntityCrudOperations {
         }
 
         return userInformationDtoList;
+    }
+
+    @Override
+    public Set<UserRole> getAllUserRoles() {
+        Set<UserRole> roles = new HashSet<>();
+        String getAllUserRoles = """
+                SELECT name
+                FROM role
+                WHERE name LIKE 'PROJECT%' AND name
+                NOT IN(SELECT name FROM role WHERE name = 'PROJECT_OWNER');;
+                """;
+        try(Connection connection = dataSource.getConnection()) {
+            PreparedStatement pstmt = connection.prepareStatement(getAllUserRoles);
+            ResultSet userRoles = pstmt.executeQuery();
+
+            while (userRoles.next()) {
+                roles.add(UserRole.valueOf(userRoles.getString(1)));
+            }
+
+        }catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+        return roles;
     }
 }
