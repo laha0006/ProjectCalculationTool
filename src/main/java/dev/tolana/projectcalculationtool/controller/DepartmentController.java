@@ -1,5 +1,6 @@
 package dev.tolana.projectcalculationtool.controller;
 
+import dev.tolana.projectcalculationtool.dto.EntityCreationDto;
 import dev.tolana.projectcalculationtool.dto.EntityViewDto;
 import dev.tolana.projectcalculationtool.dto.CreateDepartmentFormDto;
 import dev.tolana.projectcalculationtool.model.Department;
@@ -30,15 +31,15 @@ public class DepartmentController {
 
     @GetMapping("/create")
     public String createDepartment(Model model, @PathVariable long orgId) {
-        CreateDepartmentFormDto emptyDepartmentDto = new CreateDepartmentFormDto("", "", orgId);
+        EntityCreationDto emptyDepartmentDto = new EntityCreationDto("", "", orgId);
         model.addAttribute("department", emptyDepartmentDto);
         return "department/createDepartment";
     }
 
     @PostMapping("/create")
-    public String createDepartment(@ModelAttribute CreateDepartmentFormDto departmentDto, RedirectAttributes redirectAttributes, Authentication authentication) {
+    public String createDepartment(@ModelAttribute EntityCreationDto departmentDto, RedirectAttributes redirectAttributes, Authentication authentication) {
         departmentService.createDepartment(departmentDto, authentication.getName());
         redirectAttributes.addFlashAttribute("alertSuccess", "Department created successfully");
-        return "redirect:/organisation/" + departmentDto.organisationId();
+        return "redirect:/organisation/" + departmentDto.foreignEntityId();
     }
 }
