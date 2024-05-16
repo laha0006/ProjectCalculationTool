@@ -137,7 +137,9 @@ SELECT tsk.id AS task_id,
        pjt.id AS project_id,
        tm.id  AS team_id,
        dpt.id AS department_id,
-       org.id AS organisation_id
+       org.id AS organisation_id,
+       pjt.parent_id AS project_parent_id,
+       tsk.parent_id AS task_parent_id
 FROM organisation org
      LEFT JOIN department dpt
                ON org.id = dpt.organisation_id
@@ -147,4 +149,3 @@ FROM organisation org
                ON tm.id = pjt.team_id
      LEFT JOIN task tsk
                ON pjt.id = tsk.project_id;
-
