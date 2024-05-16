@@ -28,5 +28,5 @@ public interface EntityCrudOperations {
 
     List<UserInformationDto> getUsersFromEntityId(long entityId);
 
-    Set<UserRole> getAllUserRoles();
+    List<UserRole> getAllUserRoles();
 }
