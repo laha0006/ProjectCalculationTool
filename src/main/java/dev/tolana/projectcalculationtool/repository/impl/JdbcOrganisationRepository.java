@@ -41,8 +41,9 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
                 pstmtAdd.executeUpdate();
                 ResultSet rs = pstmtAdd.getGeneratedKeys();
 
+                long organisationId = 0;
                 if (rs.next()) {
-                    long organisationId = rs.getLong(1);
+                    organisationId = rs.getLong(1);
                     RoleAssignUtil.assignOrganisationRole(connection, organisationId, UserRole.ORGANISATION_OWNER, username);
                 }
                 String assignOrganisationToUser = "INSERT INTO user_entity_role(username, role_id, organisation_id) VALUES (?, ?, ?)";
