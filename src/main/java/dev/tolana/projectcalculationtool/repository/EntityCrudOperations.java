@@ -5,6 +5,7 @@ import dev.tolana.projectcalculationtool.enums.UserRole;
 import dev.tolana.projectcalculationtool.model.Entity;
 
 import java.util.List;
+import java.util.Set;
 
 public interface EntityCrudOperations {
 
@@ -26,4 +27,6 @@ public interface EntityCrudOperations {
     boolean assignUser(long entityId, List<String> username, UserRole role);
 
     List<UserInformationDto> getUsersFromEntityId(long entityId);
+
+    Set<UserRole> getAllUserRoles();
 }
