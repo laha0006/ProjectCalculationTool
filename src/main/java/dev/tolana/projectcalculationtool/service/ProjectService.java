@@ -10,6 +10,7 @@ import dev.tolana.projectcalculationtool.repository.ResourceEntityCrudOperations
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class ProjectService {
@@ -42,5 +43,9 @@ public class ProjectService {
     public ProjectOverviewDto getProjectOnId(long projectId) {
         Entity project = projectRepository.getEntityOnId(projectId);
         return entityDtoMapper.toProjectOverviewDto((Project) project);
+    }
+
+    public Set<UserRole> getAllUserRoles() {
+        return projectRepository.getAllUserRoles();
     }
 }
