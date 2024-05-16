@@ -33,10 +33,10 @@ public class OrganisationController {
         return "organisation/userOrganisations";
     }
 
-    @GetMapping("/{id}")
-    public String organisationPage(@PathVariable long id, Model model, Authentication authentication) {
-        Organisation organisation = organisationService.getOrganisationsById(id);
-        List<Department> departments = departmentService.getAll(id);
+    @GetMapping("/{orgId}")
+    public String organisationPage(@PathVariable long orgId, Model model, Authentication authentication) {
+        Organisation organisation = organisationService.getOrganisationsById(orgId);
+        List<Department> departments = departmentService.getAll(orgId);
         if (departments.isEmpty()) {
             model.addAttribute("alertWarning", "You're not part of any department.");
         }
