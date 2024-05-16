@@ -167,7 +167,7 @@ public class JdbcOrganisationRepository implements EntityCrudOperations {
     }
 
     @Override
-    public Set<UserRole> getAllUserRoles() {
+    public List<UserRole> getAllUserRoles() {
         return null;
     }
 }
