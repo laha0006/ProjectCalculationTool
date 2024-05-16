@@ -1,5 +1,6 @@
 package dev.tolana.projectcalculationtool.repository;
 
+import dev.tolana.projectcalculationtool.repository.impl.JdbcTaskRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
