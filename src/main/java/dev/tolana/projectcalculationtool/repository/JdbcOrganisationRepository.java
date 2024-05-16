@@ -11,6 +11,7 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public class JdbcOrganisationRepository implements EntityCrudOperations {
@@ -162,6 +163,11 @@ public class JdbcOrganisationRepository implements EntityCrudOperations {
 
     @Override
     public List<UserInformationDto> getUsersFromEntityId(long entityId) {
+        return null;
+    }
+
+    @Override
+    public Set<UserRole> getAllUserRoles() {
         return null;
     }
 }
