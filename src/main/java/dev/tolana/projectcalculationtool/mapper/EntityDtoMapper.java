@@ -1,6 +1,7 @@
 package dev.tolana.projectcalculationtool.mapper;
 
 import dev.tolana.projectcalculationtool.dto.EntityCreationDto;
+import dev.tolana.projectcalculationtool.dto.EntityViewDto;
 import dev.tolana.projectcalculationtool.dto.ProjectOverviewDto;
 import dev.tolana.projectcalculationtool.dto.TaskDto;
 import dev.tolana.projectcalculationtool.enums.Status;
@@ -39,7 +40,7 @@ public class EntityDtoMapper {
         return organisationList;
     }
 
-    public TaskDto convertToDto(Task task) {
+    public TaskDto convertToTaskDto(Task task) {
 
         String taskName = task.getName();
         String taskDescription = task.getDescription();
@@ -51,6 +52,80 @@ public class EntityDtoMapper {
         long taskId = task.getId();
 
         return new TaskDto(taskName, taskDescription, projectId, deadline, estimatedHours, status, parentId, taskId);
+    }
+
+    public EntityViewDto convertToEntityViewDto(Entity entity) {
+
+        if (entity instanceof Organisation organisation) {
+            return new EntityViewDto(
+                    organisation.getName(),
+                    organisation.getDescription(),
+                    organisation.getId(),
+                    0,
+                    organisation.isArchived());
+        }
+
+        if (entity instanceof Department department) {
+            return new EntityViewDto(
+                    department.getName(),
+                    department.getDescription(),
+                    department.getId(),
+                    department.getOrganisationId(),
+                    department.isArchived());
+        }
+
+        if (entity instanceof Team team) {
+            return new EntityViewDto(
+                    team.getName(),
+                    team.getDescription(),
+                    team.getId(),
+                    team.getDepartmentId(),
+                    team.isArchived());
+        }
+
+        return null;
+    }
+
+    public List<EntityViewDto> convertToEntityViewDtoList(List<Entity> entityList) {
+        List<EntityViewDto> entityViewDtoList = new ArrayList<>();
+        EntityViewDto entityViewDto;
+
+        for (Entity entity:entityList) {
+            if (entity instanceof Organisation organisation) {
+                  entityViewDto = new EntityViewDto(
+                        organisation.getName(),
+                        organisation.getDescription(),
+                        organisation.getId(),
+                        0,
+                          organisation.isArchived());
+
+                 entityViewDtoList.add(entityViewDto);
+            }
+
+            if (entity instanceof Department department) {
+                 entityViewDto = new EntityViewDto(
+                        department.getName(),
+                        department.getDescription(),
+                        department.getId(),
+                        department.getOrganisationId(),
+                         department.isArchived());
+
+                entityViewDtoList.add(entityViewDto);
+            }
+
+            if (entity instanceof Team team) {
+                entityViewDto = new EntityViewDto(
+                        team.getName(),
+                        team.getDescription(),
+                        team.getId(),
+                        team.getDepartmentId(),
+                        team.isArchived());
+
+                entityViewDtoList.add(entityViewDto);
+            }
+        }
+
+        return entityViewDtoList;
     }
 
     public Entity convertToEntity(TaskDto taskDto) {
