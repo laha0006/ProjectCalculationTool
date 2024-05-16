@@ -5,6 +5,9 @@ import dev.tolana.projectcalculationtool.mapper.EntityDtoMapper;
 import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.repository.DepartmentRepository;
 import dev.tolana.projectcalculationtool.repository.impl.JdbcDepartmentRepository;
+import dev.tolana.projectcalculationtool.dto.CreateDepartmentFormDto;
+import dev.tolana.projectcalculationtool.model.Department;
+import dev.tolana.projectcalculationtool.repository.JdbcDepartmentRepository;
 import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +29,9 @@ public class DepartmentService {
         return entityDtoMapper.convertToEntityViewDto(department);
     }
 
-
+    public void createDepartment(CreateDepartmentFormDto departmentFormDto, String username) {
+        departmentRepository.createDepartment(departmentFormDto, username);
+    }
 //    @PreAuthorize("@auth.hasAccess(#id, T(dev.tolana.projectcalculationtool.enums.Permission).ORGANISATION_READ)")
 
     //filterObject referes to the current object of the collection, when looping.

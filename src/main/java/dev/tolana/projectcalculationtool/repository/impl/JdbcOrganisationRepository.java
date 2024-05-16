@@ -3,9 +3,11 @@ package dev.tolana.projectcalculationtool.repository.impl;
 import dev.tolana.projectcalculationtool.dto.UserInformationDto;
 import dev.tolana.projectcalculationtool.enums.UserRole;
 import dev.tolana.projectcalculationtool.model.Entity;
+import dev.tolana.projectcalculationtool.enums.UserRole;
 import dev.tolana.projectcalculationtool.model.Organisation;
 import dev.tolana.projectcalculationtool.repository.EntityCrudOperations;
 import dev.tolana.projectcalculationtool.repository.OrganisationRepository;
+import dev.tolana.projectcalculationtool.util.RoleAssignUtil;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -13,7 +15,6 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Repository
 public class JdbcOrganisationRepository implements OrganisationRepository {
@@ -40,10 +41,9 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
                 pstmtAdd.executeUpdate();
                 ResultSet rs = pstmtAdd.getGeneratedKeys();
 
-
-                long organisationId = -1;
                 if (rs.next()) {
-                    organisationId = rs.getLong(1);
+                    long organisationId = rs.getLong(1);
+                    RoleAssignUtil.assignOrganisationRole(connection, organisationId, UserRole.ORGANISATION_OWNER, username);
                 }
                 String assignOrganisationToUser = "INSERT INTO user_entity_role(username, role_id, organisation_id) VALUES (?, ?, ?)";
                 PreparedStatement pstmtAssign = connection.prepareStatement(assignOrganisationToUser);
@@ -52,6 +52,7 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
                 pstmtAssign.setLong(3, organisationId);
                 int affectedRows = pstmtAssign.executeUpdate();
                 isCreated = affectedRows > 0;
+
 
                 connection.commit();
                 connection.setAutoCommit(true);
