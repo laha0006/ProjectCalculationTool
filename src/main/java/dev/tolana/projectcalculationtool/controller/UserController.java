@@ -37,4 +37,15 @@ public class UserController {
 
         return "redirect:/user/login";
     }
+
+    @GetMapping("/invitations")
+    public String invitations(Model model) {
+        return "user/invitations";
+    }
+
+    @PostMapping("/accept")
+    public String acceptInvite() {
+        int orgid = 1;
+        return "redirect:/organisation/"+ orgid;
+    }
 }
