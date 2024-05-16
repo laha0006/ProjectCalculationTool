@@ -45,6 +45,11 @@ public class OrganisationController {
         return "organisation/organisationView";
     }
 
+    @GetMapping("/{orgId}/invite")
+    public String invitePage(@PathVariable long orgId, Model model) {
+        return "organisation/invite";
+    }
+
     @GetMapping("/create")
     public String createOrganisation(Model model) {
         CreateOrganisationFormDto emptyOrganisationDto = new CreateOrganisationFormDto("", "");
