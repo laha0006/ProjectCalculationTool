@@ -21,7 +21,7 @@ public class AuthorizationRepository {
     private final String TEAM_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE team_id = ? LIMIT 1;";
     private final String PROJECT_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE project_id = ? LIMIT 1;";
     private final String TASK_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE task_id = ? LIMIT 1;";
-    private final String USER_ENTITY_ROLE_SQL = "SELECT role_id FROM user_entity_role WHERE username = ? AND (organisation_id = ? OR department_id = ? OR team_id = ? OR project_id = ? OR task_id = ?)";
+    private final String USER_ENTITY_ROLE_SQL = "SELECT role_id FROM user_entity_role WHERE username = ? AND (organisation_id = ? OR department_id = ? OR team_id = ? OR project_id IN (?,?) OR task_id IN (?,?));\n";
     private final String ROLES_PERMISSIONS_SQL = """
             SELECT r.id   AS role_id,
                    r.name AS role_name,
@@ -59,7 +59,9 @@ public class AuthorizationRepository {
                         resultSet.getLong(2),
                         resultSet.getLong(3),
                         resultSet.getLong(4),
-                        resultSet.getByte(5)
+                        resultSet.getLong(5),
+                        resultSet.getLong(6),
+                        resultSet.getLong(7)
                 );
             }
         } catch (SQLException e) {
@@ -101,7 +103,9 @@ public class AuthorizationRepository {
             preparedStatement.setLong(3, hierarchy.departmentId());
             preparedStatement.setLong(4, hierarchy.teamId());
             preparedStatement.setLong(5, hierarchy.projectId());
-            preparedStatement.setLong(6, hierarchy.taskId());
+            preparedStatement.setLong(6, hierarchy.parentProjectId());
+            preparedStatement.setLong(7, hierarchy.taskId());
+            preparedStatement.setLong(8, hierarchy.parentTaskId());
 
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {

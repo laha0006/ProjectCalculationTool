@@ -94,12 +94,12 @@ public class AuthorizationServiceTests {
 //        assertTrue(auth.canPerform(1, "userB", Permission.PROJECT_KICK));
 //    }
 
-//    @Test
-//    @WithMockUser("userA")
-//    public void subProjectTest() throws SQLException {
-//        RoleAssignUtil.assignProjectRole(con, 1, UserRole.PROJECT_MEMBER, "userA");
-//        assertTrue(auth.hasProjectAccess(1, Permission.PROJECT_READ));
-//    }
+    @Test
+    @WithMockUser("userA")
+    public void subProjectTest() throws SQLException {
+        RoleAssignUtil.assignProjectRole(con, 1, UserRole.PROJECT_MEMBER, "userA");
+        assertTrue(auth.hasProjectAccess(9, Permission.PROJECT_READ));
+    }
 
 
 }
