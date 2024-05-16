@@ -31,7 +31,7 @@
                             <td th:text="${task.estimatedHours}"></td>
                             <td th:text="${task.status}"></td>
                             <td >
-                                <a th:href="@{/task/{taskId}/create/subtask/{projectId} (taskId=${task.taskId}, projectId=${projectId})}">
+                                <a th:href="@{{taskId}/create/subtask (taskId=${task.parentId})}">
                                     <button class="btn btn-success fw-bold">Opret underopgave</button>
                                 </a>
                             </td>
@@ -39,7 +39,7 @@
                         </tbody>
                     </table>
                     <div class="form-group">
-                        <a th:href="@{/task/{projectId}/create (projectId=${projectId})}">
+                        <a th:href="@{create}">
                             <button class="btn btn-success fw-bold">Opret opgave</button>
                         </a>
                     </div>

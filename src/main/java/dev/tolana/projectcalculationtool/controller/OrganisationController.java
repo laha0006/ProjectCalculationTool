@@ -1,7 +1,8 @@
 package dev.tolana.projectcalculationtool.controller;
 
-import dev.tolana.projectcalculationtool.dto.CreateOrganisationFormDto;
-import dev.tolana.projectcalculationtool.model.Department;
+import dev.tolana.projectcalculationtool.dto.EntityCreationDto;
+import dev.tolana.projectcalculationtool.dto.EntityViewDto;
+import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.Organisation;
 import dev.tolana.projectcalculationtool.service.DepartmentService;
 import dev.tolana.projectcalculationtool.service.OrganisationService;
@@ -27,16 +28,16 @@ public class OrganisationController {
     @GetMapping("")
     public String organisationMainPage(Model model, Authentication authentication) {
         String username = authentication.getName();
-        List<Organisation> listOfUserOrgs = organisationService.getNotArchivedOrganisationsByUser(username);
+        List<EntityViewDto> listOfUserOrgs = organisationService.getNotArchivedOrganisationsByUser(username);
         model.addAttribute("allUserOrgs", listOfUserOrgs);
 
         return "organisation/userOrganisations";
     }
 
     @GetMapping("/{orgId}")
-    public String organisationPage(@PathVariable long orgId, Model model, Authentication authentication) {
-        Organisation organisation = organisationService.getOrganisationsById(orgId);
-        List<Department> departments = departmentService.getAll(orgId);
+    public String organisationPage(@PathVariable("orgId") long organisationId, Model model) {
+        Entity organisation = organisationService.getOrganisationsById(organisationId);
+        List<EntityViewDto> departments = departmentService.getAll(organisationId);
         if (departments.isEmpty()) {
             model.addAttribute("alertWarning", "You're not part of any department.");
         }
@@ -47,18 +48,16 @@ public class OrganisationController {
 
     @GetMapping("/create")
     public String createOrganisation(Model model) {
-        CreateOrganisationFormDto emptyOrganisationDto = new CreateOrganisationFormDto("", "");
-        model.addAttribute("organisation", emptyOrganisationDto);
+        EntityCreationDto emptyCreationDto = new EntityCreationDto("", "", 0);
+        model.addAttribute("organisation", emptyCreationDto);
 
         return "organisation/createOrganisation";
     }
 
     @PostMapping("/create")
-    public String createOrganisation(@ModelAttribute CreateOrganisationFormDto organisationDto, Authentication authentication) {
+    public String createOrganisation(@ModelAttribute EntityCreationDto creationInfo, Authentication authentication) {
         String username = authentication.getName();
-        String orgName = organisationDto.orgName();
-        String orgDescription = organisationDto.orgDescription();
-        organisationService.createOrganisation(username, orgName, orgDescription);
+        organisationService.createOrganisation(username, creationInfo);
         return "redirect:/organisation";
     }
 

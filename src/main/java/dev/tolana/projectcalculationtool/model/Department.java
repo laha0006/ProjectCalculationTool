@@ -1,37 +1,23 @@
 package dev.tolana.projectcalculationtool.model;
 
-public class Department {
-    private long id;
-    private String name;
-    private String description;
+import java.time.LocalDateTime;
 
-    public Department(long id, String name, String description) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
+public class Department extends Entity {
+
+    private final long organisationId;
+
+    public Department(long id,
+                      String name,
+                      String description,
+                      LocalDateTime dateCreated,
+                      boolean archived,
+                      long organisationId) {
+
+        super(id, name, description, dateCreated, archived);
+        this.organisationId = organisationId;
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public long getOrganisationId() {
+        return organisationId;
     }
 }

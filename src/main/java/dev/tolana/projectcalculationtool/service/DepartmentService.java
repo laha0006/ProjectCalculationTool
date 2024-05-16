@@ -1,8 +1,10 @@
 package dev.tolana.projectcalculationtool.service;
 
-import dev.tolana.projectcalculationtool.dto.CreateDepartmentFormDto;
-import dev.tolana.projectcalculationtool.model.Department;
-import dev.tolana.projectcalculationtool.repository.JdbcDepartmentRepository;
+import dev.tolana.projectcalculationtool.dto.EntityCreationDto;
+import dev.tolana.projectcalculationtool.dto.EntityViewDto;
+import dev.tolana.projectcalculationtool.mapper.EntityDtoMapper;
+import dev.tolana.projectcalculationtool.model.Entity;
+import dev.tolana.projectcalculationtool.repository.DepartmentRepository;
 import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.stereotype.Service;
 
@@ -11,26 +13,30 @@ import java.util.List;
 @Service
 public class DepartmentService {
 
-    private JdbcDepartmentRepository departmentRepository;
+    private final DepartmentRepository jdbcDepartmentRepository;
+    private final EntityDtoMapper entityDtoMapper;
 
-    public DepartmentService(JdbcDepartmentRepository jdbcDepartmentRepository) {
-        this.departmentRepository = jdbcDepartmentRepository;
+    public DepartmentService(DepartmentRepository jdbcDepartmentRepository, EntityDtoMapper entityDtoMapper) {
+        this.jdbcDepartmentRepository = jdbcDepartmentRepository;
+        this.entityDtoMapper = entityDtoMapper;
     }
 
-    public Department getDepartment(int deptId) {
-        return departmentRepository.getDepartmentById(deptId);
+    public EntityViewDto getDepartment(long departmentId) {
+        Entity department = jdbcDepartmentRepository.getEntityOnId(departmentId);
+        return entityDtoMapper.convertToEntityViewDto(department);
     }
 
-    public void createDepartment(CreateDepartmentFormDto departmentFormDto, String username) {
-        departmentRepository.createDepartment(departmentFormDto, username);
+    public void createDepartment(EntityCreationDto departmentCreationInfo, String username) {
+        Entity departmentToCreate = entityDtoMapper.toEntity(departmentCreationInfo);
+        jdbcDepartmentRepository.createEntity(username, departmentToCreate);
     }
+
 //    @PreAuthorize("@auth.hasAccess(#id, T(dev.tolana.projectcalculationtool.enums.Permission).ORGANISATION_READ)")
 
     //filterObject referes to the current object of the collection, when looping.
     @PostFilter("@auth.hasDepartmentAccess(filterObject.id, T(dev.tolana.projectcalculationtool.enums.Permission).DEPARTMENT_READ)")
-    public List<Department> getAll(long organsationId) {
-        return departmentRepository.getDepartmentsByOrganisationId(organsationId);
+    public List<EntityViewDto> getAll(long organisationId) {
+        List<Entity> departmentList = jdbcDepartmentRepository.getAllEntitiesOnId(organisationId);
+        return entityDtoMapper.convertToEntityViewDtoList(departmentList);
     }
-
-
 }

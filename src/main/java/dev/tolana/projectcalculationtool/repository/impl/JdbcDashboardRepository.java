@@ -1,6 +1,7 @@
-package dev.tolana.projectcalculationtool.repository;
+package dev.tolana.projectcalculationtool.repository.impl;
 
 import dev.tolana.projectcalculationtool.dto.UserEntityRoleDto;
+import dev.tolana.projectcalculationtool.repository.DashboardRepository;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;

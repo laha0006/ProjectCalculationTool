@@ -3,7 +3,8 @@ package dev.tolana.projectcalculationtool.enums;
 public enum Status {
     IN_PROGRESS(1,"I gang"),
     DONE(2,"Afsluttet"),
-    IN_REVIEW(3,"Til gennemsyn");
+    IN_REVIEW(3,"Til gennemsyn"),
+    TODO(4,"To do");
 
     private final long id;
     private final String text;

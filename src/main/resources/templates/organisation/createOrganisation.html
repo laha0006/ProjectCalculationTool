@@ -18,17 +18,22 @@
 
                         <div class="form-group">
                             <label class="form-label" for="name">Organisation navn: </label>
-                            <input id="name" class="form-control" type="text" th:name="orgName" required
-                                   autofocus="autofocus">
+                            <input id="name" class="form-control" type="text" th:name="entityName" required
+                            autofocus="autofocus">
                         </div>
                         <div class="form-group">
                             <label for="description" class="form-label">Organisation beskrivelse: </label>
-                            <input id="description" class="form-control" type="text" th:name="orgDescription" required>
+                            <input id="description" class="form-control" type="text" th:name="description" required>
                         </div>
-                        <div class="d-flex">
-                            <div class="d-inline">
-                                <button class="btn btn-success fw-bold" type="submit">Opret</button>
-                            </div>
+
+                        <label>
+                            <input th:field="*{foreignEntityId}" hidden="hidden">
+                        </label>
+
+                        <div class="form-group mt-2">
+                            <button class="btn btn-success fw-bold" type="submit">Opret</button>
+                        </div>
+                    </form>
 
                             <div class="d-inline">
                                 <a href="/organisation" class="btn btn-warning fw-bold">Annullér</a>
