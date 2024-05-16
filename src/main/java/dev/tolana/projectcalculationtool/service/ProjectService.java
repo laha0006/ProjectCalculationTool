@@ -6,6 +6,7 @@ import dev.tolana.projectcalculationtool.enums.UserRole;
 import dev.tolana.projectcalculationtool.mapper.EntityDtoMapper;
 import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.Project;
+import dev.tolana.projectcalculationtool.repository.ProjectRepository;
 import dev.tolana.projectcalculationtool.repository.ResourceEntityCrudOperations;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +16,10 @@ import java.util.Set;
 @Service
 public class ProjectService {
 
-    private final ResourceEntityCrudOperations projectRepository;
+    private final ProjectRepository projectRepository;
     private final EntityDtoMapper entityDtoMapper;
 
-    public ProjectService(ResourceEntityCrudOperations projectRepository, EntityDtoMapper entityDtoMapper) {
+    public ProjectService(ProjectRepository projectRepository, EntityDtoMapper entityDtoMapper) {
         this.projectRepository = projectRepository;
         this.entityDtoMapper = entityDtoMapper;
     }

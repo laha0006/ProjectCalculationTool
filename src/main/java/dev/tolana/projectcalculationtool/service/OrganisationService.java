@@ -1,10 +1,12 @@
 package dev.tolana.projectcalculationtool.service;
 
 import dev.tolana.projectcalculationtool.dto.EntityCreationDto;
+import dev.tolana.projectcalculationtool.dto.EntityViewDto;
 import dev.tolana.projectcalculationtool.mapper.EntityDtoMapper;
 import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.Organisation;
 import dev.tolana.projectcalculationtool.repository.EntityCrudOperations;
+import dev.tolana.projectcalculationtool.repository.OrganisationRepository;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -14,25 +16,21 @@ import java.util.List;
 @Service
 public class OrganisationService {
 
-    private final EntityCrudOperations organisationRepository;
+    private final OrganisationRepository organisationRepository;
     private final EntityDtoMapper entityDtoMapper;
 
-    public OrganisationService(EntityCrudOperations organisationRepository, EntityDtoMapper entityDtoMapper) {
+    public OrganisationService(OrganisationRepository organisationRepository, EntityDtoMapper entityDtoMapper) {
         this.organisationRepository = organisationRepository;
         this.entityDtoMapper = entityDtoMapper;
     }
 
-    public List<Organisation> getOrganisationsByUser(String username) {
-        List<Entity> entityList = organisationRepository.getAllEntitiesOnUsername(username);
-        return entityDtoMapper.toOrganisationList(entityList);
-    }
+    public List<EntityViewDto> getNotArchivedOrganisationsByUser(String username) {
+        List<EntityViewDto> notArchivedOrganisations = new ArrayList<>();
 
-    public List<Organisation> getNotArchivedOrganisationsByUser(String username) {
         List<Entity> entityList = organisationRepository.getAllEntitiesOnUsername(username);
-        List<Organisation> organisations = entityDtoMapper.toOrganisationList(entityList);
-        List<Organisation> notArchivedOrganisations = new ArrayList<>();
+        List<EntityViewDto> organisations = entityDtoMapper.convertToEntityViewDtoList(entityList);
 
-        for (Organisation organisation : organisations) {
+        for (EntityViewDto organisation : organisations) {
             if (!organisation.isArchived()) {
                 notArchivedOrganisations.add(organisation);
             }

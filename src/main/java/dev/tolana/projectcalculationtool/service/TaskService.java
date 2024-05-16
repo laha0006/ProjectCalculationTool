@@ -5,6 +5,7 @@ import dev.tolana.projectcalculationtool.dto.TaskDto;
 import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.Task;
 import dev.tolana.projectcalculationtool.repository.ResourceEntityCrudOperations;
+import dev.tolana.projectcalculationtool.repository.TaskRepository;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -13,9 +14,9 @@ import java.util.List;
 @Service
 public class TaskService {
 
-    private final ResourceEntityCrudOperations taskRepository;
+    private final TaskRepository taskRepository;
     private final EntityDtoMapper entityDtoMapper;
-    public TaskService(ResourceEntityCrudOperations taskRepository, EntityDtoMapper entityDtoMapper) {
+    public TaskService(TaskRepository taskRepository, EntityDtoMapper entityDtoMapper) {
         this.taskRepository = taskRepository;
         this.entityDtoMapper = entityDtoMapper;
     }
@@ -39,6 +40,6 @@ public class TaskService {
             "T(dev.tolana.projectcalculationtool.enums.Permission).TASK_READ)")
     public TaskDto getTaskOnId(long taskId) {
         Entity task = taskRepository.getEntityOnId(taskId);
-        return entityDtoMapper.convertToDto((Task) task);
+        return entityDtoMapper.convertToTaskDto((Task) task);
     }
 }
