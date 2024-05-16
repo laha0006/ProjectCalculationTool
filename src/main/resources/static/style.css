@@ -30,3 +30,7 @@
     min-width: 600px !important;
     max-width: 600px !important;
 }
+
+.btn {
+    margin: 8px;
+}
