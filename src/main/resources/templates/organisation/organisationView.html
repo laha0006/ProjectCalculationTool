@@ -13,12 +13,43 @@
             <header th:replace="~{fragments/header :: header}"></header>
             <div th:replace="~{fragments/alerts :: alerts}"></div>
             <main class="d-flex justify-content-center text-center bg-secondary-subtle py-3 px-5 rounded shadow">
-                <div>
+                <div class="" style="width: 800px">
                     <h1 th:text="${organisation.name}"></h1>
                     <h3 th:if="${allDepartments.isEmpty()}">
                         You're not part of any departments!
                     </h3>
-                    <h2 th:each="dept : ${allDepartments}" th:text="${dept.name}"></h2>
+                    <div class="row row-cols-1 row-cols-md-4 g-2">
+
+
+
+
+                        <div class="col" th:each="dept : ${allDepartments}">
+                            <a class="text-decoration-none text-reset"
+                               th:href="@{{orgId}/department/{deptId}(deptId = ${dept.id}, orgId = ${organisation.id}) }">
+                                <div class="card overflow-hidden" style="min-height: 100px; max-height: 100px;">
+                                    <div class="card-body">
+                                        <h5 class="card-title" th:text="${dept.name}"></h5>
+                                        <p class="card-text" th:text="${dept.description}"></p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                    </div>
+
+
+                    <div class="d-flex">
+                        <div class="d-inline">
+                            <a th:href="@{/organisation/{id}/department/create (id = ${organisation.id}) }"
+                               class="btn btn-success fw-bold">Opret Afdeling</a>
+                        </div>
+
+                        <div class="d-inline">
+                            <a href="/organisation" class="btn btn-warning fw-bold">Gå tilbage</a>
+                        </div>
+                    </div>
+
+
                 </div>
             </main>
         </div>
