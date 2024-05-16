@@ -1,8 +1,7 @@
 package dev.tolana.projectcalculationtool.controller;
 
 import dev.tolana.projectcalculationtool.dto.EntityCreationDto;
-import dev.tolana.projectcalculationtool.dto.CreateOrganisationFormDto;
-import dev.tolana.projectcalculationtool.model.Department;
+import dev.tolana.projectcalculationtool.dto.EntityViewDto;
 import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.Organisation;
 import dev.tolana.projectcalculationtool.service.DepartmentService;
@@ -29,16 +28,16 @@ public class OrganisationController {
     @GetMapping("")
     public String organisationMainPage(Model model, Authentication authentication) {
         String username = authentication.getName();
-        List<Organisation> listOfUserOrgs = organisationService.getNotArchivedOrganisationsByUser(username);
+        List<EntityViewDto> listOfUserOrgs = organisationService.getNotArchivedOrganisationsByUser(username);
         model.addAttribute("allUserOrgs", listOfUserOrgs);
 
         return "organisation/userOrganisations";
     }
 
-    @GetMapping("/{id}")
-    public String organisationPage(@PathVariable long id, Model model) {
-        Entity organisation = organisationService.getOrganisationsById(id);
-        List<Department> departments = departmentService.getAll(id);
+    @GetMapping("/{orgId}")
+    public String organisationPage(@PathVariable("orgId") long organisationId, Model model) {
+        Entity organisation = organisationService.getOrganisationsById(organisationId);
+        List<EntityViewDto> departments = departmentService.getAll(organisationId);
         if (departments.isEmpty()) {
             model.addAttribute("alertWarning", "You're not part of any department.");
         }
@@ -49,7 +48,7 @@ public class OrganisationController {
 
     @GetMapping("/create")
     public String createOrganisation(Model model) {
-        EntityCreationDto emptyCreationDto = new EntityCreationDto("", "");
+        EntityCreationDto emptyCreationDto = new EntityCreationDto("", "", 0);
         model.addAttribute("organisation", emptyCreationDto);
 
         return "organisation/createOrganisation";
