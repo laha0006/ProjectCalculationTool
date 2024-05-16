@@ -1,16 +1,17 @@
 package dev.tolana.projectcalculationtool.controller;
 
+import dev.tolana.projectcalculationtool.dto.ProjectCreationDto;
 import dev.tolana.projectcalculationtool.dto.ProjectOverviewDto;
 import dev.tolana.projectcalculationtool.dto.UserInformationDto;
 import dev.tolana.projectcalculationtool.enums.UserRole;
 import dev.tolana.projectcalculationtool.model.Entity;
-import dev.tolana.projectcalculationtool.model.Project;
 import dev.tolana.projectcalculationtool.service.ProjectService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -25,12 +26,11 @@ public class ProjectController {
     }
 
     @GetMapping("/addproject")
-    public String showPageForAddingProject(Model model) {
-        Project newProject = new Project(); //TODO MAKE DTO INSTEAD OF MODEL
-        model.addAttribute("newProject",newProject);
+    public String showPageForAddingProject(Model model, @PathVariable long teamId) {
+        model.addAttribute("newProject",new ProjectCreationDto("", "", teamId, LocalDateTime.now()));
         //TODO add something that makes it possible to display Team/Department/Organization/whatever
 
-        return "project/create";
+        return "project/createProject";
     }
 
     @PostMapping("/addproject")
