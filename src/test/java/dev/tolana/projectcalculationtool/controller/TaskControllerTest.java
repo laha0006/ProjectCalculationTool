@@ -75,8 +75,20 @@ class TaskControllerTest {
 //                        .param("status", "1")
 //                        .param("parentId", "1")
 //                        .param("taskId", "1")
+//                        .param("teamId", "1")
+//                        .param("deptId", "1")
+//                        .param("orgId", "1")
 //                )
 //                .andExpect(status().is3xxRedirection())
 //                .andExpect(view().name("redirect:/organisation/1/department/1/team/1/project/1/task/overview"));
 //    }
+
+    @Test
+    @WithMockUser
+    void deleteTask() throws Exception {
+        mockMvc.perform(post("/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/task/{taskId}/delete", 1, 1, 1, 1, 1)
+                .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/organisation/1/department/1/team/1/project/1/task/overview"));
+    }
 }
