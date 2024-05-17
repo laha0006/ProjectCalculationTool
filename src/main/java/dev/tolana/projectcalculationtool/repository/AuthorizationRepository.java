@@ -1,10 +1,14 @@
 package dev.tolana.projectcalculationtool.repository;
 
+import dev.tolana.projectcalculationtool.dto.inviteDto;
 import dev.tolana.projectcalculationtool.enums.AccessLevel;
 import dev.tolana.projectcalculationtool.enums.Permission;
 import dev.tolana.projectcalculationtool.dto.HierarchyDto;
 import dev.tolana.projectcalculationtool.dto.UserEntityRoleDto;
+import dev.tolana.projectcalculationtool.enums.UserRole;
+import dev.tolana.projectcalculationtool.exception.InviteFailureException;
 import dev.tolana.projectcalculationtool.model.Role;
+import dev.tolana.projectcalculationtool.util.RoleAssignUtil;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -22,6 +26,8 @@ public class AuthorizationRepository {
     private final String PROJECT_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE project_id = ? LIMIT 1;";
     private final String TASK_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE task_id = ? LIMIT 1;";
     private final String USER_ENTITY_ROLE_SQL = "SELECT role_id FROM user_entity_role WHERE username = ? AND (organisation_id = ? OR department_id = ? OR team_id = ? OR project_id IN (?,?) OR task_id IN (?,?));\n";
+    private final String INVITATIONS_SQL = "SELECT o.name, o.description, o.id FROM invitation i JOIN organisation o ON o.id = i.organisation_iu WHERE username = ?;";
+    private final String ACCEPT_INVITE_SQL = "DELETE FROM invitation WHERE username = ? AND organisation_iu = ?";
     private final String ROLES_PERMISSIONS_SQL = """
             SELECT r.id   AS role_id,
                    r.name AS role_name,
@@ -116,5 +122,50 @@ public class AuthorizationRepository {
             throw new RuntimeException(e);
         }
         return roleIds;
+    }
+
+    public List<inviteDto> getInvitations(String username) {
+        List<inviteDto> invitations = new ArrayList<>();
+        try (Connection con = dataSource.getConnection()) {
+            PreparedStatement preparedStatement = con.prepareStatement(INVITATIONS_SQL);
+            preparedStatement.setString(1, username);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                invitations.add(new inviteDto(
+                        resultSet.getString(1),
+                        resultSet.getString(2),
+                        resultSet.getLong(3)
+                ));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return invitations;
+    }
+
+    public void addUserToOrganisation(String username, long organisationId) {
+        try (Connection con = dataSource.getConnection()) {
+            try {
+                con.setAutoCommit(false);
+                PreparedStatement preparedStatement = con.prepareStatement(ACCEPT_INVITE_SQL);
+                preparedStatement.setString(1, username);
+                preparedStatement.setLong(2, organisationId);
+                int affectedRows = preparedStatement.executeUpdate();
+                if (affectedRows == 0) {
+                    con.rollback();
+                    con.setAutoCommit(true);
+                    throw new InviteFailureException("Kunne ikke acceptere invitationen!");
+                }
+                RoleAssignUtil.assignOrganisationRole(con, organisationId, UserRole.ORGANISATION_MEMBER, username);
+            } catch(SQLException e) {
+                con.rollback();
+                con.setAutoCommit(true);
+                throw new InviteFailureException("Kunne ikke acceptere invitationen!");
+            }
+            con.commit();
+            con.setAutoCommit(true);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
