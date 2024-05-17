@@ -45,7 +45,7 @@ public class OrganisationController {
 
     @GetMapping("/{orgId}")
     public String organisationPage(@PathVariable("orgId") long organisationId, Model model) {
-        Entity organisation = organisationService.getOrganisationsById(organisationId);
+        EntityViewDto organisation = organisationService.getOrganisationsById(organisationId);
         List<EntityViewDto> departments = departmentService.getAll(organisationId);
         if (departments.isEmpty()) {
             model.addAttribute("alertWarning", "You're not part of any department.");
