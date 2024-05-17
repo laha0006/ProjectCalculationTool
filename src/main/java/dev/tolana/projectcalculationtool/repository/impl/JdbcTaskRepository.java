@@ -189,10 +189,7 @@ public class JdbcTaskRepository implements TaskRepository {
     public boolean deleteEntity(long taskId) {
         boolean isDeleted;
         String deleteTask = """
-                DELETE uer, t
-                FROM user_entity_role uer
-                JOIN task t ON uer.task_id = t.id
-                WHERE uer.task_id = ? AND t.id = ?;
+                DELETE FROM task WHERE id = ?;
                 """;
 
         try (Connection connection = dataSource.getConnection()){
@@ -201,7 +198,6 @@ public class JdbcTaskRepository implements TaskRepository {
 
                 PreparedStatement pstmt = connection.prepareStatement(deleteTask);
                 pstmt.setLong(1, taskId);
-                pstmt.setLong(2, taskId);
                 int affectedRows = pstmt.executeUpdate();
 
                 isDeleted = affectedRows > 0;
