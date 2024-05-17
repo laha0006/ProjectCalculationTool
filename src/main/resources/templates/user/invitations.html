@@ -13,7 +13,29 @@
             <header th:replace="~{fragments/header :: header}"></header>
             <div th:replace="~{fragments/alerts :: alerts}"></div>
             <main class="d-flex justify-content-center text-center bg-secondary-subtle py-3 px-5 rounded shadow">
-              <h1>invitations</h1>
+                <div>
+                    <h1>invitations</h1>
+                    <table class="table rounded align-middle">
+                        <tbody>
+                        <tr th:each="invite : ${invitations}">
+                            <td th:text="${invite.organisationName}"></td>
+                            <td th:text="${invite.organisationDescription}"></td>
+                            <td>
+                                <div class="d-flex d-inline">
+                                    <form th:action="@{/user/accept}" method="POST">
+                                        <input type="hidden" name="orgId" th:value="${invite.organisationId}"/>
+                                        <button class="btn btn-success btn-sm fw-bold" type="submit">Acceptér</button>
+                                    </form>
+                                    <form th:action="@{/user/decline}" method="POST">
+                                        <input type="hidden" name="orgId" th:value="${invite.organisationId}"/>
+                                        <button class="btn btn-danger btn-sm fw-bold" type="submit">Afvis</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
             </main>
         </div>
         <footer th:replace="~{fragments/footer :: footer}"></footer>
