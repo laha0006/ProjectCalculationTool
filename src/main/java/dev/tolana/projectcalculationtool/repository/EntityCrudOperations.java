@@ -16,6 +16,8 @@ public interface EntityCrudOperations {
 
     List<Entity> getAllEntitiesOnId(long entityId);
 
+    List<Entity> getAllChildrenEntities(long parentId);
+
     boolean editEntity(Entity entity);
 
     boolean deleteEntity(long entityId);
