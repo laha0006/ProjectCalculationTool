@@ -31,7 +31,7 @@ public class TeamController {
         EntityViewDto team = teamService.getTeam(teamId);
         model.addAttribute("team", team);
 
-        return "team/userTeams";
+        return "team/teamView";
     }
 
     @GetMapping("/create")
