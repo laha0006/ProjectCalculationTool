@@ -15,15 +15,15 @@
             <main class="d-flex justify-content-center text-center bg-secondary-subtle py-3 px-5 rounded shadow">
                 <div class="box-400">
 
-                    <form th:action="@{/team/create}" th:method="post" th:object="${team}">
+                    <form th:action="@{../team/create}" th:method="post" th:object="${team}">
 
                         <div class="form-group">
-                            <label class="form-label" for="name">Afdeling navn: </label>
+                            <label class="form-label" for="name">Team navn: </label>
                             <input id="name" class="form-control" type="text" th:name="entityName" required
                                    autofocus="autofocus">
                         </div>
                         <div class="form-group">
-                            <label for="description" class="form-label">Afdeling beskrivelse: </label>
+                            <label for="description" class="form-label">Team beskrivelse: </label>
                             <input id="description" class="form-control" type="text" th:name="description" required>
                         </div>
                         <div class="form-group">
