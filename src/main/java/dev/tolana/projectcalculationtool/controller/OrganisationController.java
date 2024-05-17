@@ -55,32 +55,6 @@ public class OrganisationController {
         return "organisation/organisationView";
     }
 
-    @GetMapping("/{orgId}/invite")
-    public String invitePage(@PathVariable long orgId, Model model) {
-        model.addAttribute("invite",new InviteFormDto("",orgId));
-        List<Invitation> invitations = organisationService.getAllOutstandingInvitations(orgId);
-        model.addAttribute("invitations", invitations);
-        return "organisation/invite";
-    }
-
-    @PostMapping("/invite")
-    public String invite(InviteFormDto formdata, Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
-        System.out.println("##################### POSTED LOL ");
-        String referer = request.getHeader("referer");
-        String userToBeInvited = formdata.username();
-        userService.createInvite(formdata);
-        redirectAttributes.addFlashAttribute("alertSuccess", "Du har inviteret " + userToBeInvited);
-        return "redirect:" + referer;
-    }
-
-    @PostMapping("/invite/remove")
-    public String removeInvite(InviteFormDto inviteData, Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
-        userService.removeInvite(inviteData);
-        String referer = request.getHeader("referer");
-        redirectAttributes.addFlashAttribute("alertWarning", "Du har taget invitationen tilbage");
-        return "redirect:" + referer;
-    }
-
     @GetMapping("/create")
     public String createOrganisation(Model model) {
         EntityCreationDto emptyCreationDto = new EntityCreationDto("", "", -1, EntityType.ORGANISATION);
