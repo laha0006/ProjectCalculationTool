@@ -4,6 +4,7 @@ import dev.tolana.projectcalculationtool.dto.UserInformationDto;
 import dev.tolana.projectcalculationtool.enums.UserRole;
 import dev.tolana.projectcalculationtool.model.Department;
 import dev.tolana.projectcalculationtool.model.Entity;
+import dev.tolana.projectcalculationtool.model.Team;
 import dev.tolana.projectcalculationtool.repository.DepartmentRepository;
 import dev.tolana.projectcalculationtool.repository.EntityCrudOperations;
 import dev.tolana.projectcalculationtool.util.RoleAssignUtil;
@@ -110,6 +111,37 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
             throw new RuntimeException(e);
         }
         return departments;
+    }
+
+    @Override
+    public List<Entity> getChildren(long departmentId) {
+        List<Entity> teamList = new ArrayList<>();
+        String getAllTeamsFromParent = """
+                SELECT * FROM team
+                WHERE department_id = ?;
+                """;
+
+        try (Connection connection = dataSource.getConnection()){
+            PreparedStatement pstmt = connection.prepareStatement(getAllTeamsFromParent);
+            pstmt.setLong(1, departmentId);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+               Team team = new Team(
+                       rs.getLong(1),
+                       rs.getString(2),
+                       rs.getString(3),
+                       rs.getTimestamp(5).toLocalDateTime(),
+                       rs.getBoolean(6),
+                       rs.getLong(4)
+               );
+               teamList.add(team);
+            }
+        }catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+
+        return teamList;
     }
 
     @Override
