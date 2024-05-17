@@ -21,7 +21,7 @@ public class EntityDtoMapper {
                 entityCreationDto.entityName(),
                 entityCreationDto.description(),
                 LocalDateTime.now(),
-                true
+                false
         );
     }
 
