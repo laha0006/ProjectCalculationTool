@@ -1,5 +1,8 @@
 package dev.tolana.projectcalculationtool.service;
 
+import dev.tolana.projectcalculationtool.dto.EntityViewDto;
+import dev.tolana.projectcalculationtool.mapper.EntityDtoMapper;
+import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.Organisation;
 import dev.tolana.projectcalculationtool.model.Team;
 import dev.tolana.projectcalculationtool.repository.OrganisationRepository;
@@ -13,13 +16,22 @@ import java.util.List;
 public class TeamService {
 
     private final TeamRepository teamRepository;
+    private final EntityDtoMapper entityDtoMapper;
 
-    public TeamService(TeamRepository teamRepository) {
+    public TeamService(TeamRepository teamRepository, EntityDtoMapper entityDtoMapper) {
         this.teamRepository = teamRepository;
+        this.entityDtoMapper = entityDtoMapper;
     }
 
+/* --old--
     public List<Team> getTeamsByUser(String username) {
         return teamRepository.getTeamsByUser(username);
+    }
+ */
+
+    public EntityViewDto getTeam(long teamId){
+        Entity team = teamRepository.getEntityOnId(teamId);
+        return entityDtoMapper.convertToEntityViewDto(team);
     }
 
     public List<Team> getNotArchivedTeamsByUser(String username) {

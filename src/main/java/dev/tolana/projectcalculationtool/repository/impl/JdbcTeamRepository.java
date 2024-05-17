@@ -1,7 +1,11 @@
-package dev.tolana.projectcalculationtool.repository;
+package dev.tolana.projectcalculationtool.repository.impl;
 
+import dev.tolana.projectcalculationtool.dto.UserInformationDto;
+import dev.tolana.projectcalculationtool.enums.UserRole;
+import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.Organisation;
 import dev.tolana.projectcalculationtool.model.Team;
+import dev.tolana.projectcalculationtool.repository.TeamRepository;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -19,10 +23,12 @@ public class JdbcTeamRepository implements TeamRepository {
         this.datasource = datasource;
     }
 
-    @Override
-    public List<Team> getTeamsByUser(String username) {
 
-        List<Team> teams = new ArrayList<>();
+
+    @Override
+    public List<Entity> getAllEntitiesOnUsername(String username) {
+
+        List<Entity> teams = new ArrayList<>();
 
         try (Connection connection = datasource.getConnection()) {
             String getAllTeams = """
@@ -52,11 +58,11 @@ public class JdbcTeamRepository implements TeamRepository {
                 id = rs.getLong(1);
                 name = rs.getString(2);
                 description = rs.getString(3);
-                department_id = rs.getLong(4);
                 dateCreated = rs.getTimestamp(5).toLocalDateTime();
                 archived = rs.getBoolean(6);
+                department_id = rs.getLong(4);
 
-                teams.add(new Team(id, name, description, department_id,dateCreated, archived));
+                teams.add(new Team(id, name, description,dateCreated, archived, department_id));
             }
 
 
@@ -68,8 +74,27 @@ public class JdbcTeamRepository implements TeamRepository {
 
     }
 
+    @Override Entity getEntityOnId(long teamId){
+        Entity team = null;
+        try( Connection connection = datasource.getConnection()){
+            PreparedStatement preparedStatement = connection.prepareStatement(
+                    "SELECT * FROM team WHERE id = ?");
+            preparedStatement.setLong(1,teamId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()){
+                team = new Team(
+                        resultSet.getLong(1),
+                        resultSet.getString(2),
+                        resultSet.getString(3),
+                        resultSet.getTimestamp(5).toLocalDateTime(),
+                        resultSet.getBoolean(6)
+                )
+            }
+        }
+    }
+
     @Override
-    public void createTeam(String username, String teamName, String teamDescription) {
+    public boolean createEntity(String username, Entity entity) {
 
         try (Connection connection = datasource.getConnection()) {
             try {
@@ -78,8 +103,8 @@ public class JdbcTeamRepository implements TeamRepository {
                 String createTeam = "INSERT INTO team(name, description) VALUES (?, ?)";
                 PreparedStatement pstmtAdd = connection.prepareStatement(createTeam,
                         Statement.RETURN_GENERATED_KEYS);
-                pstmtAdd.setString(1, teamName);
-                pstmtAdd.setString(2, teamDescription);
+                pstmtAdd.setString(1, entity.getName());
+                pstmtAdd.setString(2, entity.getDescription());
 
                 pstmtAdd.executeUpdate();
                 ResultSet rs = pstmtAdd.getGeneratedKeys();
@@ -107,7 +132,43 @@ public class JdbcTeamRepository implements TeamRepository {
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
         }
-
+        return true;
     }
 
+
+
+    @Override
+    public boolean editEntity(Entity entity) {
+        return false;
+    }
+
+    @Override
+    public boolean deleteEntity(long entityId) {
+        return false;
+    }
+
+    @Override
+    public boolean inviteToEntity(String inviteeUsername) {
+        return false;
+    }
+
+    @Override
+    public boolean archiveEntity(long entityId, boolean isArchived) {
+        return false;
+    }
+
+    @Override
+    public boolean assignUser(long entityId, List<String> username, UserRole role) {
+        return false;
+    }
+
+    @Override
+    public List<UserInformationDto> getUsersFromEntityId(long entityId) {
+        return null;
+    }
+
+    @Override
+    public List<UserRole> getAllUserRoles() {
+        return null;
+    }
 }

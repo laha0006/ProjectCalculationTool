@@ -5,8 +5,6 @@ import dev.tolana.projectcalculationtool.model.Team;
 
 import java.util.List;
 
-public interface TeamRepository {
-    List<Team> getTeamsByUser(String username);
+public interface TeamRepository extends EntityCrudOperations{
 
-    void createTeam(String username, String teamName, String teamDescription);
 }
