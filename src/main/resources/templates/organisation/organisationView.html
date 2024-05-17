@@ -16,13 +16,10 @@
                 <div class="" style="width: 800px">
                     <h1 th:text="${'Afdelinger i '+ organisation.name}"></h1>
                     <h3 th:if="${allDepartments.isEmpty()}">
-                        You're not part of any departments!
+                        Du er ikke en del af nogle afdelinger!
                     </h3>
                     <h2 th:each="dept : ${allDepartments}" th:text="${dept.name}"></h2>
                     <div class="row row-cols-1 row-cols-md-4 g-2">
-
-
-
 
                         <div class="col" th:each="dept : ${allDepartments}">
                             <a class="text-decoration-none text-reset"
@@ -40,13 +37,24 @@
 
 
                     <div class="d-flex">
-                        <div class="d-inline">
-                            <a th:href="@{/organisation/{id}/department/create (id = ${organisation.id}) }"
-                               class="btn btn-success fw-bold">Opret Afdeling</a>
-                        </div>
-                        <div class="d-inline">
-                            <a th:href="@{/organisation/{id}/invite (id = ${organisation.id}) }"
-                               class="btn btn-success fw-bold">Invitér brugere</a>
+
+<!--                        TODO MAKE SURE THIS IS HOW YOU CHECK ENUM VALUES-->
+                        <div th:if="${userRole == 'ORGANISATION_OWNER' || userRole == 'ORGANISATION_ADMIN'}">
+                            <div class="d-inline">
+                                <a th:href="@{/organisation/{id}/department/create (id = ${organisation.id}) }"
+                                   class="btn btn-success fw-bold">Opret Afdeling</a>
+                            </div>
+
+                            <div class="d-inline">
+                                <a th:href="@{/organisation/{id}/invite (id = ${organisation.id}) }"
+                                   class="btn btn-success fw-bold">Invitér brugere</a>
+                            </div>
+
+                            <div class="d-inline">
+                                <form th:action="@{{id}/delete}" method="post">
+                                    <button class="btn btn-danger fw-bold">Slet organisation</button>
+                                </form>
+                            </div>
                         </div>
 
                         <div class="d-inline">
