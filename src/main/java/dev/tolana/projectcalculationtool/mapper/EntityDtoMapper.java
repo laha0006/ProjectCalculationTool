@@ -44,21 +44,7 @@ public class EntityDtoMapper {
         }
     }
 
-    public TaskDto convertToTaskDto(Task task) {
-
-        String taskName = task.getName();
-        String taskDescription = task.getDescription();
-        long projectId = task.getProjectId();
-        LocalDateTime deadline = task.getDeadline();
-        int estimatedHours = task.getEstimatedHours();
-        Status status = task.getStatus();
-        long parentId = task.getParentId();
-        long taskId = task.getId();
-
-        return new TaskDto(taskName, taskDescription, projectId, deadline, estimatedHours, status, parentId, taskId);
-    }
-
-    public EntityViewDto convertToEntityViewDto(Entity entity) {
+    public EntityViewDto toEntityViewDto(Entity entity) {
 
         if (entity instanceof Organisation organisation) {
             return new EntityViewDto(
@@ -90,7 +76,7 @@ public class EntityDtoMapper {
         return null;
     }
 
-    public List<EntityViewDto> convertToEntityViewDtoList(List<Entity> entityList) {
+    public List<EntityViewDto> toEntityViewDtoList(List<Entity> entityList) {
         List<EntityViewDto> entityViewDtoList = new ArrayList<>();
         EntityViewDto entityViewDto;
 
@@ -132,64 +118,37 @@ public class EntityDtoMapper {
         return entityViewDtoList;
     }
 
-    public Entity convertToEntity(TaskDto taskDto) {
-        return new Task(
-                taskDto.taskId(),
-                taskDto.taskName(),
-                taskDto.taskDescription(),
-                taskDto.deadline(),
-                taskDto.status(),
-                taskDto.parentId(),
-                taskDto.projectId(),
-                taskDto.estimatedHours()
-        );
-    }
+    public ResourceEntityViewDto toResourceEntityViewDto(Entity entity) {
 
-    public List<TaskDto> toTaskDtoList(List<Entity> taskList) {
-        List<TaskDto> taskDtoList = new ArrayList<>();
+        if (entity instanceof Project project) {
+            return new ResourceEntityViewDto(
+                    project.getName(),
+                    project.getDescription(),
+                    project.getId(),
+                    project.getParentId(),
+                    project.getDeadline(),
+                    -1, //TODO add estimatedHours to Project to calculate hours to finish whole project
+                    -1,
+                    project.getAllottedHours(),
+                    project.getStatus()
+                    );
+        }
 
-        for (Entity task : taskList) {
-            TaskDto taskDto = new TaskDto(
+        if (entity instanceof Task task) {
+            return new ResourceEntityViewDto(
                     task.getName(),
                     task.getDescription(),
-                    ((Task) task).getProjectId(),
-                    ((ResourceEntity) task).getDeadline(),
-                    ((Task) task).getEstimatedHours(),
-                    ((ResourceEntity) task).getStatus(),
-                    ((ResourceEntity)task).getParentId(),
-                    task.getId()
+                    task.getId(),
+                    task.getParentId(),
+                    task.getDeadline(),
+                    task.getEstimatedHours(),
+                    task.getActualHours(),
+                    -1,
+                    task.getStatus()
             );
-            taskDtoList.add(taskDto);
         }
 
-        return taskDtoList;
-    }
-
-    public List<ProjectOverviewDto> toProjectOverviewDtoList(List<Entity> projectList) {
-        List<ProjectOverviewDto> projectOverviewDtoList = new ArrayList<>();
-
-        for (Entity project : projectList) {
-            ProjectOverviewDto projectOverviewDto = new ProjectOverviewDto(
-                    project.getName(),
-                    ((ResourceEntity)project).getDeadline(),
-                    ((Project)project).getAllottedHours(),
-                    ((ResourceEntity)project).getStatus(),
-                    project.getId()
-            );
-            projectOverviewDtoList.add(projectOverviewDto);
-        }
-
-        return projectOverviewDtoList;
-    }
-
-    public ProjectOverviewDto toProjectOverviewDto(Project project) {
-        return new ProjectOverviewDto(
-                project.getName(),
-                project.getDeadline(),
-                project.getAllottedHours(),
-                project.getStatus(),
-                project.getId()
-        );
+        return null;
     }
 
     public List<ResourceEntityViewDto> toResourceEntityViewDtoList(List<ResourceEntity> entityList) {
@@ -230,5 +189,52 @@ public class EntityDtoMapper {
             }
         }
         return entityViewDtoList;
+    }
+
+    public Entity convertToEntity(TaskDto taskDto) {
+        return new Task(
+                taskDto.taskId(),
+                taskDto.taskName(),
+                taskDto.taskDescription(),
+                taskDto.deadline(),
+                taskDto.status(),
+                taskDto.parentId(),
+                taskDto.projectId(),
+                taskDto.estimatedHours()
+        );
+    }
+
+    public List<TaskDto> toTaskDtoList(List<Entity> taskList) {
+        List<TaskDto> taskDtoList = new ArrayList<>();
+
+        for (Entity task : taskList) {
+            TaskDto taskDto = new TaskDto(
+                    task.getName(),
+                    task.getDescription(),
+                    ((Task) task).getProjectId(),
+                    ((ResourceEntity) task).getDeadline(),
+                    ((Task) task).getEstimatedHours(),
+                    ((ResourceEntity) task).getStatus(),
+                    ((ResourceEntity)task).getParentId(),
+                    task.getId()
+            );
+            taskDtoList.add(taskDto);
+        }
+
+        return taskDtoList;
+    }
+
+    public TaskDto convertToTaskDto(Task task) {
+
+        String taskName = task.getName();
+        String taskDescription = task.getDescription();
+        long projectId = task.getProjectId();
+        LocalDateTime deadline = task.getDeadline();
+        int estimatedHours = task.getEstimatedHours();
+        Status status = task.getStatus();
+        long parentId = task.getParentId();
+        long taskId = task.getId();
+
+        return new TaskDto(taskName, taskDescription, projectId, deadline, estimatedHours, status, parentId, taskId);
     }
 }
