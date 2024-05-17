@@ -25,7 +25,7 @@ public class ProjectController {
         this.projectService = projectService;
     }
 
-    @GetMapping("/addproject")
+    @GetMapping("/create")
     public String showPageForAddingProject(Model model, @PathVariable long teamId) {
         model.addAttribute("newProject",new ProjectCreationDto("", "", teamId, LocalDateTime.now()));
         //TODO add something that makes it possible to display Team/Department/Organization/whatever
@@ -33,8 +33,8 @@ public class ProjectController {
         return "project/createProject";
     }
 
-    @PostMapping("/addproject")
-    public String addProject(@ModelAttribute Entity newProject, Authentication authentication) {
+    @PostMapping("/create")
+    public String createProject(@ModelAttribute Entity newProject, Authentication authentication) {
         String username = authentication.getName();
         projectService.addProject(username, newProject);
 
@@ -75,5 +75,16 @@ public class ProjectController {
         }
 
         return "redirect:/project/overview";
+    }
+
+    @PostMapping("/{projectId}/delete")
+    public String deleteProject(@PathVariable long orgId,
+                                @PathVariable long deptId,
+                                @PathVariable long teamId,
+                                @PathVariable long projectId) {
+
+        projectService.deleteProject(projectId);
+
+        return "redirect:/organisation/" + orgId + "/department/" + deptId + "/team/" + teamId + "/project/overview";
     }
 }

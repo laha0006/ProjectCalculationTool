@@ -35,16 +35,21 @@
                             <td th:text="${project.status}"></td>
                             <td>
                                 <div class="form-group">
-                                    <a th:href="@{/project/{projectId}/assign/members (projectId=${project.projectId})}">
+                                    <a th:href="@{{projectId}/assign/members (projectId=${project.projectId})}">
                                         <button class="btn btn-success fw-bold">Tilknyt teammedlem</button>
                                     </a>
                                 </div>
+
+                                <form th:action="@{{projectId}/delete (projectId=${project.projectId})}">
+                                    <button class="btn btn-warning fw-bold">Slet</button>
+                                </form>
                             </td>
                         </tr>
                         </tbody>
                     </table>
                     <div class="form-group">
-                        <a href=""> <!--TODO DEFINE THE BACK DESTINATION-->
+<!--                        TODO DEFINE THE BACK DESTINATION-->
+                        <a href="">
                             <button class="btn btn-secondary fw-bold">Tilbage</button>
                         </a>
                     </div>
