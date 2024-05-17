@@ -135,7 +135,8 @@ CREATE TABLE invitation
     username VARCHAR(50) NOT NULL,
     organisation_iu INT NOT NULL,
     PRIMARY KEY (username,organisation_iu),
-    FOREIGN KEY (organisation_iu) REFERENCES organisation(id)
+    FOREIGN KEY (organisation_iu) REFERENCES organisation(id),
+    FOREIGN KEY (username) REFERENCES users(username)
 );
 
 CREATE VIEW hierarchy AS
