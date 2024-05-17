@@ -27,10 +27,9 @@ public class TeamController {
     }
 
     @GetMapping("/{teamId}")
-    public String team(Model model, @PathVariable long deptId) {
-        EntityViewDto team = teamService.g
-        List<Team> listOfUserTeams = teamService.getNotArchivedTeamsByUser(username);
-        model.addAttribute("allUserTeams", listOfUserTeams);
+    public String team(Model model, @PathVariable("teamId") long teamId) {
+        EntityViewDto team = teamService.getTeam(teamId);
+        model.addAttribute("team", team);
 
         return "team/userTeams";
     }
@@ -44,13 +43,13 @@ public class TeamController {
     }
 
     @PostMapping("/create")
-    public String createOrganisation(@ModelAttribute EntityCreationDto teamFormDto,
+    public String createOrganisation(@ModelAttribute EntityCreationDto teamDto,
                                      RedirectAttributes redirectAttributes,
                                      Authentication authentication) {
 
-        teamService.createTeam(authentication.getName(), teamFormDto, orgDescription);
-        redirectAttributes.addFlashAttribute("alertSuccess", "Team created sucessfully");
-        return "redirect:/department/" + teamFormDto.foreignEntityId();
+        teamService.createTeam(teamDto, authentication.getName());
+        redirectAttributes.addFlashAttribute("alertSuccess", "Team created successfully");
+        return "redirect:/department/" + teamDto.foreignEntityId();
     }
 
 }

@@ -1,5 +1,6 @@
 package dev.tolana.projectcalculationtool.service;
 
+import dev.tolana.projectcalculationtool.dto.EntityCreationDto;
 import dev.tolana.projectcalculationtool.dto.EntityViewDto;
 import dev.tolana.projectcalculationtool.mapper.EntityDtoMapper;
 import dev.tolana.projectcalculationtool.model.Entity;
@@ -7,6 +8,7 @@ import dev.tolana.projectcalculationtool.model.Organisation;
 import dev.tolana.projectcalculationtool.model.Team;
 import dev.tolana.projectcalculationtool.repository.OrganisationRepository;
 import dev.tolana.projectcalculationtool.repository.TeamRepository;
+import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -34,17 +36,14 @@ public class TeamService {
         return entityDtoMapper.convertToEntityViewDto(team);
     }
 
-    public List<Team> getNotArchivedTeamsByUser(String username) {
-        List<Team> teams = teamRepository.getTeamsByUser(username);
-        List<Team> notArchivedTeams = new ArrayList<>();
-        for (Team team : teams) {
-            if (!team.isArchived()) {
-                notArchivedTeams.add(team);}
-        }
-        return notArchivedTeams;
+    public void createTeam(EntityCreationDto teamCreationInfo, String username) {
+        Entity teamToCreate = entityDtoMapper.toEntity(teamCreationInfo);
+        teamRepository.createEntity(username, teamToCreate);
     }
 
-    public void createTeam(String username, String organisationName, String organisationDescription) {
-    teamRepository.createTeam(username, organisationName, organisationDescription);
+    @PostFilter("@auth.hasDepartmentAccess(filterObject.id, T(dev.tolana.projectcalculationtool.enums.Permission).DEPARTMENT_READ)")
+    public List<EntityViewDto> getAll(long departmentId) {
+        List<Entity> teamList = teamRepository.getAllEntitiesOnId(departmentId);
+        return entityDtoMapper.convertToEntityViewDtoList(teamList);
     }
 }
