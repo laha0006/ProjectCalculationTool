@@ -99,6 +99,31 @@ public class JdbcTeamRepository implements TeamRepository {
     }
 
     @Override
+    public List<Entity> getAllEntitiesOnId(long departmentId) {
+        List<Entity> teams = new ArrayList<>();
+        try (Connection connection = dataSource.getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement(
+                    "SELECT * FROM department WHERE department_id = ?");
+            preparedStatement.setLong(1, departmentId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                teams.add(new Team(
+                        resultSet.getLong(1),
+                        resultSet.getString(2),
+                        resultSet.getString(3),
+                        resultSet.getTimestamp(5).toLocalDateTime(),
+                        resultSet.getBoolean(6),
+                        resultSet.getLong(4)
+                ));
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return teams;
+    }
+
+    @Override
     public boolean createEntity(String username, Entity entity) {
         boolean isCreated = false;
 
