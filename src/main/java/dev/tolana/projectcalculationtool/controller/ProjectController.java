@@ -34,7 +34,7 @@ public class ProjectController {
     }
 
     @PostMapping("/create")
-    public String addProject(@ModelAttribute Entity newProject, Authentication authentication) {
+    public String createProject(@ModelAttribute Entity newProject, Authentication authentication) {
         String username = authentication.getName();
         projectService.addProject(username, newProject);
 
