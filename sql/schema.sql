@@ -130,14 +130,20 @@ CREATE TABLE IF NOT EXISTS user_entity_role
     FOREIGN KEY (organisation_id) REFERENCES organisation (id)
 );
 
-
+CREATE TABLE invitation
+(
+    username VARCHAR(50) NOT NULL,
+    organisation_iu INT NOT NULL,
+    PRIMARY KEY (username,organisation_iu),
+    FOREIGN KEY (organisation_iu) REFERENCES organisation(id)
+);
 
 CREATE VIEW hierarchy AS
-SELECT tsk.id AS task_id,
-       pjt.id AS project_id,
-       tm.id  AS team_id,
-       dpt.id AS department_id,
-       org.id AS organisation_id,
+SELECT tsk.id        AS task_id,
+       pjt.id        AS project_id,
+       tm.id         AS team_id,
+       dpt.id        AS department_id,
+       org.id        AS organisation_id,
        pjt.parent_id AS project_parent_id,
        tsk.parent_id AS task_parent_id
 FROM organisation org
