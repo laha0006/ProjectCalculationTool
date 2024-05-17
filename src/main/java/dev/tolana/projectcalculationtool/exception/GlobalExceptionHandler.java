@@ -45,6 +45,13 @@ public class GlobalExceptionHandler {
         return "redirect:" + referer;
     }
 
+    @ExceptionHandler(UserAlreadyInOrganisationException.class)
+    public String userAlreadyInOrganisation(UserAlreadyInOrganisationException ex, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+        String referer = request.getHeader("Referer");
+        redirectAttributes.addFlashAttribute("alertWarning", "Brugeren er allerede i din organisation!");
+        return "redirect:" + referer;
+    }
+
     @ModelAttribute("inviteCount")
     public int getInviteCount(Authentication authentication) {
         if (authentication == null) {
