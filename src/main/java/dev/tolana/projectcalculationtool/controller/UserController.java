@@ -1,13 +1,15 @@
 package dev.tolana.projectcalculationtool.controller;
 
 import dev.tolana.projectcalculationtool.dto.RegisterUserDto;
+import dev.tolana.projectcalculationtool.dto.inviteDto;
 import dev.tolana.projectcalculationtool.service.UserService;
+import org.springframework.security.core.Authentication;
 import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/user")
@@ -39,13 +41,30 @@ public class UserController {
     }
 
     @GetMapping("/invitations")
-    public String invitations(Model model) {
+    public String invitations(Model model, Authentication authentication) {
+        String username = authentication.getName();
+        List<inviteDto> invitations = userService.getInvitations(username);
+        model.addAttribute("invitations", invitations);
         return "user/invitations";
     }
 
     @PostMapping("/accept")
-    public String acceptInvite() {
-        int orgid = 1;
-        return "redirect:/organisation/"+ orgid;
+    public String acceptInvite(@RequestParam long orgId, RedirectAttributes redirectAttributes, Authentication authentication) {
+        System.out.println("WE ACCEPTED???");
+        String username = authentication.getName();
+        userService.acceptInvite(username,orgId);
+        redirectAttributes.addFlashAttribute("alertSuccess", "Du har accepteret invitationen!");
+        return "redirect:/user/invitations";
+    }
+
+    @PostMapping("/decline")
+    public String declineInvite(@RequestParam long orgId) {
+        return "redirect:/organisation/"+ orgId;
+    }
+
+    @GetMapping("/inviteCount")
+    public int getInviteCount(Authentication authentication) {
+        String username = authentication.getName();
+        return userService.getInvitationsCount(username);
     }
 }
