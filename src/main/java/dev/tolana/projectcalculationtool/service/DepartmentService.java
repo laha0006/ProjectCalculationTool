@@ -44,4 +44,8 @@ public class DepartmentService {
         List<Entity> teamList = jdbcDepartmentRepository.getChildren(parentId);
         return entityDtoMapper.convertToEntityViewDtoList(teamList);
     }
+
+    public void deleteDepartment(long deptId) {
+        jdbcDepartmentRepository.deleteEntity(deptId);
+    }
 }
