@@ -186,8 +186,37 @@ public class JdbcTaskRepository implements TaskRepository {
     }
 
     @Override
-    public boolean deleteEntity(long entityId) {
-        return false;
+    public boolean deleteEntity(long taskId) {
+        boolean isDeleted;
+        String deleteTask = """
+                DELETE uer, t
+                FROM user_entity_role uer
+                JOIN task t ON uer.task_id = t.id
+                WHERE uer.task_id = ? AND t.id = ?;
+                """;
+
+        try (Connection connection = dataSource.getConnection()){
+            try {
+                connection.setAutoCommit(false);
+
+                PreparedStatement pstmt = connection.prepareStatement(deleteTask);
+                pstmt.setLong(1, taskId);
+                pstmt.setLong(2, taskId);
+                int affectedRows = pstmt.executeUpdate();
+
+                isDeleted = affectedRows > 0;
+
+                connection.commit();
+                connection.setAutoCommit(true);
+            } catch (SQLException sqlException) {
+                connection.rollback();
+                connection.setAutoCommit(true);
+                throw new RuntimeException(sqlException);
+            }
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+        return isDeleted;
     }
 
     @Override
