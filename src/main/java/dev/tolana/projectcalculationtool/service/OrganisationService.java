@@ -27,7 +27,7 @@ public class OrganisationService {
         List<EntityViewDto> notArchivedOrganisations = new ArrayList<>();
 
         List<Entity> entityList = organisationRepository.getAllEntitiesOnUsername(username);
-        List<EntityViewDto> organisations = entityDtoMapper.convertToEntityViewDtoList(entityList);
+        List<EntityViewDto> organisations = entityDtoMapper.toEntityViewDtoList(entityList);
 
         for (EntityViewDto organisation : organisations) {
             if (!organisation.isArchived()) {
@@ -46,7 +46,7 @@ public class OrganisationService {
                   "T(dev.tolana.projectcalculationtool.enums.Permission).ORGANISATION_READ )")
     public EntityViewDto getOrganisation(long organisationId) {
         Entity organisation = organisationRepository.getEntityOnId(organisationId);
-        return entityDtoMapper.convertToEntityViewDto(organisation);
+        return entityDtoMapper.toEntityViewDto(organisation);
     }
 
     @PreAuthorize("@auth.hasOrgansiationAccess(#orgId, " +
@@ -61,6 +61,6 @@ public class OrganisationService {
 
     public List<EntityViewDto> getChildren(long organisationId) {
         List<Entity> departments = organisationRepository.getChildren(organisationId);
-        return entityDtoMapper.convertToEntityViewDtoList(departments);
+        return entityDtoMapper.toEntityViewDtoList(departments);
     }
 }

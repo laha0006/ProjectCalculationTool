@@ -32,7 +32,7 @@ public class TeamService {
 
     public EntityViewDto getTeam(long teamId){
         Entity team = teamRepository.getEntityOnId(teamId);
-        return entityDtoMapper.convertToEntityViewDto(team);
+        return entityDtoMapper.toEntityViewDto(team);
     }
 
     public void createTeam(EntityCreationDto teamCreationInfo, String username) {
@@ -43,7 +43,7 @@ public class TeamService {
     @PostFilter("@auth.hasDepartmentAccess(filterObject.id, T(dev.tolana.projectcalculationtool.enums.Permission).DEPARTMENT_READ)")
     public List<EntityViewDto> getAll(long departmentId) {
         List<Entity> teamList = teamRepository.getAllEntitiesOnId(departmentId);
-        return entityDtoMapper.convertToEntityViewDtoList(teamList);
+        return entityDtoMapper.toEntityViewDtoList(teamList);
     }
 
     public List<ResourceEntityViewDto> getAllChildren(long teamId) {
