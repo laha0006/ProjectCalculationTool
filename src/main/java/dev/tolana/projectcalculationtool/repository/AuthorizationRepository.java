@@ -1,6 +1,6 @@
 package dev.tolana.projectcalculationtool.repository;
 
-import dev.tolana.projectcalculationtool.dto.inviteDto;
+import dev.tolana.projectcalculationtool.dto.InviteDto;
 import dev.tolana.projectcalculationtool.enums.AccessLevel;
 import dev.tolana.projectcalculationtool.enums.Permission;
 import dev.tolana.projectcalculationtool.dto.HierarchyDto;
@@ -11,10 +11,7 @@ import dev.tolana.projectcalculationtool.util.RoleAssignUtil;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.*;
 
 @Repository
@@ -27,6 +24,8 @@ public class AuthorizationRepository {
     private final String USER_ENTITY_ROLE_SQL = "SELECT role_id FROM user_entity_role WHERE username = ? AND (organisation_id = ? OR department_id = ? OR team_id = ? OR project_id IN (?,?) OR task_id IN (?,?));\n";
     private final String INVITATIONS_SQL = "SELECT o.name, o.description, o.id FROM invitation i JOIN organisation o ON o.id = i.organisation_iu WHERE username = ?;";
     private final String DELETE_INVITE_SQL = "DELETE FROM invitation WHERE username = ? AND organisation_iu = ?";
+    private final String CHECK_USER_IN_ORGANISATION_SQL = "SELECT username FROM user_entity_role WHERE username = ? AND organisation_id = ?;";
+    private final String CREATE_INVITE_SQL = "INSERT INTO invitation VALUES(?,?);";
     private final String ROLES_PERMISSIONS_SQL = """
             SELECT r.id   AS role_id,
                    r.name AS role_name,
@@ -123,14 +122,14 @@ public class AuthorizationRepository {
         return roleIds;
     }
 
-    public List<inviteDto> getInvitations(String username) {
-        List<inviteDto> invitations = new ArrayList<>();
+    public List<InviteDto> getInvitations(String username) {
+        List<InviteDto> invitations = new ArrayList<>();
         try (Connection con = dataSource.getConnection()) {
             PreparedStatement preparedStatement = con.prepareStatement(INVITATIONS_SQL);
             preparedStatement.setString(1, username);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                invitations.add(new inviteDto(
+                invitations.add(new InviteDto(
                         resultSet.getString(1),
                         resultSet.getString(2),
                         resultSet.getLong(3)
@@ -180,5 +179,35 @@ public class AuthorizationRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void createInvite(String username, long organisationId) {
+        try(Connection con = dataSource.getConnection()) {
+            PreparedStatement preparedStatement = con.prepareStatement(CREATE_INVITE_SQL);
+            preparedStatement.setString(1,username);
+            preparedStatement.setLong(2, organisationId);
+            int affectedRows = preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                throw new InviteFailureException("Brugeren findes ikke, eller er allerede inviteret!");
+            }
+            throw new RuntimeException(e);
+        }
+    }
+
+    public int checkUserInOrganisation(String username, long orgId) {
+        try(Connection con = dataSource.getConnection()) {
+            PreparedStatement preparedStatement = con.prepareStatement(CHECK_USER_IN_ORGANISATION_SQL);
+            preparedStatement.setString(1, username);
+            preparedStatement.setLong(2, orgId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return 1;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return -1;
     }
 }
