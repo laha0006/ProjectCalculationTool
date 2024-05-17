@@ -41,7 +41,7 @@
                             </div>
 
                             <div class="d-inline">
-                                <a th:href="@{/department/{id}(id = ${team.parentId()}) }"
+                                <a th:href="@{/organisation/{orgId}/department/{id} (orgId=${orgId}, id = ${team.parentId})}"
                                    class="btn btn-warning fw-bold">Annullér</a>
                             </div>
                         </div>
