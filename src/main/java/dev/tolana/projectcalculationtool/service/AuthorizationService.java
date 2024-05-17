@@ -1,14 +1,10 @@
 package dev.tolana.projectcalculationtool.service;
 
-import dev.tolana.projectcalculationtool.enums.AccessLevel;
+import dev.tolana.projectcalculationtool.enums.EntityType;
 import dev.tolana.projectcalculationtool.enums.Permission;
-import dev.tolana.projectcalculationtool.enums.UserRole;
 import dev.tolana.projectcalculationtool.dto.HierarchyDto;
-import dev.tolana.projectcalculationtool.dto.UserEntityRoleDto;
-import dev.tolana.projectcalculationtool.dto.WeightedPermissionSetDto;
 import dev.tolana.projectcalculationtool.model.Role;
 import dev.tolana.projectcalculationtool.repository.AuthorizationRepository;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -27,38 +23,38 @@ public class AuthorizationService {
     }
 
     public boolean hasOrgansiationAccess(long organisationId, Permission requiredPermission) {
-        return hasAccess(organisationId, AccessLevel.ORGANISATION, requiredPermission);
+        return hasAccess(organisationId, EntityType.ORGANISATION, requiredPermission);
     }
 
     public boolean hasDepartmentAccess(long departmentId, Permission requiredPermission) {
-        return hasAccess(departmentId, AccessLevel.DEPARTMENT, requiredPermission);
+        return hasAccess(departmentId, EntityType.DEPARTMENT, requiredPermission);
     }
 
     public boolean hasTeamAccess(long teamId, Permission requiredPermission) {
-        return hasAccess(teamId, AccessLevel.TEAM, requiredPermission);
+        return hasAccess(teamId, EntityType.TEAM, requiredPermission);
     }
 
     public boolean hasProjectAccess(long projectId, Permission requiredPermission) {
         System.out.println("PROJECT");
-        return hasAccess(projectId, AccessLevel.PROJECT, requiredPermission);
+        return hasAccess(projectId, EntityType.PROJECT, requiredPermission);
     }
 
     public boolean hasTaskAccess(long taskId, Permission requiredPermission) {
-        return hasAccess(taskId, AccessLevel.TASK, requiredPermission);
+        return hasAccess(taskId, EntityType.TASK, requiredPermission);
     }
 
     private void initRoles() {
         roles = authorizationRepository.getRoles();
     }
 
-    private boolean hasAccess(long entityId, AccessLevel accessLevel, Permission requiredPermission) {
+    private boolean hasAccess(long entityId, EntityType entityType, Permission requiredPermission) {
         if (roles == null) {
             initRoles();
         }
         //currently logged in user, gotten from session.
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        HierarchyDto hierarchy = authorizationRepository.getHierarchy(entityId, accessLevel);
+        HierarchyDto hierarchy = authorizationRepository.getHierarchy(entityId, entityType);
         List<Long> userRoleIds = authorizationRepository.getRoleIdsMatchingHierarchy(username, hierarchy);
         ;
 
