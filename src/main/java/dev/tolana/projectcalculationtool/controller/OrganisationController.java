@@ -46,7 +46,7 @@ public class OrganisationController {
         EntityViewDto organisation = organisationService.getOrganisationsById(organisationId);
         List<EntityViewDto> departments = departmentService.getAll(organisationId);
         if (departments.isEmpty()) {
-            model.addAttribute("alertWarning", "You're not part of any department.");
+            model.addAttribute("alertWarning", "Du er ikke medlem af nogle afdelinger!");
         }
         model.addAttribute("allDepartments", departments);
         model.addAttribute("organisation", organisation);
@@ -72,7 +72,7 @@ public class OrganisationController {
     public String deleteOrganisation(@PathVariable long organisationId) {
         organisationService.deleteOrganisation(organisationId);
 
-        return "redirect:/dashboard";
+        return "redirect:/organisation";
     }
 
 }
