@@ -4,7 +4,6 @@ import dev.tolana.projectcalculationtool.dto.inviteDto;
 import dev.tolana.projectcalculationtool.enums.AccessLevel;
 import dev.tolana.projectcalculationtool.enums.Permission;
 import dev.tolana.projectcalculationtool.dto.HierarchyDto;
-import dev.tolana.projectcalculationtool.dto.UserEntityRoleDto;
 import dev.tolana.projectcalculationtool.enums.UserRole;
 import dev.tolana.projectcalculationtool.exception.InviteFailureException;
 import dev.tolana.projectcalculationtool.model.Role;
@@ -27,7 +26,7 @@ public class AuthorizationRepository {
     private final String TASK_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE task_id = ? LIMIT 1;";
     private final String USER_ENTITY_ROLE_SQL = "SELECT role_id FROM user_entity_role WHERE username = ? AND (organisation_id = ? OR department_id = ? OR team_id = ? OR project_id IN (?,?) OR task_id IN (?,?));\n";
     private final String INVITATIONS_SQL = "SELECT o.name, o.description, o.id FROM invitation i JOIN organisation o ON o.id = i.organisation_iu WHERE username = ?;";
-    private final String ACCEPT_INVITE_SQL = "DELETE FROM invitation WHERE username = ? AND organisation_iu = ?";
+    private final String DELETE_INVITE_SQL = "DELETE FROM invitation WHERE username = ? AND organisation_iu = ?";
     private final String ROLES_PERMISSIONS_SQL = """
             SELECT r.id   AS role_id,
                    r.name AS role_name,
@@ -147,7 +146,7 @@ public class AuthorizationRepository {
         try (Connection con = dataSource.getConnection()) {
             try {
                 con.setAutoCommit(false);
-                PreparedStatement preparedStatement = con.prepareStatement(ACCEPT_INVITE_SQL);
+                PreparedStatement preparedStatement = con.prepareStatement(DELETE_INVITE_SQL);
                 preparedStatement.setString(1, username);
                 preparedStatement.setLong(2, organisationId);
                 int affectedRows = preparedStatement.executeUpdate();
@@ -164,6 +163,20 @@ public class AuthorizationRepository {
             }
             con.commit();
             con.setAutoCommit(true);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void removeInvite(String username, long orgId) {
+        try(Connection con = dataSource.getConnection()) {
+            PreparedStatement preparedStatement = con.prepareStatement(DELETE_INVITE_SQL);
+            preparedStatement.setString(1, username);
+            preparedStatement.setLong(2, orgId);
+            int affectedRows = preparedStatement.executeUpdate();
+            if (affectedRows == 0) {
+                throw new InviteFailureException("Noget gik galt, kunne ikke afvise invitation!");
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
