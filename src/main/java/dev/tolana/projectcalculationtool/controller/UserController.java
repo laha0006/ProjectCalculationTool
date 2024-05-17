@@ -58,13 +58,11 @@ public class UserController {
     }
 
     @PostMapping("/decline")
-    public String declineInvite(@RequestParam long orgId) {
-        return "redirect:/organisation/"+ orgId;
+    public String declineInvite(@RequestParam long orgId, RedirectAttributes redirectAttributes, Authentication authentication) {
+        String username = authentication.getName();
+        userService.declineInvite(username,orgId);
+        redirectAttributes.addFlashAttribute("alertWarning", "Du har afvist invitationen!");
+        return "redirect:/user/invitations";
     }
 
-    @GetMapping("/inviteCount")
-    public int getInviteCount(Authentication authentication) {
-        String username = authentication.getName();
-        return userService.getInvitationsCount(username);
-    }
 }
