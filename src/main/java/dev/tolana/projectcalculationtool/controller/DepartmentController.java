@@ -46,4 +46,12 @@ public class DepartmentController {
         redirectAttributes.addFlashAttribute("alertSuccess", "Department created successfully");
         return "redirect:/organisation/" + departmentDto.parentId();
     }
+
+    @PostMapping("/{deptId}/delete")
+    public String deleteDepartment(@PathVariable long orgId,
+                                   @PathVariable long deptId) {
+
+        departmentService.deleteDepartment(deptId);
+        return "redirect:/organisation/" + orgId;
+    }
 }
