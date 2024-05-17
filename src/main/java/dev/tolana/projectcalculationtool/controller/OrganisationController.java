@@ -26,12 +26,10 @@ public class OrganisationController {
 
     private final OrganisationService organisationService;
     private final DepartmentService departmentService;
-    private final UserService userService;
 
-    public OrganisationController(OrganisationService organisationService, DepartmentService departmentService, UserService userService) {
+    public OrganisationController(OrganisationService organisationService, DepartmentService departmentService) {
         this.organisationService = organisationService;
         this.departmentService = departmentService;
-        this.userService = userService;
     }
 
     @GetMapping("")
@@ -68,6 +66,13 @@ public class OrganisationController {
         String username = authentication.getName();
         organisationService.createOrganisation(username, creationInfo);
         return "redirect:/organisation";
+    }
+
+    @PostMapping("/{organisationId}/delete")
+    public String deleteOrganisation(@PathVariable long organisationId) {
+        organisationService.deleteOrganisation(organisationId);
+
+        return "redirect:/dashboard";
     }
 
 }
