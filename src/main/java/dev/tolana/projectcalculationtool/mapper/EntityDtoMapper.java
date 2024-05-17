@@ -30,14 +30,16 @@ public class EntityDtoMapper {
                     entityCreationDto.entityName(),
                     entityCreationDto.description(),
                     LocalDateTime.now(),
-                    false, entityCreationDto.parentId()
+                    false,
+                    entityCreationDto.parentId()
             );}
             case TEAM -> {return new Team(
                     -1,
                     entityCreationDto.entityName(),
                     entityCreationDto.description(),
                     LocalDateTime.now(),
-                    false, entityCreationDto.parentId()
+                    false,
+                    entityCreationDto.parentId()
             );}
             default -> {
                 return null;
