@@ -16,13 +16,35 @@ import java.util.List;
 public class EntityDtoMapper {
 
     public Entity toEntity(EntityCreationDto entityCreationDto) {
-        return new Entity(
-                -1,
-                entityCreationDto.entityName(),
-                entityCreationDto.description(),
-                LocalDateTime.now(),
-                true
-        );
+
+        switch (entityCreationDto.entityType()) {
+            case ORGANISATION -> {return new Organisation(
+                    -1,
+                    entityCreationDto.entityName(),
+                    entityCreationDto.description(),
+                    LocalDateTime.now(),
+                    false
+            );}
+            case DEPARTMENT -> {return new Department(
+                    -1,
+                    entityCreationDto.entityName(),
+                    entityCreationDto.description(),
+                    LocalDateTime.now(),
+                    false, entityCreationDto.parentId()
+            );}
+            case TEAM -> {return new Team(
+                    -1,
+                    entityCreationDto.entityName(),
+                    entityCreationDto.description(),
+                    LocalDateTime.now(),
+                    false, entityCreationDto.parentId()
+            );}
+            default -> {
+                return null;
+            }
+        }
+
+
     }
 
     public List<Organisation> toOrganisationList(List<Entity> entityList) {
