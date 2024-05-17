@@ -35,8 +35,13 @@ public class DepartmentService {
 
     //filterObject referes to the current object of the collection, when looping.
     @PostFilter("@auth.hasDepartmentAccess(filterObject.id, T(dev.tolana.projectcalculationtool.enums.Permission).DEPARTMENT_READ)")
-    public List<EntityViewDto> getAll(long organisationId) {
-        List<Entity> departmentList = jdbcDepartmentRepository.getAllEntitiesOnId(organisationId);
-        return entityDtoMapper.convertToEntityViewDtoList(departmentList);
+    public List<EntityViewDto> getAll(long departmentId) {
+        List<Entity> teamList = jdbcDepartmentRepository.getAllEntitiesOnId(departmentId);
+        return entityDtoMapper.convertToEntityViewDtoList(teamList);
+    }
+
+    public List<EntityViewDto> getChildren(long parentId) {
+        List<Entity> teamList = jdbcDepartmentRepository.getChildren(parentId);
+        return entityDtoMapper.convertToEntityViewDtoList(teamList);
     }
 }
