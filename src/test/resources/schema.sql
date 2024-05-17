@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS task
     deadline        TIMESTAMP,
     estimated_hours INT,
     actual_hours    INT       DEFAULT 0,
-    status          INT,
+    status          INT       DEFAULT 4,
     parent_id       INT,
     archived        BOOLEAN   DEFAULT FALSE,
     FOREIGN KEY (project_id) REFERENCES project (id),
