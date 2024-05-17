@@ -1,20 +1,14 @@
 package dev.tolana.projectcalculationtool.controller;
 
-import dev.tolana.projectcalculationtool.dto.CreateOrganisationFormDto;
-import dev.tolana.projectcalculationtool.dto.CreateTeamFormDto;
 import dev.tolana.projectcalculationtool.dto.EntityCreationDto;
 import dev.tolana.projectcalculationtool.dto.EntityViewDto;
-import dev.tolana.projectcalculationtool.model.Organisation;
-import dev.tolana.projectcalculationtool.model.Team;
-import dev.tolana.projectcalculationtool.service.OrganisationService;
+import dev.tolana.projectcalculationtool.enums.EntityType;
 import dev.tolana.projectcalculationtool.service.TeamService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("/organisation/{orgId}/department/{deptId}/team")
@@ -36,7 +30,7 @@ public class TeamController {
 
     @GetMapping("/create")
     public String createTeam(Model model, @PathVariable long deptId) {
-        EntityCreationDto emptyTeamDto = new EntityCreationDto("", "", deptId);
+        EntityCreationDto emptyTeamDto = new EntityCreationDto("", "", deptId, EntityType.TEAM);
         model.addAttribute("team", emptyTeamDto);
 
         return "team/createTeam";
@@ -49,7 +43,7 @@ public class TeamController {
 
         teamService.createTeam(teamDto, authentication.getName());
         redirectAttributes.addFlashAttribute("alertSuccess", "Team created successfully");
-        return "redirect:/department/" + teamDto.foreignEntityId();
+        return "redirect:/department/" + teamDto.parentId();
     }
 
 }
