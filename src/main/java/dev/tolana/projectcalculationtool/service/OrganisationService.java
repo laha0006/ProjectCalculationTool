@@ -2,14 +2,10 @@ package dev.tolana.projectcalculationtool.service;
 
 import dev.tolana.projectcalculationtool.dto.EntityCreationDto;
 import dev.tolana.projectcalculationtool.dto.EntityViewDto;
-import dev.tolana.projectcalculationtool.dto.InviteFormDto;
 import dev.tolana.projectcalculationtool.mapper.EntityDtoMapper;
 import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.Invitation;
-import dev.tolana.projectcalculationtool.model.Organisation;
-import dev.tolana.projectcalculationtool.repository.EntityCrudOperations;
 import dev.tolana.projectcalculationtool.repository.OrganisationRepository;
-import dev.tolana.projectcalculationtool.repository.impl.JdbcOrganisationRepository;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -48,7 +44,7 @@ public class OrganisationService {
     //spring expression language...
     @PreAuthorize("@auth.hasOrgansiationAccess(#organisationId, " +
                   "T(dev.tolana.projectcalculationtool.enums.Permission).ORGANISATION_READ )")
-    public EntityViewDto getOrganisationsById(long organisationId) {
+    public EntityViewDto getOrganisation(long organisationId) {
         Entity organisation = organisationRepository.getEntityOnId(organisationId);
         return entityDtoMapper.convertToEntityViewDto(organisation);
     }
@@ -61,5 +57,10 @@ public class OrganisationService {
 
     public void deleteOrganisation(long organisationId) {
         organisationRepository.deleteEntity(organisationId);
+    }
+
+    public List<EntityViewDto> getChildren(long organisationId) {
+        List<Entity> departments = organisationRepository.getChildren(organisationId);
+        return entityDtoMapper.convertToEntityViewDtoList(departments);
     }
 }
