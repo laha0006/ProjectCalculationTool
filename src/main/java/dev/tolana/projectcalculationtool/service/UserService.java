@@ -44,4 +44,8 @@ public class UserService {
     public int getInvitationsCount(String username) {
         return getInvitations(username).size();
     }
+
+    public void declineInvite(String username, long orgId) {
+        authorizationRepository.removeInvite(username,orgId);
+    }
 }
