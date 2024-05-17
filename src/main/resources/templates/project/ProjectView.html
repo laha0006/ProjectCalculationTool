@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html th:fragment="" lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      data-bs-theme="dark">
+<head>
+    <th:block th:insert="~{fragments/head :: headFiles}"></th:block>
+    <title>Projekt</title>
+</head>
+<body>
+<div class="container">
+    <div class="d-flex flex-column justify-content-between min-vh-100">
+        <div>
+            <header th:replace="~{fragments/header :: header}"></header>
+            <main class="d-flex justify-content-center text-center bg-secondary-subtle py-3 px-5 rounded shadow">
+                <div class="" style="width: 800px">
+                    <h1 th:text="${'Teams i '+ department.name}"></h1>
+
+                    <div class="row row-cols-1 row-cols-md-4 g-2">
+
+                        <!--                        Card generation-->
+                        <div class="col" th:each="team : ${allTeams}">
+                            <a class="text-decoration-none text-reset"
+                               th:href="@{team/{teamId}/project (teamId = ${team.id})}">
+                                <div class="card overflow-hidden" style="min-height: 100px; max-height: 100px;">
+                                    <div class="card-body">
+                                        <h5 class="card-title" th:text="${team.name}"></h5>
+                                        <p class="card-text" th:text="${team.description}"></p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                    </div>
+
+
+                    <div class="d-flex">
+                        <!--                        TODO MAKE SURE THIS IS HOW YOU CHECK ENUM VALUES-->
+                        <!--                        <div th:if="${userRole == 'ORGANISATION_OWNER' || userRole == 'ORGANISATION_ADMIN'}">-->
+                        <div class="d-inline">
+                            <a th:href="@{/organisation/{orgId}/department/{deptId}/team/create (orgId = ${department.parentId}, deptId = ${department.id}) }"
+                               class="btn btn-success fw-bold">Opret team</a>
+                        </div>
+
+                        <div class="d-inline">
+                            <a th:href="@{/organisation/{orgId}/department/{deptId}/invite (orgId = ${department.parentId}, deptId = ${department.id})}"
+                               class="btn btn-success fw-bold">Tilføj brugere</a>
+                        </div>
+
+                        <div class="d-inline">
+                            <form th:action="@{{id}/delete (id = ${department.id})}" method="post">
+                                <button class="btn btn-danger fw-bold">Slet afdeling</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="d-inline">
+                        <a th:href="@{/organisation/{orgId} (orgId = ${department.parentId})}" class="btn btn-warning fw-bold">Gå tilbage</a>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+        <footer th:replace="~{fragments/footer :: footer}"></footer>
+    </div>
+</div>
+</body>
+</html>
