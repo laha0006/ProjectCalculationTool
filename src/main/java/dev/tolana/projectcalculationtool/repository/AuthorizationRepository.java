@@ -1,7 +1,7 @@
 package dev.tolana.projectcalculationtool.repository;
 
 import dev.tolana.projectcalculationtool.dto.InviteDto;
-import dev.tolana.projectcalculationtool.enums.AccessLevel;
+import dev.tolana.projectcalculationtool.enums.EntityType;
 import dev.tolana.projectcalculationtool.enums.Permission;
 import dev.tolana.projectcalculationtool.dto.HierarchyDto;
 import dev.tolana.projectcalculationtool.enums.UserRole;
@@ -44,9 +44,9 @@ public class AuthorizationRepository {
         this.dataSource = dataSource;
     }
 
-    public HierarchyDto getHierarchy(long id, AccessLevel accessLevel) {
+    public HierarchyDto getHierarchy(long id, EntityType entityType) {
         HierarchyDto hierarchyDto = null;
-        String SQL = switch (accessLevel) {
+        String SQL = switch (entityType) {
             case TASK -> TASK_HIERARCHY_SQL;
             case PROJECT -> PROJECT_HIERARCHY_SQL;
             case TEAM -> TEAM_HIERARCHY_SQL;

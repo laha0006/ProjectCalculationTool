@@ -1,10 +1,10 @@
 package dev.tolana.projectcalculationtool.dto;
 
 public record EntityViewDto(
-        String entityName,
+        String name,
         String description,
-        long entityId,
-        long foreignId,
+        long id,
+        long parentId,
         boolean isArchived
 ) {
 }

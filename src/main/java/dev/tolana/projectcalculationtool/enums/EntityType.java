@@ -1,6 +1,6 @@
 package dev.tolana.projectcalculationtool.enums;
 
-public enum AccessLevel {
+public enum EntityType {
     TASK,
     PROJECT,
     TEAM,

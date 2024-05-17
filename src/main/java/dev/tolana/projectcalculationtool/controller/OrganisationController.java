@@ -4,6 +4,7 @@ import dev.tolana.projectcalculationtool.dto.EntityCreationDto;
 import dev.tolana.projectcalculationtool.dto.EntityViewDto;
 import dev.tolana.projectcalculationtool.dto.InviteDto;
 import dev.tolana.projectcalculationtool.dto.InviteFormDto;
+import dev.tolana.projectcalculationtool.enums.EntityType;
 import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.Invitation;
 import dev.tolana.projectcalculationtool.model.Organisation;
@@ -82,7 +83,7 @@ public class OrganisationController {
 
     @GetMapping("/create")
     public String createOrganisation(Model model) {
-        EntityCreationDto emptyCreationDto = new EntityCreationDto("", "", 0);
+        EntityCreationDto emptyCreationDto = new EntityCreationDto("", "", -1, EntityType.ORGANISATION);
         model.addAttribute("organisation", emptyCreationDto);
 
         return "organisation/createOrganisation";

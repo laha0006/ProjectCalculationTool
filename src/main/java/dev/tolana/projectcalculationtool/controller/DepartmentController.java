@@ -2,8 +2,7 @@ package dev.tolana.projectcalculationtool.controller;
 
 import dev.tolana.projectcalculationtool.dto.EntityCreationDto;
 import dev.tolana.projectcalculationtool.dto.EntityViewDto;
-import dev.tolana.projectcalculationtool.dto.CreateDepartmentFormDto;
-import dev.tolana.projectcalculationtool.model.Department;
+import dev.tolana.projectcalculationtool.enums.EntityType;
 import dev.tolana.projectcalculationtool.service.DepartmentService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -31,7 +30,7 @@ public class DepartmentController {
 
     @GetMapping("/create")
     public String createDepartment(Model model, @PathVariable long orgId) {
-        EntityCreationDto emptyDepartmentDto = new EntityCreationDto("", "", orgId);
+        EntityCreationDto emptyDepartmentDto = new EntityCreationDto("", "", orgId, EntityType.DEPARTMENT);
         model.addAttribute("department", emptyDepartmentDto);
         return "department/createDepartment";
     }
@@ -40,6 +39,6 @@ public class DepartmentController {
     public String createDepartment(@ModelAttribute EntityCreationDto departmentDto, RedirectAttributes redirectAttributes, Authentication authentication) {
         departmentService.createDepartment(departmentDto, authentication.getName());
         redirectAttributes.addFlashAttribute("alertSuccess", "Department created successfully");
-        return "redirect:/organisation/" + departmentDto.foreignEntityId();
+        return "redirect:/organisation/" + departmentDto.parentId();
     }
 }

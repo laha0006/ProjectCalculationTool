@@ -19,7 +19,7 @@
                         <div class="form-group">
                             <label class="form-label" for="name">Organisation navn: </label>
                             <input id="name" class="form-control" type="text" th:name="entityName" required
-                            autofocus="autofocus">
+                                   autofocus="autofocus">
                         </div>
                         <div class="form-group">
                             <label for="description" class="form-label">Organisation beskrivelse: </label>
@@ -27,7 +27,10 @@
                         </div>
 
                         <label>
-                            <input th:field="*{foreignEntityId}" hidden="hidden">
+                            <input th:field="*{parentId}" hidden="hidden">
+                        </label>
+                        <label>
+                            <input th:field="*{entityType}" hidden="hidden">
                         </label>
 
                         <div class="form-group mt-2">
@@ -35,18 +38,18 @@
                         </div>
                     </form>
 
-                            <div class="d-inline">
-                                <a href="/organisation" class="btn btn-warning fw-bold">Annullér</a>
-                            </div>
-                        </div>
-                    </form>
-
-
+                    <div class="d-inline">
+                        <a href="/organisation" class="btn btn-warning fw-bold">Annullér</a>
+                    </div>
                 </div>
-            </main>
+                </form>
+
+
         </div>
-        <footer th:replace="~{fragments/footer :: footer}"></footer>
+        </main>
     </div>
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+</div>
 </div>
 </body>
 </html>
