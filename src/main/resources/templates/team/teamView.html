@@ -57,23 +57,6 @@
                         <a href="/organisation" class="btn btn-warning fw-bold">Gå tilbage</a>
                     </div>
                 </div>
-
-                <table th:class="table">
-                    <thead>
-                    <tr>
-                        <th scope="col">Project</th>
-                        <th scope="col">Description</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <!--TODO add functionality-->
-                    <tr th:each="team : ${teamList}">
-                        <td th:text="${team.name}"></td>
-                        <td th:text="${team.description}"></td>
-                    </tr>
-                    </tbody>
-                </table>
-
             </main>
         </div>
         <footer th:replace="~{fragments/footer :: footer}"></footer>
