@@ -18,6 +18,7 @@ public class Entity {
         this.archived = archived;
     }
 
+    //Task uses this constructor
     public Entity(long id, String name, String description) {
         this.id = id;
         this.name = name;
