@@ -181,6 +181,11 @@ public class JdbcTaskRepository implements TaskRepository {
     }
 
     @Override
+    public List<Entity> getChildren(long parentId) {
+        return null;
+    }
+
+    @Override
     public boolean editEntity(Entity entity) {
         return false;
     }
