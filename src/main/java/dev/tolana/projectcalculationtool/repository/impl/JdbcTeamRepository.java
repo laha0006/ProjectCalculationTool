@@ -2,10 +2,11 @@ package dev.tolana.projectcalculationtool.repository.impl;
 
 import dev.tolana.projectcalculationtool.dto.UserInformationDto;
 import dev.tolana.projectcalculationtool.enums.UserRole;
+import dev.tolana.projectcalculationtool.model.Department;
 import dev.tolana.projectcalculationtool.model.Entity;
-import dev.tolana.projectcalculationtool.model.Organisation;
 import dev.tolana.projectcalculationtool.model.Team;
 import dev.tolana.projectcalculationtool.repository.TeamRepository;
+import dev.tolana.projectcalculationtool.util.RoleAssignUtil;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -17,10 +18,10 @@ import java.util.List;
 @Repository
 public class JdbcTeamRepository implements TeamRepository {
 
-    private DataSource datasource;
+    private DataSource dataSource;
 
-    public JdbcTeamRepository(DataSource datasource) {
-        this.datasource = datasource;
+    public JdbcTeamRepository(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
 
@@ -30,7 +31,7 @@ public class JdbcTeamRepository implements TeamRepository {
 
         List<Entity> teams = new ArrayList<>();
 
-        try (Connection connection = datasource.getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
             String getAllTeams = """
                     SELECT team.id, name, description, date_created, archived
                     FROM team
@@ -74,53 +75,52 @@ public class JdbcTeamRepository implements TeamRepository {
 
     }
 
-    @Override Entity getEntityOnId(long teamId){
-        Entity team = null;
-        try( Connection connection = datasource.getConnection()){
-            PreparedStatement preparedStatement = connection.prepareStatement(
-                    "SELECT * FROM team WHERE id = ?");
-            preparedStatement.setLong(1,teamId);
+    @Override
+    public Entity getEntityOnId(long deptId) {
+        Entity department = null;
+        try (Connection connection = dataSource.getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM department WHERE id = ?");
+            preparedStatement.setLong(1, deptId);
             ResultSet resultSet = preparedStatement.executeQuery();
-            if(resultSet.next()){
-                team = new Team(
+            if (resultSet.next()) {
+                department = new Department(
                         resultSet.getLong(1),
                         resultSet.getString(2),
                         resultSet.getString(3),
                         resultSet.getTimestamp(5).toLocalDateTime(),
-                        resultSet.getBoolean(6)
-                )
+                        resultSet.getBoolean(6),
+                        resultSet.getLong(4)
+                );
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
+        return department;
     }
 
     @Override
     public boolean createEntity(String username, Entity entity) {
+        boolean isCreated = false;
 
-        try (Connection connection = datasource.getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
             try {
                 connection.setAutoCommit(false);
 
-                String createTeam = "INSERT INTO team(name, description) VALUES (?, ?)";
+                String createTeam = "INSERT INTO team(name, description, department_id) VALUES (?, ?, ?)";
                 PreparedStatement pstmtAdd = connection.prepareStatement(createTeam,
                         Statement.RETURN_GENERATED_KEYS);
                 pstmtAdd.setString(1, entity.getName());
                 pstmtAdd.setString(2, entity.getDescription());
+                pstmtAdd.setLong(3, ((Team)entity).getDepartmentId());
+                int affectedRows = pstmtAdd.executeUpdate();
+                isCreated = affectedRows > 0;
 
-                pstmtAdd.executeUpdate();
                 ResultSet rs = pstmtAdd.getGeneratedKeys();
-
-
-                long teamId = -1;
-                if (rs.next()) {
-                    teamId = rs.getLong(1);
+                if(rs.next()) {
+                    long teamId = rs.getLong(1);
+                    RoleAssignUtil.assignDepartmentRole(connection, teamId,
+                            UserRole.TEAM_OWNER, username);
                 }
-                String assignTeamToUser =
-                        "INSERT INTO user_entity_role(username, role_id, team_id) VALUES (?, ?, ?)";
-                PreparedStatement pstmtAssign = connection.prepareStatement(assignTeamToUser);
-                pstmtAssign.setString(1, username);
-                pstmtAssign.setLong(2, 1);
-                pstmtAssign.setLong(3, teamId);
-                pstmtAssign.executeUpdate();
 
                 connection.commit();
                 connection.setAutoCommit(true);
@@ -132,7 +132,7 @@ public class JdbcTeamRepository implements TeamRepository {
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
         }
-        return true;
+        return isCreated;
     }
 
 
