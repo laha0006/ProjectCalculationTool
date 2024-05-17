@@ -40,29 +40,4 @@ public class UserController {
         return "redirect:/user/login";
     }
 
-    @GetMapping("/invitations")
-    public String invitations(Model model, Authentication authentication) {
-        String username = authentication.getName();
-        List<InviteDto> invitations = userService.getInvitations(username);
-        model.addAttribute("invitations", invitations);
-        return "user/invitations";
-    }
-
-    @PostMapping("/accept")
-    public String acceptInvite(@RequestParam long orgId, RedirectAttributes redirectAttributes, Authentication authentication) {
-        System.out.println("WE ACCEPTED???");
-        String username = authentication.getName();
-        userService.acceptInvite(username,orgId);
-        redirectAttributes.addFlashAttribute("alertSuccess", "Du har accepteret invitationen!");
-        return "redirect:/user/invitations";
-    }
-
-    @PostMapping("/decline")
-    public String declineInvite(@RequestParam long orgId, RedirectAttributes redirectAttributes, Authentication authentication) {
-        String username = authentication.getName();
-        userService.declineInvite(username,orgId);
-        redirectAttributes.addFlashAttribute("alertWarning", "Du har afvist invitationen!");
-        return "redirect:/user/invitations";
-    }
-
 }
