@@ -1,7 +1,7 @@
 package dev.tolana.projectcalculationtool.controller;
 
 import dev.tolana.projectcalculationtool.dto.RegisterUserDto;
-import dev.tolana.projectcalculationtool.dto.inviteDto;
+import dev.tolana.projectcalculationtool.dto.InviteDto;
 import dev.tolana.projectcalculationtool.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.ui.Model;
@@ -43,7 +43,7 @@ public class UserController {
     @GetMapping("/invitations")
     public String invitations(Model model, Authentication authentication) {
         String username = authentication.getName();
-        List<inviteDto> invitations = userService.getInvitations(username);
+        List<InviteDto> invitations = userService.getInvitations(username);
         model.addAttribute("invitations", invitations);
         return "user/invitations";
     }
