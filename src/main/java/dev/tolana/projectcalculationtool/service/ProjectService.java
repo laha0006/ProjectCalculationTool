@@ -49,4 +49,8 @@ public class ProjectService {
     public List<UserRole> getAllUserRoles() {
         return projectRepository.getAllUserRoles();
     }
+
+    public void deleteProject(long projectId) {
+        projectRepository.deleteEntity(projectId);
+    }
 }

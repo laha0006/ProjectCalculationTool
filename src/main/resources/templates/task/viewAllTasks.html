@@ -34,6 +34,10 @@
                                 <a th:href="@{{taskId}/create/subtask (taskId=${task.parentId})}">
                                     <button class="btn btn-success fw-bold">Opret underopgave</button>
                                 </a>
+
+                                <form th:action="@{{taskId}/delte (taskId=${task.parentId})}">
+                                    <button class="btn btn-warning fw-bold">Slet</button>
+                                </form>
                             </td>
                         </tr>
                         </tbody>

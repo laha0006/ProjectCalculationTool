@@ -35,4 +35,8 @@ public class TaskService {
         Entity task = taskRepository.getEntityOnId(taskId);
         return entityDtoMapper.convertToTaskDto((Task) task);
     }
+
+    public void deleteTask(long taskId) {
+        taskRepository.deleteEntity(taskId);
+    }
 }

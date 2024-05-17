@@ -159,8 +159,31 @@ public class JdbcProjectRepository implements ProjectRepository {
     }
 
     @Override
-    public boolean deleteEntity(long entityId) {
-        return false;
+    public boolean deleteEntity(long projectId) {
+        boolean isDeleted;
+        String deleteProject = """
+                DELETE FROM project
+                WHERE project.id = ?;
+                """;
+        try (Connection connection = dataSource.getConnection()){
+            try {
+                connection.setAutoCommit(false);
+                PreparedStatement pstmt = connection.prepareStatement(deleteProject);
+                pstmt.setLong(1, projectId);
+                int affectedRows = pstmt.executeUpdate();
+
+                isDeleted = affectedRows > 0;
+
+            } catch (SQLException sqlException) {
+                connection.rollback();
+                connection.setAutoCommit(true);
+                throw new RuntimeException(sqlException);
+            }
+        }catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+
+        return isDeleted;
     }
 
     @Override

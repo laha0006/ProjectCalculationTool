@@ -15,7 +15,7 @@
                 <div>
                     <h2>Nyt Projekt</h2>
 
-                    <form th:action="@{/project/addproject}" method="post" th:object="${newProject}">
+                    <form th:action="@{creat}" method="post" th:object="${newProject}">
                         <div class="form-group">
                             <label class="form-label" for="name">Name: </label>
                             <input id="name" type="text" name="name" th:name="projectName" required>

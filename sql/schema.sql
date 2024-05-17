@@ -85,7 +85,7 @@ CREATE TABLE IF NOT EXISTS project
     date_created   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     deadline       TIMESTAMP,
     allotted_hours INT,
-    status         INT,
+    status         INT       DEFAULT 1,
     parent_id      INT,
     archived       BOOLEAN   DEFAULT FALSE,
     FOREIGN KEY (team_id) REFERENCES team (id) ON DELETE CASCADE ,
