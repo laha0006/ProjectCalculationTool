@@ -13,18 +13,18 @@
             <header th:replace="~{fragments/header :: header}"></header>
             <main class="d-flex justify-content-center text-center bg-secondary-subtle py-3 px-5 rounded shadow">
                 <div class="" style="width: 800px">
-                    <h1 th:text="${'Teams i '+ department.name}"></h1>
+                    <h1 th:text="${'Opgaver i '+ project.resourceEntityName}"></h1>
 
                     <div class="row row-cols-1 row-cols-md-4 g-2">
 
                         <!--                        Card generation-->
-                        <div class="col" th:each="team : ${allTeams}">
+                        <div class="col" th:each="task : ${allTasks}">
                             <a class="text-decoration-none text-reset"
                                th:href="@{team/{teamId}/project (teamId = ${team.id})}">
                                 <div class="card overflow-hidden" style="min-height: 100px; max-height: 100px;">
                                     <div class="card-body">
-                                        <h5 class="card-title" th:text="${team.name}"></h5>
-                                        <p class="card-text" th:text="${team.description}"></p>
+                                        <h5 class="card-title" th:text="${task.resourceEntityName}"></h5>
+                                        <p class="card-text" th:text="${task.description}"></p>
                                     </div>
                                 </div>
                             </a>
@@ -38,7 +38,7 @@
                         <!--                        <div th:if="${userRole == 'ORGANISATION_OWNER' || userRole == 'ORGANISATION_ADMIN'}">-->
                         <div class="d-inline">
                             <a th:href="@{/organisation/{orgId}/department/{deptId}/team/create (orgId = ${department.parentId}, deptId = ${department.id}) }"
-                               class="btn btn-success fw-bold">Opret team</a>
+                               class="btn btn-success fw-bold">Opret projekt</a>
                         </div>
 
                         <div class="d-inline">
@@ -48,7 +48,7 @@
 
                         <div class="d-inline">
                             <form th:action="@{{id}/delete (id = ${department.id})}" method="post">
-                                <button class="btn btn-danger fw-bold">Slet afdeling</button>
+                                <button class="btn btn-danger fw-bold">Slet projekt</button>
                             </form>
                         </div>
                     </div>
