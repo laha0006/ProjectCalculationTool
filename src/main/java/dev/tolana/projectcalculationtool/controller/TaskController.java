@@ -64,6 +64,17 @@ public class TaskController {
         String username = authentication.getName();
         taskService.createTask(username, newTask);
 
-        return "redirect:/organisation/" + orgId + "/department/" + deptId + "/team/" + teamId + "/project/" + projectId + "/task"; //TODO UNDERSØG OM redirect:/ skal matche et endpoint i get mappingen kun eller om den også skal indrage request mapping for controlleren i endpoint
+        return "redirect:/organisation/" + orgId + "/department/" + deptId + "/team/" + teamId + "/project/" + projectId + "/task/overview";
+    }
+
+    @PostMapping("/{taskId}/delete")
+    public String deleteTask(@PathVariable long orgId,
+                             @PathVariable long deptId,
+                             @PathVariable long teamId,
+                             @PathVariable long projectId,
+                             @PathVariable long taskId) {
+
+        taskService.deleteTask(taskId);
+        return "redirect:/organisation/" + orgId + "/department/" + deptId + "/team/" + teamId + "/project/" + projectId + "/task/overview";
     }
 }
