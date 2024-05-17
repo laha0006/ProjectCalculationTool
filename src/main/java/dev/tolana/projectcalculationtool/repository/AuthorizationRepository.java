@@ -21,6 +21,7 @@ public class AuthorizationRepository {
     private final String TEAM_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE team_id = ? LIMIT 1;";
     private final String PROJECT_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE project_id = ? LIMIT 1;";
     private final String TASK_HIERARCHY_SQL = "SELECT * FROM hierarchy WHERE task_id = ? LIMIT 1;";
+
     private final String USER_ENTITY_ROLE_SQL = "SELECT role_id FROM user_entity_role WHERE username = ? AND (organisation_id = ? OR department_id = ? OR team_id = ? OR project_id IN (?,?) OR task_id IN (?,?));\n";
     private final String INVITATIONS_SQL = "SELECT o.name, o.description, o.id FROM invitation i JOIN organisation o ON o.id = i.organisation_iu WHERE username = ?;";
     private final String DELETE_INVITE_SQL = "DELETE FROM invitation WHERE username = ? AND organisation_iu = ?";
