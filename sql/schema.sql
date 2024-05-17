@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS users
     password VARCHAR(500) NOT NULL,
     enabled  BOOLEAN,
     email    VARCHAR(255) DEFAULT NULL
-);
+    );
 
 CREATE TABLE IF NOT EXISTS authorities
 (
@@ -15,20 +15,20 @@ CREATE TABLE IF NOT EXISTS authorities
     authority VARCHAR(50) NOT NULL,
     PRIMARY KEY (username, authority),
     FOREIGN KEY (username) REFERENCES users (username)
-);
+    );
 
 CREATE TABLE IF NOT EXISTS role
 (
     id     INT AUTO_INCREMENT PRIMARY KEY,
     name   VARCHAR(255) NOT NULL,
     weight SMALLINT UNSIGNED
-);
+    );
 
 CREATE TABLE IF NOT EXISTS permission
 (
     id   INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL
-);
+    );
 
 CREATE TABLE IF NOT EXISTS role_permission
 (
@@ -37,13 +37,13 @@ CREATE TABLE IF NOT EXISTS role_permission
     FOREIGN KEY (role_id) REFERENCES role (id),
     FOREIGN KEY (perm_id) REFERENCES permission (id),
     PRIMARY KEY (role_id, perm_id)
-);
+    );
 
 CREATE TABLE IF NOT EXISTS status
 (
     id   INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) NOT NULL
-);
+    );
 
 CREATE TABLE IF NOT EXISTS organisation
 (
@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS organisation
     description  VARCHAR(255) NOT NULL,
     date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     archived     BOOLEAN   DEFAULT FALSE
-);
+    );
 
 CREATE TABLE IF NOT EXISTS department
 (
@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS department
     date_created    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     archived        BOOLEAN   DEFAULT FALSE,
     FOREIGN KEY (organisation_id) REFERENCES organisation (id)
-);
+    );
 
 CREATE TABLE IF NOT EXISTS team
 (
@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS team
     date_created  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     archived      BOOLEAN   DEFAULT FALSE,
     FOREIGN KEY (department_id) REFERENCES department (id)
-);
+    );
 
 CREATE TABLE IF NOT EXISTS project
 (
@@ -91,7 +91,7 @@ CREATE TABLE IF NOT EXISTS project
     FOREIGN KEY (team_id) REFERENCES team (id),
     FOREIGN KEY (parent_id) REFERENCES project (id),
     FOREIGN KEY (status) REFERENCES status (id)
-);
+    );
 
 CREATE TABLE IF NOT EXISTS task
 (
@@ -109,7 +109,7 @@ CREATE TABLE IF NOT EXISTS task
     FOREIGN KEY (project_id) REFERENCES project (id),
     FOREIGN KEY (parent_id) REFERENCES task (id),
     FOREIGN KEY (status) REFERENCES status (id)
-);
+    );
 
 CREATE TABLE IF NOT EXISTS user_entity_role
 (
@@ -128,7 +128,7 @@ CREATE TABLE IF NOT EXISTS user_entity_role
     FOREIGN KEY (team_id) REFERENCES team (id),
     FOREIGN KEY (department_id) REFERENCES department (id),
     FOREIGN KEY (organisation_id) REFERENCES organisation (id)
-);
+    );
 
 CREATE TABLE invitation
 (
@@ -148,11 +148,11 @@ SELECT tsk.id        AS task_id,
        pjt.parent_id AS project_parent_id,
        tsk.parent_id AS task_parent_id
 FROM organisation org
-     LEFT JOIN department dpt
-               ON org.id = dpt.organisation_id
-     LEFT JOIN team tm
-               ON dpt.id = tm.department_id
-     LEFT JOIN project pjt
-               ON tm.id = pjt.team_id
-     LEFT JOIN task tsk
-               ON pjt.id = tsk.project_id;
+         LEFT JOIN department dpt
+                   ON org.id = dpt.organisation_id
+         LEFT JOIN team tm
+                   ON dpt.id = tm.department_id
+         LEFT JOIN project pjt
+                   ON tm.id = pjt.team_id
+         LEFT JOIN task tsk
+                   ON pjt.id = tsk.project_id;
