@@ -14,7 +14,7 @@
             <main class="d-flex justify-content-center text-center bg-secondary-subtle py-3 px-5 rounded shadow">
                 <div th:if="${taskDto.parentId == 0}">
                     <h1>Opret opgave</h1>
-                    <form th:action="@{/task/{projectId}/create (projectId=${projectId})}" method="post" th:object="${taskDto}">
+                    <form th:action="@{create}" method="post" th:object="${taskDto}">
                         <p>
                             <label>Navn:
                                 <input type="text" th:field="*{taskName}" required>
@@ -60,8 +60,8 @@
                 </div>
 
                 <div th:unless="${taskDto.parentId == 0}">
-                    <h1 th:text="'Opret underopgave for: ' + ${parentTask.taskName}"></h1>
-                    <form th:action="@{/task/{projectId}/create (projectId=${projectId})}" method="post" th:object="${taskDto}">
+                    <h1 th:text="'Opret underopgave for: ' + ${parentTaskName}"></h1>
+                    <form th:action="@{create}" method="post" th:object="${taskDto}">
                         <p>
                             <label>Navn:
                                 <input type="text" th:field="*{taskName}" required>
@@ -106,7 +106,7 @@
                     </form>
                 </div>
 
-                <a th:href="@{/task/overview/{projectId} (projectId=${projectId})}"> <!--TODO: Specify endpoint for overview of project for project leader-->
+                <a th:href="@{overview}"> <!--TODO: Specify endpoint for overview of project for project leader-->
                     <button class="btn btn-secondary fw-bold">Tilbage</button>
                 </a>
             </main>

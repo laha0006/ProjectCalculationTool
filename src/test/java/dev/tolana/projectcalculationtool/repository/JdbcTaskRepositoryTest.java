@@ -1,5 +1,6 @@
 package dev.tolana.projectcalculationtool.repository;
 
+import dev.tolana.projectcalculationtool.repository.impl.JdbcTaskRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,31 +16,52 @@ class JdbcTaskRepositoryTest {
     private JdbcTaskRepository jdbcTaskRepository;
     @AfterEach
     void databaseCleanUp() throws SQLException {
-
+    }
+    @Test
+    void createEntity() {
     }
 
     @Test
-    void createParentTask() {
-
+    void getEntityOnId() {
     }
 
     @Test
-    void deleteTask() {
+    void getAllEntitiesOnUsername() {
     }
 
     @Test
-    void editTask() {
+    void getAllEntitiesOnId() {
     }
 
     @Test
-    void getTask() {
+    void editEntity() {
     }
 
     @Test
-    void getAllTasks() {
+    void deleteEntity() {
     }
 
     @Test
-    void getAllProjectTasks() {
+    void inviteToEntity() {
+    }
+
+    @Test
+    void archiveEntity() {
+    }
+
+    @Test
+    void assignUser() {
+    }
+
+    @Test
+    void getUsersFromEntityId() {
+    }
+
+    @Test
+    void getAllUserRoles() {
+    }
+
+    @Test
+    void changeStatus() {
     }
 }

@@ -1,6 +1,7 @@
 package dev.tolana.projectcalculationtool.controller;
 
 import dev.tolana.projectcalculationtool.dto.TaskDto;
+import dev.tolana.projectcalculationtool.enums.Status;
 import dev.tolana.projectcalculationtool.service.TaskService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -11,54 +12,58 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
-@RequestMapping("/task")
+@RequestMapping("/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/task")
 public class TaskController {
 
     private final TaskService taskService;
+
     public TaskController(TaskService taskService) {
         this.taskService = taskService;
     }
 
-    @GetMapping("/overview/{projectId}")
-    public String getTaskOverview(Model model,
-                                  Authentication authentication,
-                                  @PathVariable long projectId) {
+    @GetMapping("/overview")
+    public String getTaskOverview(@PathVariable long projectId,
+                                  Model model) {
 
-        String username = authentication.getName();
-        List<TaskDto> taskList = taskService.getAllProjectTasks(projectId, username);
+        List<TaskDto> taskList = taskService.getAllProjectTasks(projectId);
         model.addAttribute("projectId", projectId);
 
         model.addAttribute("taskList", taskList);
         return "task/viewAllTasks";
     }
 
-    @GetMapping("/{projectId}/create")
-    public String sendCreateForm(Model model, @PathVariable long projectId) {
-        model.addAttribute("taskDto", new TaskDto("", "", projectId, LocalDateTime.now(), 0, 0, 0, -1));
+    @GetMapping("/create")
+    public String sendCreateForm(@PathVariable long projectId,
+                                 Model model) {
+        model.addAttribute("taskDto", new TaskDto("", "", projectId, LocalDateTime.now(), 0, Status.TODO, 0, -1));
         model.addAttribute("projectId", projectId);
+
         return "task/createTask";
     }
 
-    @GetMapping("/{taskId}/create/subtask/{projectId}")
-    public String sendCreateSubTaskForm(@PathVariable long taskId,
-                                        @PathVariable long projectId,
+    @GetMapping("/{taskId}/create/subtask")
+    public String sendCreateSubTaskForm(@PathVariable long projectId,
+                                        @PathVariable long taskId,
                                         Model model) {
 
         TaskDto parentTask = taskService.getTaskOnId(taskId);
-        model.addAttribute("taskDto", new TaskDto("", "", projectId, LocalDateTime.now(), 0, 0, taskId, -1));
-        model.addAttribute("projectId", projectId);
-        model.addAttribute("parentTask", parentTask);
+        String parentTaskName = parentTask.taskName();
+        model.addAttribute("parentTaskName", parentTaskName);
+        model.addAttribute("taskDto", new TaskDto("", "", projectId, LocalDateTime.now(), 0, Status.TODO, taskId, -1));
         return "task/createTask";
     }
 
-    @PostMapping("/{projectId}/create")
-    public String createTask(@PathVariable long projectId,
+    @PostMapping("/create")
+    public String createTask(@PathVariable long orgId,
+                             @PathVariable long deptId,
+                             @PathVariable long teamId,
+                             @PathVariable long projectId,
                              @ModelAttribute TaskDto newTask,
                              Authentication authentication) {
 
         String username = authentication.getName();
-        taskService.createTask(newTask, username);
+        taskService.createTask(username, newTask);
 
-        return "redirect:/task/overview/" + projectId; //TODO UNDERSØG OM redirect:/ skal matche et endpoint i get mappingen kun eller om den også skal indrage request mapping for controlleren i endpoint
+        return "redirect:/organisation/" + orgId + "/department/" + deptId + "/team/" + teamId + "/project/" + projectId + "/task"; //TODO UNDERSØG OM redirect:/ skal matche et endpoint i get mappingen kun eller om den også skal indrage request mapping for controlleren i endpoint
     }
 }

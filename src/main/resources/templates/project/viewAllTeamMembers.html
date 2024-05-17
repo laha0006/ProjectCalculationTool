@@ -21,6 +21,11 @@
                 <label>
                     <input type="checkbox" name="teamMember" th:value="${teamMember.username}" th:text="${teamMember.username}">
                 </label>
+                <label>
+                    <select th:value="${roleMember}" required>
+                        <option th:each="userRole : ${userRoles}" th:value="${userRole}" th:text="${userRole}" name="role"></option>
+                    </select>
+                </label>
             </td>
         </tr>
     </table>

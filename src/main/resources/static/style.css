@@ -7,6 +7,11 @@
     /*margin-bottom: 0 !important;*/
 }
 
+.card:hover {
+    opacity: 0.7;
+    border-color: gray;
+}
+
 .alertPanel {
     margin-top: -30px !important;
 }
@@ -24,4 +29,8 @@
 .box-600 {
     min-width: 600px !important;
     max-width: 600px !important;
+}
+
+.btn {
+    margin: 8px;
 }
