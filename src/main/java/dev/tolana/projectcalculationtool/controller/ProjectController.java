@@ -1,8 +1,6 @@
 package dev.tolana.projectcalculationtool.controller;
 
-import dev.tolana.projectcalculationtool.dto.ProjectCreationDto;
-import dev.tolana.projectcalculationtool.dto.ProjectOverviewDto;
-import dev.tolana.projectcalculationtool.dto.UserInformationDto;
+import dev.tolana.projectcalculationtool.dto.*;
 import dev.tolana.projectcalculationtool.enums.UserRole;
 import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.service.ProjectService;
@@ -13,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 @Controller
 @RequestMapping("organisation/{orgId}/department/{deptId}/team/{teamId}/project")
@@ -23,6 +20,26 @@ public class ProjectController {
 
     public ProjectController(ProjectService projectService) {
         this.projectService = projectService;
+    }
+
+//    @GetMapping("/overview")
+//    public String getProjectOverview(Model model, Authentication authentication) {
+//        String username = authentication.getName();
+//        List<ProjectOverviewDto> projectList = projectService.getAllProjects(username);
+//
+//        model.addAttribute("projectList", projectList);
+//        return "project/viewAllProjects";
+//    }
+
+    @GetMapping("/{projectId}")
+    public String viewProject(Model model, @PathVariable long projectId) {
+        ResourceEntityViewDto project = projectService.getProject(projectId);
+        model.addAttribute("project", project);
+
+        List<ResourceEntityViewDto> tasks = projectService.getChildren(projectId);
+        model.addAttribute("allTasks", tasks);
+
+        return "project/projectView";
     }
 
     @GetMapping("/create")
@@ -36,28 +53,19 @@ public class ProjectController {
     @PostMapping("/create")
     public String createProject(@ModelAttribute Entity newProject, Authentication authentication) {
         String username = authentication.getName();
-        projectService.addProject(username, newProject);
+        projectService.createProject(username, newProject);
 
         return "redirect:/dashboard";
     }
 
-    @GetMapping("/overview")
-    public String getProjectOverview(Model model, Authentication authentication) {
-        String username = authentication.getName();
-        List<ProjectOverviewDto> projectList = projectService.getAllProjects(username);
-
-        model.addAttribute("projectList", projectList);
-        return "project/viewAllProjects";
-    }
-
     @GetMapping("/{projectId}/assign/members")
     public String getAllMembersFromTeamId(@PathVariable long teamId, @PathVariable long projectId, Model model, Authentication authentication) {
-        ProjectOverviewDto project = projectService.getProjectOnId(projectId);
+        ResourceEntityViewDto project = projectService.getProject(projectId);
 
         List<UserInformationDto> memberList = projectService.getAllTeamMembersFromTeamId(teamId);
         List<UserRole> userRoles = projectService.getAllUserRoles();
 
-        model.addAttribute("projectName", project.name());
+        model.addAttribute("projectName", project.resourceEntityName());
         model.addAttribute("teamMembers", memberList);
         model.addAttribute("userRoles", userRoles);
         model.addAttribute("roleMember", UserRole.PROJECT_MEMBER);
