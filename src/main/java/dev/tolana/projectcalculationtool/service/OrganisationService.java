@@ -2,11 +2,14 @@ package dev.tolana.projectcalculationtool.service;
 
 import dev.tolana.projectcalculationtool.dto.EntityCreationDto;
 import dev.tolana.projectcalculationtool.dto.EntityViewDto;
+import dev.tolana.projectcalculationtool.dto.InviteFormDto;
 import dev.tolana.projectcalculationtool.mapper.EntityDtoMapper;
 import dev.tolana.projectcalculationtool.model.Entity;
+import dev.tolana.projectcalculationtool.model.Invitation;
 import dev.tolana.projectcalculationtool.model.Organisation;
 import dev.tolana.projectcalculationtool.repository.EntityCrudOperations;
 import dev.tolana.projectcalculationtool.repository.OrganisationRepository;
+import dev.tolana.projectcalculationtool.repository.impl.JdbcOrganisationRepository;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -47,5 +50,11 @@ public class OrganisationService {
                   "T(dev.tolana.projectcalculationtool.enums.Permission).ORGANISATION_READ )")
     public Entity getOrganisationsById(long organisationId) {
         return organisationRepository.getEntityOnId(organisationId);
+    }
+
+    @PreAuthorize("@auth.hasOrgansiationAccess(#orgId, " +
+                  "T(dev.tolana.projectcalculationtool.enums.Permission).ORGANISATION_INVITE)")
+    public List<Invitation> getAllOutstandingInvitations(long orgId) {
+        return organisationRepository.getAllOutstandingInvitations(orgId);
     }
 }

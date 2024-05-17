@@ -13,7 +13,44 @@
             <header th:replace="~{fragments/header :: header}"></header>
             <div th:replace="~{fragments/alerts :: alerts}"></div>
             <main class="d-flex justify-content-center text-center bg-secondary-subtle py-3 px-5 rounded shadow">
-                <h1>Invite</h1>
+                <div class="box-800">
+                    <div>
+                        <h1>Invitér bruger til organisation</h1>
+                        <form th:action="@{/organisation/invite}" method="post" th:object="${invite}">
+                            <input type="hidden" th:field="*{organisationId}">
+                            <div class="form-group">
+                                <label class="form-label" for="name">Username</label>
+                                <input id="name" class="form-control" type="text" th:name="username" required
+                                       autofocus="autofocus">
+                            </div>
+                            <div class="form-group mt-2">
+                                <button class="btn btn-success fw-bold" type="submit">Invitér</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div>
+                        <h1>Udestående invitationer</h1>
+                        <table class="table align-middle">
+                            <tbody>
+                            <tr th:each="outstandingInvite : ${invitations}">
+                                <td th:text="${outstandingInvite.username}"></td>
+                                <td class="d-flex justify-content-end">
+                                    <form th:action="@{/organisation/invite/remove}" method="post">
+                                        <input type="hidden" name="username" th:value="${outstandingInvite.username}"/>
+                                        <input type="hidden" name="organisationId"
+                                               th:value="${outstandingInvite.organsiationId}"/>
+                                        <button type="submit" class="btn btn-danger">
+                                            Fjern
+                                        </button>
+                                    </form>
+                                </td>
+
+                            </tr>
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
             </main>
         </div>
         <footer th:replace="~{fragments/footer :: footer}"></footer>

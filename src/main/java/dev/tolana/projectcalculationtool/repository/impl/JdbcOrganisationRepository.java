@@ -1,9 +1,11 @@
 package dev.tolana.projectcalculationtool.repository.impl;
 
+import dev.tolana.projectcalculationtool.dto.InviteFormDto;
 import dev.tolana.projectcalculationtool.dto.UserInformationDto;
 import dev.tolana.projectcalculationtool.enums.UserRole;
 import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.enums.UserRole;
+import dev.tolana.projectcalculationtool.model.Invitation;
 import dev.tolana.projectcalculationtool.model.Organisation;
 import dev.tolana.projectcalculationtool.repository.EntityCrudOperations;
 import dev.tolana.projectcalculationtool.repository.OrganisationRepository;
@@ -174,5 +176,26 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
     @Override
     public List<UserRole> getAllUserRoles() {
         return null;
+    }
+
+    @Override
+    public List<Invitation> getAllOutstandingInvitations(long organisationId) {
+        List<Invitation> outstandingInvitations = new ArrayList<>();
+        String SQL = "SELECT * FROM invitation WHERE organisation_iu = ?";
+        try(Connection con = datasource.getConnection() ) {
+            PreparedStatement pstmt = con.prepareStatement(SQL);
+            pstmt.setLong(1, organisationId);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                outstandingInvitations.add(new Invitation(
+                        rs.getString(1),
+                        rs.getLong(2)
+                ));
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return outstandingInvitations;
     }
 }
