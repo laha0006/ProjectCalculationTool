@@ -7,6 +7,7 @@ import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.Project;
 import dev.tolana.projectcalculationtool.repository.EntityCrudOperations;
 import dev.tolana.projectcalculationtool.repository.ProjectRepository;
+import dev.tolana.projectcalculationtool.util.RoleAssignUtil;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -27,7 +28,7 @@ public class JdbcProjectRepository implements ProjectRepository {
 
     @Override
     public boolean createEntity(String username, Entity project) {
-        boolean isCreated;
+        boolean isCreated = false;
 
         try (Connection connection = dataSource.getConnection()) {
             String insertNewProject = "INSERT INTO project (name, description, team_id," +
@@ -42,8 +43,15 @@ public class JdbcProjectRepository implements ProjectRepository {
             pstmt.setLong(3, ((Project)project).getTeamId());
             pstmt.setLong(4, ((Project)project).getStatusId());
             pstmt.setDate(5,Date.valueOf(((Project) project).getDeadline().toLocalDate()));
-            int affectedRows = pstmt.executeUpdate();
-            isCreated = affectedRows > 0;
+            pstmt.executeUpdate();
+
+            ResultSet generatedKeys = pstmt.getGeneratedKeys();
+            long projectId;
+            if (generatedKeys.next()) {
+                projectId = generatedKeys.getLong(1);
+                RoleAssignUtil.assignProjectRole(connection, projectId, UserRole.PROJECT_OWNER, username);
+                isCreated = true;
+            }
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
