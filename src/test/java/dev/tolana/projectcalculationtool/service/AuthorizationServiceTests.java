@@ -98,7 +98,7 @@ public class AuthorizationServiceTests {
     @WithMockUser("userA")
     public void subProjectTest() throws SQLException {
         RoleUtil.assignProjectRole(con, 1, UserRole.PROJECT_MEMBER, "userA");
-        assertTrue(auth.hasProjectAccess(9, Permission.PROJECT_READ));
+        assertTrue(auth.hasProjectAccess(12, Permission.PROJECT_READ));
     }
 
 
