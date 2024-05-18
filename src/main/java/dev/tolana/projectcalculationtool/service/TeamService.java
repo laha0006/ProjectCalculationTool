@@ -61,4 +61,8 @@ public class TeamService {
 
         return resourceEntityList;
     }
+
+    public void deleteTeam(long teamId) {
+        teamRepository.deleteEntity(teamId);
+    }
 }
