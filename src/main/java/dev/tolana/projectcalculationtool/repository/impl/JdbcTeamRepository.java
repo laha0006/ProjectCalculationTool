@@ -1,9 +1,11 @@
 package dev.tolana.projectcalculationtool.repository.impl;
 
 import dev.tolana.projectcalculationtool.dto.UserInformationDto;
+import dev.tolana.projectcalculationtool.enums.Status;
 import dev.tolana.projectcalculationtool.enums.UserRole;
 import dev.tolana.projectcalculationtool.model.Department;
 import dev.tolana.projectcalculationtool.model.Entity;
+import dev.tolana.projectcalculationtool.model.Project;
 import dev.tolana.projectcalculationtool.model.Team;
 import dev.tolana.projectcalculationtool.repository.TeamRepository;
 import dev.tolana.projectcalculationtool.util.RoleAssignUtil;
@@ -124,8 +126,38 @@ public class JdbcTeamRepository implements TeamRepository {
     }
 
     @Override
-    public List<Entity> getChildren(long parentId) {
-        return null;
+    public List<Entity> getChildren(long teamId) {
+        List<Entity> projectList = new ArrayList<>();
+        String getAllTeamsFromParent = """
+                SELECT * FROM project
+                WHERE team_id = ?;
+                """;
+
+        try (Connection connection = dataSource.getConnection()){
+            PreparedStatement pstmt = connection.prepareStatement(getAllTeamsFromParent);
+            pstmt.setLong(1, teamId);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Project project = new Project(
+                        rs.getLong(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getTimestamp(4).toLocalDateTime(),
+                        rs.getBoolean(10),
+                        rs.getTimestamp(6).toLocalDateTime(),
+                        Status.valueOf(rs.getString(8)),
+                        rs.getLong(9),
+                        rs.getLong(4),
+                        rs.getInt(7)
+                );
+                projectList.add(project);
+            }
+        }catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+
+        return projectList;
     }
 
     @Override
