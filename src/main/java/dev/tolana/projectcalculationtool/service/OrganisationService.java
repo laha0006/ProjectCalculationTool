@@ -48,13 +48,18 @@ public class OrganisationService {
     //spring expression language...
     @PreAuthorize("@auth.hasOrgansiationAccess(#organisationId, " +
                   "T(dev.tolana.projectcalculationtool.enums.Permission).ORGANISATION_READ )")
-    public Entity getOrganisationsById(long organisationId) {
-        return organisationRepository.getEntityOnId(organisationId);
+    public EntityViewDto getOrganisationsById(long organisationId) {
+        Entity organisation = organisationRepository.getEntityOnId(organisationId);
+        return entityDtoMapper.convertToEntityViewDto(organisation);
     }
 
     @PreAuthorize("@auth.hasOrgansiationAccess(#orgId, " +
                   "T(dev.tolana.projectcalculationtool.enums.Permission).ORGANISATION_INVITE)")
     public List<Invitation> getAllOutstandingInvitations(long orgId) {
         return organisationRepository.getAllOutstandingInvitations(orgId);
+    }
+
+    public void deleteOrganisation(long organisationId) {
+        organisationRepository.deleteEntity(organisationId);
     }
 }

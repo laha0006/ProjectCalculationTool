@@ -10,6 +10,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/organisation/{orgId}/department")
 public class DepartmentController {
@@ -21,9 +23,12 @@ public class DepartmentController {
     }
 
     @GetMapping("/{deptId}")
-    public String department(@PathVariable("deptId") long departmentId , Model model) {
+    public String viewDepartment(@PathVariable("deptId") long departmentId , Model model) {
         EntityViewDto department = departmentService.getDepartment(departmentId);
         model.addAttribute("department", department);
+
+        List<EntityViewDto> teams = departmentService.getChildren(departmentId);
+        model.addAttribute("allTeams", teams);
 
         return "department/departmentView";
     }
@@ -40,5 +45,13 @@ public class DepartmentController {
         departmentService.createDepartment(departmentDto, authentication.getName());
         redirectAttributes.addFlashAttribute("alertSuccess", "Department created successfully");
         return "redirect:/organisation/" + departmentDto.parentId();
+    }
+
+    @PostMapping("/{deptId}/delete")
+    public String deleteDepartment(@PathVariable long orgId,
+                                   @PathVariable long deptId) {
+
+        departmentService.deleteDepartment(deptId);
+        return "redirect:/organisation/" + orgId;
     }
 }

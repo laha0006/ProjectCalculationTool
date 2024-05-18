@@ -1,9 +1,6 @@
 package dev.tolana.projectcalculationtool.mapper;
 
-import dev.tolana.projectcalculationtool.dto.EntityCreationDto;
-import dev.tolana.projectcalculationtool.dto.EntityViewDto;
-import dev.tolana.projectcalculationtool.dto.ProjectOverviewDto;
-import dev.tolana.projectcalculationtool.dto.TaskDto;
+import dev.tolana.projectcalculationtool.dto.*;
 import dev.tolana.projectcalculationtool.enums.Status;
 import dev.tolana.projectcalculationtool.model.*;
 import org.springframework.stereotype.Component;
@@ -30,36 +27,21 @@ public class EntityDtoMapper {
                     entityCreationDto.entityName(),
                     entityCreationDto.description(),
                     LocalDateTime.now(),
-                    false, entityCreationDto.parentId()
+                    false,
+                    entityCreationDto.parentId()
             );}
             case TEAM -> {return new Team(
                     -1,
                     entityCreationDto.entityName(),
                     entityCreationDto.description(),
                     LocalDateTime.now(),
-                    false, entityCreationDto.parentId()
+                    false,
+                    entityCreationDto.parentId()
             );}
             default -> {
                 return null;
             }
         }
-
-
-    }
-
-    public List<Organisation> toOrganisationList(List<Entity> entityList) {
-        List<Organisation> organisationList = new ArrayList<>();
-        for (Entity entity : entityList) {
-            Organisation organisation = new Organisation(
-                    entity.getId(),
-                    entity.getName(),
-                    entity.getDescription(),
-                    entity.getDateCreated(),
-                    entity.isArchived()
-            );
-            organisationList.add(organisation);
-        }
-        return organisationList;
     }
 
     public TaskDto convertToTaskDto(Task task) {
@@ -208,5 +190,45 @@ public class EntityDtoMapper {
                 project.getStatus(),
                 project.getId()
         );
+    }
+
+    public List<ResourceEntityViewDto> toResourceEntityViewDtoList(List<ResourceEntity> entityList) {
+        List<ResourceEntityViewDto> entityViewDtoList = new ArrayList<>();
+        ResourceEntityViewDto resourceEntityViewDto;
+
+        for (ResourceEntity resourceEntity : entityList) {
+            if (resourceEntity instanceof Project project) {
+                resourceEntityViewDto = new ResourceEntityViewDto(
+                        project.getName(),
+                        project.getDescription(),
+                        project.getId(),
+                        project.getParentId(),
+                        project.getDeadline(),
+                        -1, //TODO add estimatedHours to Project to calculate hours to finish whole project
+                        -1,
+                        project.getAllottedHours(),
+                        project.getStatus()
+                );
+
+                entityViewDtoList.add(resourceEntityViewDto);
+            }
+
+            if (resourceEntity instanceof Task task) {
+                resourceEntityViewDto = new ResourceEntityViewDto(
+                        task.getName(),
+                        task.getDescription(),
+                        task.getId(),
+                        task.getParentId(),
+                        task.getDeadline(),
+                        task.getEstimatedHours(),
+                        task.getActualHours(),
+                        -1,
+                        task.getStatus()
+                );
+
+                entityViewDtoList.add(resourceEntityViewDto);
+            }
+        }
+        return entityViewDtoList;
     }
 }

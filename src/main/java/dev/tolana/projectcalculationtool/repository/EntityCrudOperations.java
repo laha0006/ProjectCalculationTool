@@ -5,7 +5,6 @@ import dev.tolana.projectcalculationtool.enums.UserRole;
 import dev.tolana.projectcalculationtool.model.Entity;
 
 import java.util.List;
-import java.util.Set;
 
 public interface EntityCrudOperations {
 
@@ -15,6 +14,8 @@ public interface EntityCrudOperations {
     List<Entity> getAllEntitiesOnUsername(String username);
 
     List<Entity> getAllEntitiesOnId(long entityId);
+
+    List<Entity> getChildren(long entityId);
 
     boolean editEntity(Entity entity);
 

@@ -18,17 +18,17 @@ import java.util.List;
 @Repository
 public class JdbcOrganisationRepository implements OrganisationRepository {
 
-    private DataSource datasource;
+    private DataSource dataSource;
 
-    public JdbcOrganisationRepository(DataSource datasource) {
-        this.datasource = datasource;
+    public JdbcOrganisationRepository(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     @Override
     public boolean createEntity(String username, Entity entity) {
         boolean isCreated = false;
 
-        try (Connection connection = datasource.getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
             try {
                 connection.setAutoCommit(false);
 
@@ -71,7 +71,7 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
     @Override
     public Entity getEntityOnId(long organisationId) {
         Entity organisation = null;
-        try(Connection con = datasource.getConnection()) {
+        try (Connection con = dataSource.getConnection()) {
             PreparedStatement pstmt = con.prepareStatement("SELECT * FROM organisation WHERE id = ?");
             pstmt.setLong(1, organisationId);
             ResultSet rs = pstmt.executeQuery();
@@ -94,7 +94,7 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
     public List<Entity> getAllEntitiesOnUsername(String username) {
         List<Entity> organisations = new ArrayList<>();
 
-        try (Connection connection = datasource.getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
             String getAllOrganisations = """
                     SELECT organisation.id, name, description, date_created, archived 
                     FROM organisation 
@@ -141,13 +141,43 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
     }
 
     @Override
+    public List<Entity> getChildren(long parentId) {
+        return null;
+    }
+
+    @Override
     public boolean editEntity(Entity entity) {
         return false;
     }
 
     @Override
-    public boolean deleteEntity(long entityId) {
-        return false;
+    public boolean deleteEntity(long organisationId) {
+        boolean isDeleted;
+        String deleteTask = """
+                DELETE FROM organisation WHERE id = ?;
+                """;
+
+        try (Connection connection = dataSource.getConnection()) {
+            try {
+                connection.setAutoCommit(false);
+
+                PreparedStatement pstmt = connection.prepareStatement(deleteTask);
+                pstmt.setLong(1, organisationId);
+                int affectedRows = pstmt.executeUpdate();
+
+                isDeleted = affectedRows > 0;
+
+                connection.commit();
+                connection.setAutoCommit(true);
+            } catch (SQLException sqlException) {
+                connection.rollback();
+                connection.setAutoCommit(true);
+                throw new RuntimeException(sqlException);
+            }
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+        return isDeleted;
     }
 
     @Override
@@ -179,7 +209,7 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
     public List<Invitation> getAllOutstandingInvitations(long organisationId) {
         List<Invitation> outstandingInvitations = new ArrayList<>();
         String SQL = "SELECT * FROM invitation WHERE organisation_iu = ?";
-        try(Connection con = datasource.getConnection() ) {
+        try (Connection con = dataSource.getConnection()) {
             PreparedStatement pstmt = con.prepareStatement(SQL);
             pstmt.setLong(1, organisationId);
             ResultSet rs = pstmt.executeQuery();
