@@ -6,7 +6,7 @@ import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.Invitation;
 import dev.tolana.projectcalculationtool.model.Organisation;
 import dev.tolana.projectcalculationtool.repository.OrganisationRepository;
-import dev.tolana.projectcalculationtool.util.RoleAssignUtil;
+import dev.tolana.projectcalculationtool.util.RoleUtil;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -43,7 +43,7 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
                 long organisationId = 0;
                 if (rs.next()) {
                     organisationId = rs.getLong(1);
-                    RoleAssignUtil.assignOrganisationRole(connection, organisationId, UserRole.ORGANISATION_OWNER, username);
+                    RoleUtil.assignOrganisationRole(connection, organisationId, UserRole.ORGANISATION_OWNER, username);
                     isCreated = true;
                 }
 //                String assignOrganisationToUser = "INSERT INTO user_entity_role(username, role_id, organisation_id) VALUES (?, ?, ?)";
