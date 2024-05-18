@@ -2,11 +2,10 @@ package dev.tolana.projectcalculationtool.service;
 
 import dev.tolana.projectcalculationtool.dto.EntityCreationDto;
 import dev.tolana.projectcalculationtool.dto.EntityViewDto;
+import dev.tolana.projectcalculationtool.dto.ResourceEntityViewDto;
 import dev.tolana.projectcalculationtool.mapper.EntityDtoMapper;
 import dev.tolana.projectcalculationtool.model.Entity;
-import dev.tolana.projectcalculationtool.model.Organisation;
-import dev.tolana.projectcalculationtool.model.Team;
-import dev.tolana.projectcalculationtool.repository.OrganisationRepository;
+import dev.tolana.projectcalculationtool.model.ResourceEntity;
 import dev.tolana.projectcalculationtool.repository.TeamRepository;
 import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.stereotype.Service;
@@ -45,5 +44,21 @@ public class TeamService {
     public List<EntityViewDto> getAll(long departmentId) {
         List<Entity> teamList = teamRepository.getAllEntitiesOnId(departmentId);
         return entityDtoMapper.convertToEntityViewDtoList(teamList);
+    }
+
+    public List<ResourceEntityViewDto> getAllChildren(long teamId) {
+        List<Entity> projectList = teamRepository.getChildren(teamId);
+        List<ResourceEntity> downCastedProjectList = toResourceEntityList(projectList);
+        return entityDtoMapper.toResourceEntityViewDtoList(downCastedProjectList);
+    }
+
+    private List<ResourceEntity> toResourceEntityList(List<Entity> entityList){
+        List<ResourceEntity> resourceEntityList = new ArrayList<>();
+
+        for (Entity entity:entityList) {
+            resourceEntityList.add((ResourceEntity) entity);
+        }
+
+        return resourceEntityList;
     }
 }

@@ -154,6 +154,11 @@ public class JdbcProjectRepository implements ProjectRepository {
     }
 
     @Override
+    public List<Entity> getChildren(long parentId) {
+        return null;
+    }
+
+    @Override
     public boolean editEntity(Entity entity) {
         return false;
     }

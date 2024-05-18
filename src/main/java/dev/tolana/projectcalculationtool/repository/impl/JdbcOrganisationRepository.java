@@ -141,6 +141,11 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
     }
 
     @Override
+    public List<Entity> getChildren(long parentId) {
+        return null;
+    }
+
+    @Override
     public boolean editEntity(Entity entity) {
         return false;
     }
