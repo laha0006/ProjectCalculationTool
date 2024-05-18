@@ -21,24 +21,13 @@ public class TaskController {
         this.taskService = taskService;
     }
 
-//    @GetMapping("/overview")
-//    public String getTaskOverview(@PathVariable long projectId,
-//                                  Model model) {
-//
-//        List<TaskDto> taskList = taskService.getAllProjectTasks(projectId);
-//        model.addAttribute("projectId", projectId);
-//
-//        model.addAttribute("taskList", taskList);
-//        return "task/viewAllTasks";
-//    }
-
     @GetMapping("/{taskId}")
     public String viewTask(@PathVariable long orgId,
                            @PathVariable long deptId,
                            @PathVariable long teamId,
                            @PathVariable long taskId, Model model) {
         TaskDto task = taskService.getTask(taskId);
-        model.addAttribute("task", task);
+        model.addAttribute("parentTask", task);
 
         List<TaskDto> taskDtoList = taskService.getChildren(taskId);
         model.addAttribute("allTasks", taskDtoList);
@@ -49,17 +38,6 @@ public class TaskController {
 
         return "task/taskView";
     }
-
-//    @GetMapping("/{taskId}/view/subtask")
-//    public String viewSubtask(@PathVariable long taskId, Model model) {
-//        TaskDto parentTask = taskService.getTask(taskId);
-//        model.addAttribute("parentTask", parentTask);
-//
-//        List<TaskDto> subtasks = taskService.getChildren(taskId);
-//        model.addAttribute("allSubtasks", subtasks);
-//
-//        return "task/viewSubtask";
-//    }
 
     @GetMapping("/create")
     public String sendCreateForm(@PathVariable long orgId,
