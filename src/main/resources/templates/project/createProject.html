@@ -15,7 +15,7 @@
                 <div>
                     <h2>Nyt Projekt</h2>
 
-                    <form th:action="@{creat}" method="post" th:object="${newProject}">
+                    <form th:action="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/create (orgId = ${orgId}, deptId = ${deptId}, teamId = ${teamId})}" method="post" th:object="${newProject}">
                         <div class="form-group">
                             <label class="form-label" for="name">Name: </label>
                             <input id="name" type="text" name="name" th:name="projectName" required>
@@ -26,20 +26,21 @@
                             <input id="description" type="text" th:name="description" required>
                         </div>
 
-                        <div class="form-group">
-                            <label class="form-label" for="team_id">Team ID: </label>
-                            <input id="team_id" type="number" th:field="*{teamId}" hidden="hidden">
-                        </div>
 
                         <div class="form-group">
                             <label class="form-label" for="deadline">Deadline: </label>
                             <input id="deadline" type="datetime-local" th:name="deadline" required>
                         </div>
 
-                        <button class="btn btn-success fw-bold" type="submit">Opret projekt</button>
+                        <div class="form-group">
+                            <label>
+                                <input type="number" th:field="*{teamId}" hidden="hidden">
+                            </label>
+                        </div>
+                        <button class="btn btn-success fw-bold" type="submit">Opret</button>
 
                         <a class="btn btn-warning fw-bold"
-                           th:href="@{/dashboard}">
+                           th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId} (orgId = ${orgId}, deptId = ${deptId}, teamId = ${teamId})}">
                             Annullér
                         </a>
                     </form>
