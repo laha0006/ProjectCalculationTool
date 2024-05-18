@@ -24,12 +24,13 @@ public class TeamController {
     }
 
     @GetMapping("/{teamId}")
-    public String viewTeam(Model model, @PathVariable long teamId) {
+    public String viewTeam(Model model, @PathVariable long orgId, @PathVariable long teamId) {
         EntityViewDto team = teamService.getTeam(teamId);
         model.addAttribute("team", team);
 
         List<ResourceEntityViewDto> projects = teamService.getAllChildren(teamId);
         model.addAttribute("allProjects", projects);
+        model.addAttribute("orgId", orgId);
 
         return "team/teamView";
     }
