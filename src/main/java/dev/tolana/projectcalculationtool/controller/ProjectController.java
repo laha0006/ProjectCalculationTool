@@ -1,6 +1,7 @@
 package dev.tolana.projectcalculationtool.controller;
 
 import dev.tolana.projectcalculationtool.dto.*;
+import dev.tolana.projectcalculationtool.enums.EntityType;
 import dev.tolana.projectcalculationtool.enums.UserRole;
 import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.service.ProjectService;
@@ -43,19 +44,29 @@ public class ProjectController {
     }
 
     @GetMapping("/create")
-    public String showPageForAddingProject(Model model, @PathVariable long teamId) {
+    public String showPageForAddingProject(Model model,
+                                           @PathVariable long orgId,
+                                           @PathVariable long deptId,
+                                           @PathVariable long teamId) {
         model.addAttribute("newProject",new ProjectCreationDto("", "", teamId, LocalDateTime.now()));
+        model.addAttribute("orgId", orgId);
+        model.addAttribute("deptId", deptId);
         //TODO add something that makes it possible to display Team/Department/Organization/whatever
 
         return "project/createProject";
     }
 
     @PostMapping("/create")
-    public String createProject(@ModelAttribute Entity newProject, Authentication authentication) {
+    public String createProject(@ModelAttribute ProjectCreationDto newProject,
+                                @PathVariable long orgId,
+                                @PathVariable long deptId,
+                                @PathVariable long teamId,
+                                Authentication authentication) {
+        System.out.println("HERE");
         String username = authentication.getName();
         projectService.createProject(username, newProject);
 
-        return "redirect:/dashboard";
+        return "redirect:/" + "organisation/" + orgId + "/department/" + deptId + "/team/" + teamId;
     }
 
     @GetMapping("/{projectId}/assign/members")
