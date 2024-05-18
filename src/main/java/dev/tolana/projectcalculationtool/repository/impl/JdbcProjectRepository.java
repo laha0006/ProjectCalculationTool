@@ -31,7 +31,7 @@ public class JdbcProjectRepository implements ProjectRepository {
 
         try (Connection connection = dataSource.getConnection()) {
             String insertNewProject = "INSERT INTO project (name, description, team_id," +
-                    "allotted_hours, status) " +
+                    "status, deadline) " +
                     "VALUES (?,?,?,?,?);";
 
             PreparedStatement pstmt = connection.prepareStatement(insertNewProject,
@@ -40,8 +40,8 @@ public class JdbcProjectRepository implements ProjectRepository {
             pstmt.setString(1, project.getName());
             pstmt.setString(2, project.getDescription());
             pstmt.setLong(3, ((Project)project).getTeamId());
-            pstmt.setLong(4, ((Project)project).getAllottedHours());
-            pstmt.setLong(5, ((Project)project).getStatusId()); //TODO DEMETERS LOV
+            pstmt.setLong(4, ((Project)project).getStatusId());
+            pstmt.setDate(5,Date.valueOf(((Project) project).getDeadline().toLocalDate()));
             int affectedRows = pstmt.executeUpdate();
             isCreated = affectedRows > 0;
 
