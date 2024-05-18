@@ -7,7 +7,6 @@ import dev.tolana.projectcalculationtool.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -55,7 +54,7 @@ class TaskControllerTest {
     void sendCreateSubTaskForm() throws Exception {
         TaskDto taskDto = new TaskDto("name", "description", 1, LocalDateTime.now(), 1, Status.TODO, 1, 1);
 
-        when(taskService.getTaskOnId(1))
+        when(taskService.getTask(1))
                 .thenReturn(taskDto);
         mockMvc.perform(get("/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/task/{taskId}/create/subtask", 1, 1, 1, 1, 1))
                 .andExpect(status().isOk())
