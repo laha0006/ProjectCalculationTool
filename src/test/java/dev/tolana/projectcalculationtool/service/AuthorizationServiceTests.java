@@ -3,7 +3,7 @@ package dev.tolana.projectcalculationtool.service;
 
 import dev.tolana.projectcalculationtool.enums.Permission;
 import dev.tolana.projectcalculationtool.enums.UserRole;
-import dev.tolana.projectcalculationtool.util.RoleAssignUtil;
+import dev.tolana.projectcalculationtool.util.RoleUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,15 +74,15 @@ public class AuthorizationServiceTests {
     @WithMockUser("TheNewGuy")
     @Test
     public void assignRole() throws SQLException {
-        RoleAssignUtil.assignDepartmentRole(con, 1, UserRole.DEPARTMENT_ADMIN, "TheNewGuy");  // admin of Dept 1
+        RoleUtil.assignDepartmentRole(con, 1, UserRole.DEPARTMENT_ADMIN, "TheNewGuy");  // admin of Dept 1
         assertFalse(auth.hasDepartmentAccess(1, Permission.DEPARTMENT_DELETE));
     }
 
     @WithMockUser("TheNewGuy")
     @Test
     public void weightedCheck() throws SQLException {
-        RoleAssignUtil.assignProjectRole(con, 1, UserRole.PROJECT_OWNER, "someguy");  // owner of project 1
-        RoleAssignUtil.assignProjectRole(con, 1, UserRole.PROJECT_ADMIN, "TheNewGuy");  // admin of project 1
+        RoleUtil.assignProjectRole(con, 1, UserRole.PROJECT_OWNER, "someguy");  // owner of project 1
+        RoleUtil.assignProjectRole(con, 1, UserRole.PROJECT_ADMIN, "TheNewGuy");  // admin of project 1
         assertFalse(auth.hasProjectAccess(1, Permission.PROJECT_DELETE));
     }
 
@@ -97,7 +97,7 @@ public class AuthorizationServiceTests {
     @Test
     @WithMockUser("userA")
     public void subProjectTest() throws SQLException {
-        RoleAssignUtil.assignProjectRole(con, 1, UserRole.PROJECT_MEMBER, "userA");
+        RoleUtil.assignProjectRole(con, 1, UserRole.PROJECT_MEMBER, "userA");
         assertTrue(auth.hasProjectAccess(9, Permission.PROJECT_READ));
     }
 
