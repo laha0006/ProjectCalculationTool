@@ -61,6 +61,7 @@ public class TeamController {
                                 @PathVariable long deptId,
                                 @PathVariable long teamId) {
 
+        System.out.println(teamId);
         teamService.deleteTeam(teamId);
 
         return "redirect:/organisation/" + orgId + "/department/" + deptId;

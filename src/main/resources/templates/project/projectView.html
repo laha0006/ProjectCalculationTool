@@ -35,7 +35,7 @@
                             <tr th:each="task : ${allTasks}">
                                 <td>
                                     <a th:text="${task.resourceEntityName}"
-                                       th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/task/{taskId}/view/subtask (orgId=${orgId}, deptId=${deptId}, teamId=${teamId}, projectId=${task.projectId()}, taskId=${task.id})}"> TODO DEFINDE ENDPOINT FOR
+                                       th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/task/{taskId} (orgId=${orgId}, deptId=${deptId}, teamId=${teamId}, projectId=${task.projectId()}, taskId=${task.id})}"> TODO DEFINDE ENDPOINT FOR
                                         SUBTASK VIEW
                                     </a>
                                 </td>
@@ -44,13 +44,7 @@
                                 <td th:text="${task.status}"></td>
                                 <td>
                                     <div class="d-inline">
-                                        <a th:href="@{{projectId}/task/{taskId}/create/subtask (projectId=${task.projectId}, taskId=${task.id})}">
-                                            <button class="btn btn-success fw-bold">Opret underopgave</button>
-                                        </a>
-                                    </div>
-
-                                    <div class="d-inline">
-                                        <form th:action="@{{projectId}/task/{taskId}/delete (projectId=${task.projectId}, taskId=${task.id})}">
+                                        <form th:action="@{{projectId}/task/{taskId}/delete (projectId=${task.projectId}, taskId=${task.id})}" method="post">
                                             <button class="btn btn-danger fw-bold">Slet</button>
                                         </form>
                                     </div>
@@ -71,16 +65,16 @@
                         </div>
 
                         <div class="d-inline">
-                            <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId} (orgId=${orgId}, deptId=${deptId}, teamId=${project.teamId})}">
-                                <button class="btn btn-secondary fw-bold">Tilbage</button>
-                            </a>
-                        </div>
-
-                        <div class="d-inline">
                             <form th:action="@{{projectId}/delete (projectId = ${project.id})}" method="post">
                                 <button class="btn btn-danger fw-bold">Slet projekt</button>
                             </form>
                         </div>
+                    </div>
+
+                    <div class="d-inline">
+                        <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId} (orgId=${orgId}, deptId=${deptId}, teamId=${project.teamId})}">
+                            <button class="btn btn-secondary fw-bold">Tilbage</button>
+                        </a>
                     </div>
                 </div>
             </main>
