@@ -9,7 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 @Component
-public class RoleAssignUtil {
+public class RoleUtil {
     private static final String ORGANISATION_INSERT_ROLE_SQL = "INSERT INTO user_entity_role(username,role_id,organisation_id) VALUES(?,?,?)";
     private static final String DEPARMTNET_INSERT_ROLE_SQL = "INSERT INTO user_entity_role(username,role_id,department_id) VALUES(?,?,?)";
     private static final String TEAM_INSERT_ROLE_SQL = "INSERT INTO user_entity_role(username,role_id,team_id) VALUES(?,?,?)";
