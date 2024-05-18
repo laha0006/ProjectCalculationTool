@@ -55,4 +55,14 @@ public class TeamController {
         redirectAttributes.addFlashAttribute("alertSuccess", "Team created successfully");
         return "redirect:/" + "organisation/" + orgId + "/department/" + deptId;
     }
+
+    @PostMapping("/{teamId}/delete")
+    public String deleteProject(@PathVariable long orgId,
+                                @PathVariable long deptId,
+                                @PathVariable long teamId) {
+
+        teamService.deleteTeam(teamId);
+
+        return "redirect:/organisation/" + orgId + "/department/" + deptId + "/team" + teamId;
+    }
 }
