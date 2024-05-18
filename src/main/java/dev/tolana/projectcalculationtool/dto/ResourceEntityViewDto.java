@@ -9,6 +9,8 @@ public record ResourceEntityViewDto(
         String description,
         long id,
         long parentId,
+        long teamId,
+        long projectId,
         LocalDateTime deadline,
         int estimatedHours,
         int actualHours,

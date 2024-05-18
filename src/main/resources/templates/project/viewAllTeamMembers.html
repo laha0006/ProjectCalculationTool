@@ -30,11 +30,13 @@
         </tr>
     </table>
 
-    <button type="submit">Assign</button>
+    <div th:if="${teamMembers.isEmpty()}">
+        <button type="submit">Tilmeld</button>
+    </div>
 </form>
 
-<a th:href="@{/project/overview}">
-    <button>back</button>
+<a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId} (orgId=${orgId}, deptId=${deptId}, teamId=${teamId})}">
+    <button>Tilbage</button>
 </a>
 
 </body>

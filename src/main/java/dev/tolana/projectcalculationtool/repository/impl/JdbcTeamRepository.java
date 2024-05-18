@@ -160,7 +160,7 @@ public class JdbcTeamRepository implements TeamRepository {
                         rs.getBoolean(10),
                         rs.getTimestamp(6).toLocalDateTime(),
                         Status.valueOf(rs.getString(8)),
-                        rs.getLong(9),
+                        -1,
                         rs.getLong(4),
                         rs.getInt(7)
                 );

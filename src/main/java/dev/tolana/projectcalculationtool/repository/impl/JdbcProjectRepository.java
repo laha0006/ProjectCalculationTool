@@ -1,10 +1,13 @@
 package dev.tolana.projectcalculationtool.repository.impl;
 
+import dev.tolana.projectcalculationtool.dto.TaskDto;
 import dev.tolana.projectcalculationtool.dto.UserInformationDto;
 import dev.tolana.projectcalculationtool.enums.Status;
 import dev.tolana.projectcalculationtool.enums.UserRole;
 import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.Project;
+import dev.tolana.projectcalculationtool.model.Task;
+import dev.tolana.projectcalculationtool.model.Team;
 import dev.tolana.projectcalculationtool.repository.EntityCrudOperations;
 import dev.tolana.projectcalculationtool.repository.ProjectRepository;
 import dev.tolana.projectcalculationtool.util.RoleAssignUtil;
@@ -162,8 +165,52 @@ public class JdbcProjectRepository implements ProjectRepository {
     }
 
     @Override
-    public List<Entity> getChildren(long parentId) {
-        return null;
+    public List<Entity> getChildren(long projectId) {
+        List<Entity> taskList = new ArrayList<>();
+        String getTasks = """
+                SELECT t.id,
+                       t.name,
+                       t.description,
+                       t.project_id,
+                       t.date_created,
+                       t.deadline,
+                       t.estimated_hours,
+                       t.actual_hours,
+                       s.name,
+                       t.parent_id,
+                       t.archived
+                FROM task t
+                     LEFT JOIN status s
+                               ON t.status = s.id
+                WHERE t.project_id = ? AND t.parent_id IS NULL;
+                """;
+
+        try (Connection connection = dataSource.getConnection()){
+            PreparedStatement pstmt = connection.prepareStatement(getTasks);
+            pstmt.setLong(1, projectId);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Task task = new Task(
+                        rs.getLong(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getTimestamp(5).toLocalDateTime(),
+                        rs.getBoolean(11),
+                        rs.getTimestamp(6).toLocalDateTime(),
+                        Status.valueOf(rs.getString(9)),
+                        rs.getLong(10),
+                        rs.getLong(4),
+                        rs.getInt(7),
+                        rs.getInt(8)
+                );
+                taskList.add(task);
+            }
+        }catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+
+        return taskList;
     }
 
     @Override
@@ -174,6 +221,7 @@ public class JdbcProjectRepository implements ProjectRepository {
     @Override
     public boolean deleteEntity(long projectId) {
         boolean isDeleted;
+        System.out.println("IN DELETE ENTITY");
         String deleteProject = """
                 DELETE FROM project
                 WHERE project.id = ?;
@@ -186,6 +234,9 @@ public class JdbcProjectRepository implements ProjectRepository {
                 int affectedRows = pstmt.executeUpdate();
 
                 isDeleted = affectedRows > 0;
+
+                connection.commit();
+                connection.setAutoCommit(true);
 
             } catch (SQLException sqlException) {
                 connection.rollback();

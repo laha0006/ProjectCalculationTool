@@ -21,35 +21,55 @@ public class TaskController {
         this.taskService = taskService;
     }
 
-    @GetMapping("/overview")
-    public String getTaskOverview(@PathVariable long projectId,
-                                  Model model) {
+    @GetMapping("/{taskId}")
+    public String viewTask(@PathVariable long orgId,
+                           @PathVariable long deptId,
+                           @PathVariable long teamId,
+                           @PathVariable long taskId, Model model) {
+        TaskDto task = taskService.getTask(taskId);
+        model.addAttribute("parentTask", task);
 
-        List<TaskDto> taskList = taskService.getAllProjectTasks(projectId);
-        model.addAttribute("projectId", projectId);
+        List<TaskDto> taskDtoList = taskService.getChildren(taskId);
+        model.addAttribute("allTasks", taskDtoList);
 
-        model.addAttribute("taskList", taskList);
-        return "task/viewAllTasks";
+        model.addAttribute("orgId", orgId);
+        model.addAttribute("deptId", deptId);
+        model.addAttribute("teamId", teamId);
+
+        return "task/taskView";
     }
 
     @GetMapping("/create")
-    public String sendCreateForm(@PathVariable long projectId,
+    public String sendCreateForm(@PathVariable long orgId,
+                                 @PathVariable long deptId,
+                                 @PathVariable long teamId,
+                                 @PathVariable long projectId,
                                  Model model) {
         model.addAttribute("taskDto", new TaskDto("", "", projectId, LocalDateTime.now(), 0, Status.TODO, 0, -1));
+        model.addAttribute("orgId", orgId);
+        model.addAttribute("deptId", deptId);
+        model.addAttribute("teamId", teamId);
         model.addAttribute("projectId", projectId);
 
         return "task/createTask";
     }
 
     @GetMapping("/{taskId}/create/subtask")
-    public String sendCreateSubTaskForm(@PathVariable long projectId,
+    public String sendCreateSubTaskForm(@PathVariable long orgId,
+                                        @PathVariable long deptId,
+                                        @PathVariable long teamId,
+                                        @PathVariable long projectId,
                                         @PathVariable long taskId,
                                         Model model) {
 
-        TaskDto parentTask = taskService.getTaskOnId(taskId);
+        TaskDto parentTask = taskService.getTask(taskId);
         String parentTaskName = parentTask.taskName();
         model.addAttribute("parentTaskName", parentTaskName);
         model.addAttribute("taskDto", new TaskDto("", "", projectId, LocalDateTime.now(), 0, Status.TODO, taskId, -1));
+        model.addAttribute("orgId", orgId);
+        model.addAttribute("deptId", deptId);
+        model.addAttribute("teamId", teamId);
+
         return "task/createTask";
     }
 
@@ -64,7 +84,13 @@ public class TaskController {
         String username = authentication.getName();
         taskService.createTask(username, newTask);
 
-        return "redirect:/organisation/" + orgId + "/department/" + deptId + "/team/" + teamId + "/project/" + projectId + "/task/overview";
+        String redirectUrl;
+        if (newTask.parentId() == 0){ //if parentId == 0, it means it has no parent, therefor it's not a subtask.
+            redirectUrl = "redirect:/organisation/" + orgId + "/department/" + deptId + "/team/" + teamId + "/project/" + projectId;
+        } else
+            redirectUrl = "redirect:/organisation/" + orgId + "/department/" + deptId + "/team/" + teamId + "/project/" + projectId + "/task/" + newTask.parentId();
+
+        return redirectUrl;
     }
 
     @PostMapping("/{taskId}/delete")
@@ -75,6 +101,7 @@ public class TaskController {
                              @PathVariable long taskId) {
 
         taskService.deleteTask(taskId);
-        return "redirect:/organisation/" + orgId + "/department/" + deptId + "/team/" + teamId + "/project/" + projectId + "/task/overview";
+
+        return "redirect:/organisation/" + orgId + "/department/" + deptId + "/team/" + teamId + "/project/" + projectId;
     }
 }

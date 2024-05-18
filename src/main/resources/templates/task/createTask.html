@@ -55,13 +55,19 @@
                             <input type="number" th:field="*{taskId}" hidden="hidden">
                         </label>
 
-                        <button type="submit" class="btn btn-success fw-bold">Opret</button>
+                        <button type="submit" class="btn btn-success fw-bold in-line">Opret</button>
                     </form>
+
+                    <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId} (orgId=${orgId}, deptId=${deptId}, teamId=${teamId}, projectId=${projectId})}">
+                        <button class="btn btn-secondary fw-bold in-line">Tilbage</button>
+                    </a>
+
                 </div>
 
                 <div th:unless="${taskDto.parentId == 0}">
                     <h1 th:text="'Opret underopgave for: ' + ${parentTaskName}"></h1>
-                    <form th:action="@{create}" method="post" th:object="${taskDto}">
+                    <form th:action="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/task/create (orgId=${orgId}, deptId=${deptId}, teamId=${teamId}, projectId=${projectId}, taskId=${taskDto.parentId()})}"
+                          method="post" th:object="${taskDto}">
                         <p>
                             <label>Navn:
                                 <input type="text" th:field="*{taskName}" required>
@@ -102,13 +108,13 @@
                             <input type="number" th:field="*{taskId}" hidden="hidden">
                         </label>
 
-                        <button class="btn btn-success fw-bold" type="submit">Opret</button>
+                        <button class="btn btn-success fw-bold in-line" type="submit">Opret</button>
                     </form>
-                </div>
 
-                <a th:href="@{overview}"> <!--TODO: Specify endpoint for overview of project for project leader-->
-                    <button class="btn btn-secondary fw-bold">Tilbage</button>
-                </a>
+                    <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId} (orgId=${orgId}, deptId=${deptId}, teamId=${teamId}, projectId=${taskDto.projectId})}">
+                        <button class="btn btn-secondary fw-bold in-line">Tilbage</button>
+                    </a>
+                </div>
             </main>
         </div>
         <footer th:replace="~{fragments/footer :: footer}"></footer>

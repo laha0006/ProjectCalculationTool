@@ -23,22 +23,17 @@ public class ProjectController {
         this.projectService = projectService;
     }
 
-//    @GetMapping("/overview")
-//    public String getProjectOverview(Model model, Authentication authentication) {
-//        String username = authentication.getName();
-//        List<ProjectOverviewDto> projectList = projectService.getAllProjects(username);
-//
-//        model.addAttribute("projectList", projectList);
-//        return "project/viewAllProjects";
-//    }
-
     @GetMapping("/{projectId}")
-    public String viewProject(Model model, @PathVariable long projectId) {
+    public String viewProject(Model model, @PathVariable long orgId, @PathVariable long deptId, @PathVariable long teamId, @PathVariable long projectId) {
         ResourceEntityViewDto project = projectService.getProject(projectId);
         model.addAttribute("project", project);
 
         List<ResourceEntityViewDto> tasks = projectService.getChildren(projectId);
         model.addAttribute("allTasks", tasks);
+
+        model.addAttribute("orgId", orgId);
+        model.addAttribute("deptId", deptId);
+        model.addAttribute("teamId", teamId);
 
         return "project/projectView";
     }
@@ -62,7 +57,7 @@ public class ProjectController {
                                 @PathVariable long deptId,
                                 @PathVariable long teamId,
                                 Authentication authentication) {
-        System.out.println("HERE");
+
         String username = authentication.getName();
         projectService.createProject(username, newProject);
 
@@ -70,7 +65,7 @@ public class ProjectController {
     }
 
     @GetMapping("/{projectId}/assign/members")
-    public String getAllMembersFromTeamId(@PathVariable long teamId, @PathVariable long projectId, Model model, Authentication authentication) {
+    public String getAllMembersFromTeamId(@PathVariable long teamId, @PathVariable long projectId, Model model, @PathVariable String deptId, @PathVariable String orgId) {
         ResourceEntityViewDto project = projectService.getProject(projectId);
 
         List<UserInformationDto> memberList = projectService.getAllTeamMembersFromTeamId(teamId);
@@ -81,6 +76,8 @@ public class ProjectController {
         model.addAttribute("userRoles", userRoles);
         model.addAttribute("roleMember", UserRole.PROJECT_MEMBER);
         model.addAttribute("projectId", projectId);
+        model.addAttribute("deptId", deptId);
+        model.addAttribute("orgId", orgId);
 
         return "project/viewAllTeamMembers";
     }
@@ -88,12 +85,15 @@ public class ProjectController {
     @PostMapping("/{projectId}/assign/members")
     public String assignTeamMembersToProject(@RequestParam(value="teamMember", required = false) List<String> selectedTeamMembers,
                                              @RequestParam UserRole role,
+                                             @PathVariable long orgId,
+                                             @PathVariable long deptId,
+                                             @PathVariable long teamId,
                                              @PathVariable long projectId) {
         if (!selectedTeamMembers.isEmpty()) {
             projectService.assignTeamMembersToProject(projectId, selectedTeamMembers, role);
         }
 
-        return "redirect:/project/overview";
+        return "redirect:/organisation/" + orgId + "/department/" +  deptId +"/team/" + teamId;
     }
 
     @PostMapping("/{projectId}/delete")
@@ -103,7 +103,6 @@ public class ProjectController {
                                 @PathVariable long projectId) {
 
         projectService.deleteProject(projectId);
-
-        return "redirect:/organisation/" + orgId + "/department/" + deptId + "/team/" + teamId + "/project/overview";
+        return "redirect:/organisation/" + orgId + "/department/" + deptId + "/team/" + teamId + "/project/" + projectId;
     }
 }
