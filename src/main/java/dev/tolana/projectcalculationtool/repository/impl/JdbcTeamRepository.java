@@ -193,7 +193,7 @@ public class JdbcTeamRepository implements TeamRepository {
                 ResultSet rs = pstmtAdd.getGeneratedKeys();
                 if(rs.next()) {
                     long teamId = rs.getLong(1);
-                    RoleAssignUtil.assignDepartmentRole(connection, teamId,
+                    RoleAssignUtil.assignTeamRole(connection, teamId,
                             UserRole.TEAM_OWNER, username);
                 }
 
