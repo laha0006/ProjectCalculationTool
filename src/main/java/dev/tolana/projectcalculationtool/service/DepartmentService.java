@@ -23,7 +23,7 @@ public class DepartmentService {
 
     public EntityViewDto getDepartment(long departmentId) {
         Entity department = jdbcDepartmentRepository.getEntityOnId(departmentId);
-        return entityDtoMapper.convertToEntityViewDto(department);
+        return entityDtoMapper.toEntityViewDto(department);
     }
 
     public void createDepartment(EntityCreationDto departmentCreationInfo, String username) {
@@ -37,12 +37,12 @@ public class DepartmentService {
     @PostFilter("@auth.hasDepartmentAccess(filterObject.id, T(dev.tolana.projectcalculationtool.enums.Permission).DEPARTMENT_READ)")
     public List<EntityViewDto> getAll(long departmentId) {
         List<Entity> teamList = jdbcDepartmentRepository.getAllEntitiesOnId(departmentId);
-        return entityDtoMapper.convertToEntityViewDtoList(teamList);
+        return entityDtoMapper.toEntityViewDtoList(teamList);
     }
 
     public List<EntityViewDto> getChildren(long parentId) {
         List<Entity> teamList = jdbcDepartmentRepository.getChildren(parentId);
-        return entityDtoMapper.convertToEntityViewDtoList(teamList);
+        return entityDtoMapper.toEntityViewDtoList(teamList);
     }
 
     public void deleteDepartment(long deptId) {

@@ -24,12 +24,13 @@ public class TeamController {
     }
 
     @GetMapping("/{teamId}")
-    public String viewTeam(Model model, @PathVariable long teamId) {
+    public String viewTeam(Model model, @PathVariable long orgId, @PathVariable long teamId) {
         EntityViewDto team = teamService.getTeam(teamId);
         model.addAttribute("team", team);
 
         List<ResourceEntityViewDto> projects = teamService.getAllChildren(teamId);
         model.addAttribute("allProjects", projects);
+        model.addAttribute("orgId", orgId);
 
         return "team/teamView";
     }
@@ -53,5 +54,15 @@ public class TeamController {
         teamService.createTeam(teamDto, authentication.getName());
         redirectAttributes.addFlashAttribute("alertSuccess", "Team created successfully");
         return "redirect:/" + "organisation/" + orgId + "/department/" + deptId;
+    }
+
+    @PostMapping("/{teamId}/delete")
+    public String deleteProject(@PathVariable long orgId,
+                                @PathVariable long deptId,
+                                @PathVariable long teamId) {
+
+        teamService.deleteTeam(teamId);
+
+        return "redirect:/organisation/" + orgId + "/department/" + deptId;
     }
 }
