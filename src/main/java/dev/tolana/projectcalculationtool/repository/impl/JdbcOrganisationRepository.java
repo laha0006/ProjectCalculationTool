@@ -38,20 +38,12 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
                 pstmtAdd.executeUpdate();
                 ResultSet rs = pstmtAdd.getGeneratedKeys();
 
-                long organisationId = 0;
+                long organisationId;
                 if (rs.next()) {
                     organisationId = rs.getLong(1);
                     RoleAssignUtil.assignOrganisationRole(connection, organisationId, UserRole.ORGANISATION_OWNER, username);
                     isCreated = true;
                 }
-//                String assignOrganisationToUser = "INSERT INTO user_entity_role(username, role_id, organisation_id) VALUES (?, ?, ?)";
-//                PreparedStatement pstmtAssign = connection.prepareStatement(assignOrganisationToUser);
-//                pstmtAssign.setString(1, username);
-//                pstmtAssign.setLong(2, 1);
-//                pstmtAssign.setLong(3, organisationId);
-//                int affectedRows = pstmtAssign.executeUpdate();
-//                isCreated = affectedRows > 0;
-
 
                 connection.commit();
                 connection.setAutoCommit(true);
