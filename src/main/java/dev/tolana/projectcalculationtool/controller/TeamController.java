@@ -63,6 +63,6 @@ public class TeamController {
 
         teamService.deleteTeam(teamId);
 
-        return "redirect:/organisation/" + orgId + "/department/" + deptId + "/team" + teamId;
+        return "redirect:/organisation/" + orgId + "/department/" + deptId;
     }
 }
