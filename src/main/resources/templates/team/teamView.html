@@ -37,24 +37,25 @@
                         <!--                        TODO MAKE SURE THIS IS HOW YOU CHECK ENUM VALUES-->
                         <!--                        <div th:if="${userRole == 'ORGANISATION_OWNER' || userRole == 'ORGANISATION_ADMIN'}">-->
                         <div class="d-inline">
-                            <a th:href="@{/organisation/{id}/department/create (id = ${organisation.id}) }"
-                               class="btn btn-success fw-bold">Opret Afdeling</a>
+                            <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/create (orgId = ${orgId}, deptId = ${team.parentId}, teamId = ${team.id}) }"
+                               class="btn btn-success fw-bold">Opret projekt</a>
                         </div>
 
-                        <div class="d-inline">
-                            <a th:href="@{/organisation/{id}/invite (id = ${organisation.id}) }"
-                               class="btn btn-success fw-bold">Invitér brugere</a>
-                        </div>
+<!--                TODO SKAL VÆRE ASSIGN-->
+<!--                        <div class="d-inline">-->
+<!--                            <a th:href="@{/organisation/{id}/invite (id = ${organisation.id}) }"-->
+<!--                               class="btn btn-success fw-bold">Invitér brugere</a>-->
+<!--                        </div>-->
 
                         <div class="d-inline">
-                            <form th:action="@{{id}/delete (id = ${organisation.id})}" method="post">
-                                <button class="btn btn-danger fw-bold">Slet organisation</button>
+                            <form th:action="@{{teamId}/delete (teamId = ${team.id})}" method="post">
+                                <button class="btn btn-danger fw-bold">Slet team</button>
                             </form>
                         </div>
-                    </div>
 
-                    <div class="d-inline">
-                        <a href="/organisation" class="btn btn-warning fw-bold">Gå tilbage</a>
+                        <div class="d-inline">
+                            <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId} (orgId = ${orgId}, deptId = ${team.parentId}, teamId = ${team.id})}" class="btn btn-warning fw-bold">Gå tilbage</a>
+                        </div>
                     </div>
                 </div>
             </main>
