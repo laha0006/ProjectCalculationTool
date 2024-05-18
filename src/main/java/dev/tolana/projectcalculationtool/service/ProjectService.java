@@ -1,8 +1,6 @@
 package dev.tolana.projectcalculationtool.service;
 
-import dev.tolana.projectcalculationtool.dto.ProjectOverviewDto;
-import dev.tolana.projectcalculationtool.dto.ResourceEntityViewDto;
-import dev.tolana.projectcalculationtool.dto.UserInformationDto;
+import dev.tolana.projectcalculationtool.dto.*;
 import dev.tolana.projectcalculationtool.enums.UserRole;
 import dev.tolana.projectcalculationtool.mapper.EntityDtoMapper;
 import dev.tolana.projectcalculationtool.model.Entity;
@@ -30,8 +28,9 @@ public class ProjectService {
         return entityDtoMapper.toResourceEntityViewDto(project);
     }
 
-    public void createProject(String username, Entity project) {
-        projectRepository.createEntity(username, project);
+    public void createProject(String username, ProjectCreationDto project) {
+        Entity newProject = entityDtoMapper.toEntity(project);
+        projectRepository.createEntity(username, newProject);
     }
 
 //    public List<ProjectOverviewDto> getAllProjects(String username) {
