@@ -79,13 +79,13 @@ public class JdbcTeamRepository implements TeamRepository {
 
     @Override
     public Entity getEntityOnId(long deptId) {
-        Entity department = null;
+        Entity team = null;
         try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM department WHERE id = ?");
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM team WHERE id = ?");
             preparedStatement.setLong(1, deptId);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                department = new Department(
+                team = new Team(
                         resultSet.getLong(1),
                         resultSet.getString(2),
                         resultSet.getString(3),
@@ -97,7 +97,7 @@ public class JdbcTeamRepository implements TeamRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return department;
+        return team;
     }
 
     @Override
@@ -129,10 +129,23 @@ public class JdbcTeamRepository implements TeamRepository {
     public List<Entity> getChildren(long teamId) {
         List<Entity> projectList = new ArrayList<>();
         String getAllTeamsFromParent = """
-                SELECT * FROM project
-                WHERE team_id = ?;
+                SELECT
+                p.id,
+                p.name,
+                p.description,
+                p.team_id,
+                p.date_created,
+                p.deadline,
+                p.allotted_hours,
+                s.name,
+                p.parent_id,
+                p.archived
+                FROM project p
+                LEFT JOIN status s ON p.status = s.id
+                WHERE p.team_id = ? AND p.parent_id IS NULL
                 """;
-
+//        SELECT * FROM project
+//        WHERE team_id = ?;
         try (Connection connection = dataSource.getConnection()){
             PreparedStatement pstmt = connection.prepareStatement(getAllTeamsFromParent);
             pstmt.setLong(1, teamId);
@@ -143,7 +156,7 @@ public class JdbcTeamRepository implements TeamRepository {
                         rs.getLong(1),
                         rs.getString(2),
                         rs.getString(3),
-                        rs.getTimestamp(4).toLocalDateTime(),
+                        rs.getTimestamp(5).toLocalDateTime(),
                         rs.getBoolean(10),
                         rs.getTimestamp(6).toLocalDateTime(),
                         Status.valueOf(rs.getString(8)),
