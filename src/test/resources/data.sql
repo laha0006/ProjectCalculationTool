@@ -286,6 +286,7 @@ INSERT INTO project(name,description,team_id) VALUES('Backend Project','a projec
 INSERT INTO project(name,description,team_id) VALUES('Backend Project','a project',9);
 INSERT INTO project(name,description,team_id) VALUES('Backend Project','a project',10);
 INSERT INTO project(name,description,team_id) VALUES('Backend Project','a project',11);
+INSERT INTO project(name,description,team_id,parent_id) VALUES('Backend Project','a project',1,1);
 
 INSERT INTO task(name,description,project_id, status) VALUES('Frontend Task','Task',1,1);
 INSERT INTO task(name,description,project_id, status) VALUES('Backend Task','Task',2,1);
@@ -307,6 +308,9 @@ INSERT INTO users(username,password) VALUES('vz','password');
 INSERT INTO users(username,password) VALUES('masiomasu','password');
 INSERT INTO users(username,password) VALUES('dosei','password');
 INSERT INTO users(username,password) VALUES('pig','password');
+INSERT INTO users(username,password) VALUES('TheNewGuy','password');
+INSERT INTO users(username,password) VALUES('userA','password');
+INSERT INTO users(username,password) VALUES('someguy','password');
 
 INSERT INTO user_entity_role(username,role_id,organisation_id) VALUES('tolana',1,1);
 INSERT INTO user_entity_role(username,role_id,organisation_id) VALUES('masiomasu',2,1);
