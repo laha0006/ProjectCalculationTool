@@ -15,33 +15,89 @@ public class EntityDtoMapper {
     public Entity toEntity(EntityCreationDto entityCreationDto) {
 
         switch (entityCreationDto.entityType()) {
-            case ORGANISATION -> {return new Organisation(
-                    -1,
-                    entityCreationDto.entityName(),
-                    entityCreationDto.description(),
-                    LocalDateTime.now(),
-                    false
-            );}
-            case DEPARTMENT -> {return new Department(
-                    -1,
-                    entityCreationDto.entityName(),
-                    entityCreationDto.description(),
-                    LocalDateTime.now(),
-                    false,
-                    entityCreationDto.parentId()
-            );}
-            case TEAM -> {return new Team(
-                    -1,
-                    entityCreationDto.entityName(),
-                    entityCreationDto.description(),
-                    LocalDateTime.now(),
-                    false,
-                    entityCreationDto.parentId()
-            );}
+            case ORGANISATION -> {
+                return new Organisation(
+                        -1,
+                        entityCreationDto.entityName(),
+                        entityCreationDto.description(),
+                        LocalDateTime.now(),
+                        false
+                );
+            }
+            case DEPARTMENT -> {
+                return new Department(
+                        -1,
+                        entityCreationDto.entityName(),
+                        entityCreationDto.description(),
+                        LocalDateTime.now(),
+                        false,
+                        entityCreationDto.parentId()
+                );
+            }
+            case TEAM -> {
+                return new Team(
+                        -1,
+                        entityCreationDto.entityName(),
+                        entityCreationDto.description(),
+                        LocalDateTime.now(),
+                        false,
+                        entityCreationDto.parentId()
+                );
+            }
             default -> {
                 return null;
             }
         }
+    }
+
+//    public Entity toEntity(ResourceEntityCreationDto reCreationDto) {
+//
+//        switch (reCreationDto.entityType()) {
+//            case PROJECT -> {return new Project(
+//                    -1,
+//                    reCreationDto.resourceEntityName(),
+//                    reCreationDto.description(),
+//                    LocalDateTime.now(),
+//                    false,
+//                    reCreationDto.deadline(),
+//                    Status.IN_PROGRESS,
+//                    reCreationDto.parentId(),
+//                    reCreationDto.teamId(),
+//                    -1
+//            );}
+//
+//            case TASK -> {return new Task(
+//                    -1,
+//                    reCreationDto.resourceEntityName(),
+//                    reCreationDto.description(),
+//                    LocalDateTime.now(),
+//                    false,
+//                    reCreationDto.deadline(),
+//                    Status.TODO,
+//                    reCreationDto.parentId(),
+//                    reCreationDto.projectId(),
+//                    reCreationDto.estimatedHours(),
+//                    -1
+//            );}
+//            default -> {
+//                return null;
+//            }
+//        }
+//    }
+
+    public Entity toEntity(ProjectCreationDto projectCreationDto) {
+        return new Project(
+                -1,
+                projectCreationDto.projectName(),
+                projectCreationDto.description(),
+                LocalDateTime.now(),
+                false,
+                projectCreationDto.deadline(),
+                Status.IN_PROGRESS,
+                -1,
+                projectCreationDto.teamId(),
+                -1
+        );
     }
 
     public EntityViewDto toEntityViewDto(Entity entity) {
@@ -80,25 +136,25 @@ public class EntityDtoMapper {
         List<EntityViewDto> entityViewDtoList = new ArrayList<>();
         EntityViewDto entityViewDto;
 
-        for (Entity entity:entityList) {
+        for (Entity entity : entityList) {
             if (entity instanceof Organisation organisation) {
-                  entityViewDto = new EntityViewDto(
+                entityViewDto = new EntityViewDto(
                         organisation.getName(),
                         organisation.getDescription(),
                         organisation.getId(),
                         0,
-                          organisation.isArchived());
+                        organisation.isArchived());
 
-                 entityViewDtoList.add(entityViewDto);
+                entityViewDtoList.add(entityViewDto);
             }
 
             if (entity instanceof Department department) {
-                 entityViewDto = new EntityViewDto(
+                entityViewDto = new EntityViewDto(
                         department.getName(),
                         department.getDescription(),
                         department.getId(),
                         department.getOrganisationId(),
-                         department.isArchived());
+                        department.isArchived());
 
                 entityViewDtoList.add(entityViewDto);
             }
@@ -131,7 +187,7 @@ public class EntityDtoMapper {
                     -1,
                     project.getAllottedHours(),
                     project.getStatus()
-                    );
+            );
         }
 
         if (entity instanceof Task task) {
@@ -215,7 +271,7 @@ public class EntityDtoMapper {
                     ((ResourceEntity) task).getDeadline(),
                     ((Task) task).getEstimatedHours(),
                     ((ResourceEntity) task).getStatus(),
-                    ((ResourceEntity)task).getParentId(),
+                    ((ResourceEntity) task).getParentId(),
                     task.getId()
             );
             taskDtoList.add(taskDto);
