@@ -7,9 +7,11 @@ import dev.tolana.projectcalculationtool.enums.UserRole;
 import dev.tolana.projectcalculationtool.mapper.EntityDtoMapper;
 import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.Project;
+import dev.tolana.projectcalculationtool.model.ResourceEntity;
 import dev.tolana.projectcalculationtool.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -54,5 +56,18 @@ public class ProjectService {
     }
 
     public List<ResourceEntityViewDto> getChildren(long projectId) {
+        List<Entity> taskList = projectRepository.getChildren(projectId);
+        List<ResourceEntity> downCastedTaskList = toResourceEntityList(taskList);
+        return entityDtoMapper.toResourceEntityViewDtoList(downCastedTaskList);
+    }
+
+    private List<ResourceEntity> toResourceEntityList(List<Entity> entityList){
+        List<ResourceEntity> resourceEntityList = new ArrayList<>();
+
+        for (Entity entity:entityList) {
+            resourceEntityList.add((ResourceEntity) entity);
+        }
+
+        return resourceEntityList;
     }
 }
