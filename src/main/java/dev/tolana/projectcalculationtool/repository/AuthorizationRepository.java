@@ -7,7 +7,7 @@ import dev.tolana.projectcalculationtool.dto.HierarchyDto;
 import dev.tolana.projectcalculationtool.enums.UserRole;
 import dev.tolana.projectcalculationtool.exception.InviteFailureException;
 import dev.tolana.projectcalculationtool.model.Role;
-import dev.tolana.projectcalculationtool.util.RoleUtil;
+import dev.tolana.projectcalculationtool.util.RoleAssignUtil;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -155,7 +155,7 @@ public class AuthorizationRepository {
                     con.setAutoCommit(true);
                     throw new InviteFailureException("Kunne ikke acceptere invitationen!");
                 }
-                RoleUtil.assignOrganisationRole(con, organisationId, UserRole.ORGANISATION_MEMBER, username);
+                RoleAssignUtil.assignOrganisationRole(con, organisationId, UserRole.ORGANISATION_MEMBER, username);
             } catch(SQLException e) {
                 con.rollback();
                 con.setAutoCommit(true);
