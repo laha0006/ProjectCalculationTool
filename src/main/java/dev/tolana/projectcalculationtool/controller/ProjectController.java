@@ -57,7 +57,7 @@ public class ProjectController {
                                 @PathVariable long deptId,
                                 @PathVariable long teamId,
                                 Authentication authentication) {
-        System.out.println("HERE");
+
         String username = authentication.getName();
         projectService.createProject(username, newProject);
 
@@ -85,12 +85,15 @@ public class ProjectController {
     @PostMapping("/{projectId}/assign/members")
     public String assignTeamMembersToProject(@RequestParam(value="teamMember", required = false) List<String> selectedTeamMembers,
                                              @RequestParam UserRole role,
+                                             @PathVariable long orgId,
+                                             @PathVariable long deptId,
+                                             @PathVariable long teamId,
                                              @PathVariable long projectId) {
         if (!selectedTeamMembers.isEmpty()) {
             projectService.assignTeamMembersToProject(projectId, selectedTeamMembers, role);
         }
 
-        return "redirect:/project/overview";
+        return "redirect:/organisation/" + orgId + "/department/" +  deptId +"/team/" + teamId;
     }
 
     @PostMapping("/{projectId}/delete")
