@@ -20,7 +20,7 @@
                         <!--                        Card generation-->
                         <div class="col" th:each="team : ${allTeams}">
                             <a class="text-decoration-none text-reset"
-                               th:href="@{team/{teamId}/project (teamId = ${team.id})}">
+                               th:href="@{{deptId}/team/{teamId} (deptId = ${department.id}, teamId = ${team.id})}">
                                 <div class="card overflow-hidden" style="min-height: 100px; max-height: 100px;">
                                     <div class="card-body">
                                         <h5 class="card-title" th:text="${team.name}"></h5>
@@ -51,10 +51,10 @@
                                 <button class="btn btn-danger fw-bold">Slet afdeling</button>
                             </form>
                         </div>
-                    </div>
 
-                    <div class="d-inline">
-                        <a th:href="@{/organisation/{orgId} (orgId = ${department.parentId})}" class="btn btn-warning fw-bold">Gå tilbage</a>
+                        <div class="d-inline">
+                            <a th:href="@{/organisation/{orgId} (orgId = ${department.parentId})}" class="btn btn-warning fw-bold">Gå tilbage</a>
+                        </div>
                     </div>
                 </div>
 

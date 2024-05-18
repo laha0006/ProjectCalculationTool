@@ -4,9 +4,7 @@ import dev.tolana.projectcalculationtool.mapper.EntityDtoMapper;
 import dev.tolana.projectcalculationtool.dto.TaskDto;
 import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.Task;
-import dev.tolana.projectcalculationtool.repository.ResourceEntityCrudOperations;
 import dev.tolana.projectcalculationtool.repository.TaskRepository;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,12 +29,17 @@ public class TaskService {
         return entityDtoMapper.toTaskDtoList(taskList);
     }
 
-    public TaskDto getTaskOnId(long taskId) {
+    public TaskDto getTask(long taskId) {
         Entity task = taskRepository.getEntityOnId(taskId);
         return entityDtoMapper.convertToTaskDto((Task) task);
     }
 
     public void deleteTask(long taskId) {
         taskRepository.deleteEntity(taskId);
+    }
+
+    public List<TaskDto> getChildren(long taskId) {
+        List<Entity> taskList = taskRepository.getChildren(taskId);
+        return entityDtoMapper.toTaskDtoList(taskList);
     }
 }

@@ -4,7 +4,7 @@
       data-bs-theme="dark">
 <head>
     <th:block th:insert="~{fragments/head :: headFiles}"></th:block>
-    <title>Title</title>
+    <title>Overblik</title>
 </head>
 <body>
 <div class="container">
@@ -12,22 +12,67 @@
         <div>
             <header th:replace="~{fragments/header :: header}"></header>
             <main class="d-flex justify-content-center text-center bg-secondary-subtle py-3 px-5 rounded shadow">
-                <table th:class="table">
-                    <thead>
-                    <tr>
-                        <th scope="col">Project</th>
-                        <th scope="col">Description</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <!--TODO add functionality-->
-                    <tr th:each="team : ${teamList}">
-                        <td th:text="${team.name}"></td>
-                        <td th:text="${team.description}"></td>
-                    </tr>
-                    </tbody>
-                </table>
+                <div>
+                    <h1 th:text="'Projekter i: ' + ${team.name}"></h1>
+                    <div th:if="${allProjects.isEmpty()}">
+                        <h3>
+                            Teamet har ingen projekter.
+                        </h3>
+                    </div>
 
+                    <div th:unless="${allProjects.isEmpty()}">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>Navn</th>
+                                <th>Deadline</th>
+                                <th>Estimeret timer</th>
+                                <th>Status</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            <tr th:each="project : ${allProjects}">
+                                <td>
+                                    <a th:text="${project.resourceEntityName}"
+                                       th:href="@{{teamId}/project/{projectId} (teamId=${team.id}, projectId=${project.id})}"></a>
+                                </td>
+                                <td th:text="${project.deadline}"></td>
+                                <!--&lt;!&ndash;            <td th:text="${project.getDeadline()}"></td>&ndash;&gt; TODO MAKE LOGIC THAT CALCULATES PROGRESSION IN PERCENTAGE-->
+                                <td th:text="${project.status}"></td>
+                                <td>
+                                    <div class="form-group">
+                                        <a th:href="@{{teamId}/project/{projectId}/assign/members (teamId=${project.teamId}, projectId=${project.id})}">
+                                            <button class="btn btn-success fw-bold">Tilknyt teammedlem</button>
+                                        </a>
+                                    </div>
+
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="d-flex">
+                        <div class="d-inline">
+                            <form th:action="@{{teamId}/project/create (teamId=${team.id})}">
+                                <button class="btn btn-success fw-bold">Opret projekt</button>
+                            </form>
+                        </div>
+
+                        <div class="d-inline">
+                            <form th:action="@{{teamId}/delete (teamId=${team.id})}" method="post">
+                                <button class="btn btn-danger fw-bold">Slet</button>
+                            </form>
+                        </div>
+
+                        <div class="d-inline">
+                            <a th:href="@{/organisation/{orgId}/department/{deptId} (orgId=${orgId}, deptId=${team.parentId})}">
+                                <button class="btn btn-secondary fw-bold">Tilbage</button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </main>
         </div>
         <footer th:replace="~{fragments/footer :: footer}"></footer>

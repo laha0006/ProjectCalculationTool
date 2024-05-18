@@ -2,11 +2,9 @@ package dev.tolana.projectcalculationtool.repository.impl;
 
 import dev.tolana.projectcalculationtool.dto.UserInformationDto;
 import dev.tolana.projectcalculationtool.enums.UserRole;
-import dev.tolana.projectcalculationtool.model.Entity;
-import dev.tolana.projectcalculationtool.model.Invitation;
-import dev.tolana.projectcalculationtool.model.Organisation;
+import dev.tolana.projectcalculationtool.model.*;
 import dev.tolana.projectcalculationtool.repository.OrganisationRepository;
-import dev.tolana.projectcalculationtool.util.RoleUtil;
+import dev.tolana.projectcalculationtool.util.RoleAssignUtil;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -40,20 +38,12 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
                 pstmtAdd.executeUpdate();
                 ResultSet rs = pstmtAdd.getGeneratedKeys();
 
-                long organisationId = 0;
+                long organisationId;
                 if (rs.next()) {
                     organisationId = rs.getLong(1);
-                    RoleUtil.assignOrganisationRole(connection, organisationId, UserRole.ORGANISATION_OWNER, username);
+                    RoleAssignUtil.assignOrganisationRole(connection, organisationId, UserRole.ORGANISATION_OWNER, username);
                     isCreated = true;
                 }
-//                String assignOrganisationToUser = "INSERT INTO user_entity_role(username, role_id, organisation_id) VALUES (?, ?, ?)";
-//                PreparedStatement pstmtAssign = connection.prepareStatement(assignOrganisationToUser);
-//                pstmtAssign.setString(1, username);
-//                pstmtAssign.setLong(2, 1);
-//                pstmtAssign.setLong(3, organisationId);
-//                int affectedRows = pstmtAssign.executeUpdate();
-//                isCreated = affectedRows > 0;
-
 
                 connection.commit();
                 connection.setAutoCommit(true);
@@ -141,8 +131,34 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
     }
 
     @Override
-    public List<Entity> getChildren(long parentId) {
-        return null;
+    public List<Entity> getChildren(long organisationId) {
+        List<Entity> departmentList = new ArrayList<>();
+        String getAllTeamsFromParent = """
+                SELECT * FROM department
+                WHERE organisation_id = ?;
+                """;
+
+        try (Connection connection = dataSource.getConnection()){
+            PreparedStatement pstmt = connection.prepareStatement(getAllTeamsFromParent);
+            pstmt.setLong(1, organisationId);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Department department = new Department(
+                        rs.getLong(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getTimestamp(5).toLocalDateTime(),
+                        rs.getBoolean(6),
+                        rs.getLong(4)
+                );
+                departmentList.add(department);
+            }
+        }catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+
+        return departmentList;
     }
 
     @Override
