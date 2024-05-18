@@ -6,7 +6,7 @@ import dev.tolana.projectcalculationtool.model.Department;
 import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.Team;
 import dev.tolana.projectcalculationtool.repository.TeamRepository;
-import dev.tolana.projectcalculationtool.util.RoleAssignUtil;
+import dev.tolana.projectcalculationtool.util.RoleUtil;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -143,7 +143,7 @@ public class JdbcTeamRepository implements TeamRepository {
                 ResultSet rs = pstmtAdd.getGeneratedKeys();
                 if(rs.next()) {
                     long teamId = rs.getLong(1);
-                    RoleAssignUtil.assignDepartmentRole(connection, teamId,
+                    RoleUtil.assignDepartmentRole(connection, teamId,
                             UserRole.TEAM_OWNER, username);
                 }
 
