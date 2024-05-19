@@ -3,9 +3,11 @@ package dev.tolana.projectcalculationtool.service;
 import dev.tolana.projectcalculationtool.dto.ProjectStatsDto;
 import dev.tolana.projectcalculationtool.enums.Status;
 import dev.tolana.projectcalculationtool.model.Entity;
+import dev.tolana.projectcalculationtool.model.Project;
 import dev.tolana.projectcalculationtool.model.Task;
 import dev.tolana.projectcalculationtool.repository.ProjectRepository;
 import dev.tolana.projectcalculationtool.repository.TaskRepository;
+import dev.tolana.projectcalculationtool.repository.impl.JdbcProjectRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -47,11 +49,12 @@ public class CalculationService {
     }
 
 
-    private List<Entity> getAll(long projectId) {
-        List<Entity> tasks = getAllTasksAndSubTasks(projectId);
-        List<Entity> subProjects = projectRepository.getChildren(projectId);
-        for (Entity subProject : subProjects) {
-            tasks.addAll(getAllTasksAndSubTasks(subProject.getId()));
+    private List<Entity> getAllTasksAndSubtasksFromProjectAndSubProjects(long projectId) {
+        List<Entity> tasks = getAllTasksAndSubTasksFromProject(projectId);
+        List<Project> subProjects = projectRepository.getSubProjects(projectId);
+        for (Project subProject : subProjects) {
+            System.out.println("subProject: " + subProject.getId());
+            tasks.addAll(getAllTasksAndSubTasksFromProject(subProject.getId()));
         }
         return tasks;
     }
