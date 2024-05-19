@@ -83,7 +83,7 @@ public class JdbcProjectRepository implements ProjectRepository {
                 WHERE p.id = ?;
                 """;
 
-        try(Connection connection = dataSource.getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement pstmt = connection.prepareStatement(selectProjectOnId);
             pstmt.setLong(1, projectId);
             ResultSet rs = pstmt.executeQuery();
