@@ -51,7 +51,7 @@ class ProjectControllerTest {
 
     @Test
     @WithMockUser
-    void showPageForAddingProject() throws Exception {
+    void showPageForCreatingProject() throws Exception {
         mockMvc.perform(get("/organisation/{orgId}/department/{deptId}/team/{teamId}/project/create", 1, 1, 1, 1))
                 .andExpect(status().isOk())
                 .andExpect(view().name("project/createProject"));
