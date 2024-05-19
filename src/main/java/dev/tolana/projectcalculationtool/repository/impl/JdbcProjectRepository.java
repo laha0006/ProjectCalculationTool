@@ -274,7 +274,7 @@ public class JdbcProjectRepository implements ProjectRepository {
                 DELETE FROM project
                 WHERE project.id = ?;
                 """;
-        try (Connection connection = dataSource.getConnection()){
+        try (Connection connection = dataSource.getConnection()) {
             try {
                 connection.setAutoCommit(false);
                 PreparedStatement pstmt = connection.prepareStatement(deleteProject);
