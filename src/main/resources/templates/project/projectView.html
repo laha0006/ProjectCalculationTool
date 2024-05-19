@@ -70,6 +70,12 @@
                             </form>
                         </div>
                     </div>
+                    <div>
+                        <h5> Stats</h5>
+                        <p th:text="${'Tasks Done:' + projectStats.tasksDone()}"></p>
+                        <p th:text="${'Total Time Spent: ' + projectStats.totalActualHours()}"></p>
+                        <p th:text="${'Total Estimated Time' + projectStats.totalEstimatedHours()}"></p>
+                    </div>
 
                     <div class="d-inline">
                         <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId} (orgId=${orgId}, deptId=${deptId}, teamId=${project.teamId})}">
