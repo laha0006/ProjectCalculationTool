@@ -39,11 +39,6 @@ public class ProjectService {
         return calculationService.getProjectStats(projectId);
     }
 
-//    public List<ProjectOverviewDto> getAllProjects(String username) {
-//        List<Entity> projectList = projectRepository.getAllEntitiesOnUsername(username);
-//        return entityDtoMapper.toProjectOverviewDtoList(projectList);
-//    }
-
     public List<UserInformationDto> getAllTeamMembersFromTeamId(long teamId) {
         return projectRepository.getUsersFromEntityId(teamId);
     }
