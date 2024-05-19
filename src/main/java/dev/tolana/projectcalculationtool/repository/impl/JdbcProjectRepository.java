@@ -67,7 +67,7 @@ public class JdbcProjectRepository implements ProjectRepository {
 
     private String determineCreationQueryType(long idSpecifier) {
 
-        if (idSpecifier == -1) {
+        if (idSpecifier == 0) {
             //query for project
             return "INSERT INTO project (name, description, team_id, deadline, allotted_hours) VALUES (?,?,?,?,?);";
         } else {
@@ -78,7 +78,7 @@ public class JdbcProjectRepository implements ProjectRepository {
 
     private ResultSet setValues(PreparedStatement pstmt, Entity project) throws SQLException {
 
-        if (((Project) project).getParentId() == -1) {
+        if (((Project) project).getParentId() == 0) {
             pstmt.setString(1, project.getName());
             pstmt.setString(2, project.getDescription());
             pstmt.setLong(3, ((Project) project).getTeamId());
