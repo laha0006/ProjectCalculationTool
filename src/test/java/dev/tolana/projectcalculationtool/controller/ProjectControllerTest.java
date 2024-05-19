@@ -1,5 +1,6 @@
 package dev.tolana.projectcalculationtool.controller;
 
+import dev.tolana.projectcalculationtool.dto.ProjectStatsDto;
 import dev.tolana.projectcalculationtool.dto.ResourceEntityViewDto;
 import dev.tolana.projectcalculationtool.enums.Status;
 import dev.tolana.projectcalculationtool.service.ProjectService;
@@ -38,6 +39,8 @@ class ProjectControllerTest {
     void viewProject() throws Exception {
         when(projectService.getProject(1))
                 .thenReturn(new ResourceEntityViewDto("name", "description", 1, 1, 1, 1, LocalDateTime.now(), 1, 1, 1, Status.TODO));
+        when(projectService.getProjectStats(1))
+                .thenReturn(new ProjectStatsDto(100,100,100));
         mockMvc.perform(get("/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}", 1, 1, 1, 1))
                 .andExpect(status().isOk())
                 .andExpect(view().name("project/projectView"));
