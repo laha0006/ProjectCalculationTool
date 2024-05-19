@@ -53,10 +53,23 @@ public class ProjectController {
                                            @PathVariable long orgId,
                                            @PathVariable long deptId,
                                            @PathVariable long teamId) {
-        model.addAttribute("newProject",new ProjectCreationDto("", "", teamId, LocalDateTime.now()));
+        model.addAttribute("newProject",new ProjectCreationDto("", "", -1, teamId, LocalDateTime.now()));
         model.addAttribute("orgId", orgId);
         model.addAttribute("deptId", deptId);
         //TODO add something that makes it possible to display Team/Department/Organization/whatever
+
+        return "project/createProject";
+    }
+
+    @GetMapping("/{projectId}/create/subproject")
+    public String showSubProjectCreationPage(Model model,
+                                             @PathVariable long orgId,
+                                             @PathVariable long deptId,
+                                             @PathVariable long teamId,
+                                             @PathVariable long projectId) {
+        model.addAttribute("newProject",new ProjectCreationDto("", "", projectId, teamId, LocalDateTime.now()));
+        model.addAttribute("orgId", orgId);
+        model.addAttribute("deptId", deptId);
 
         return "project/createProject";
     }
