@@ -185,7 +185,7 @@ public class JdbcProjectRepository implements ProjectRepository {
                 WHERE t.project_id = ? AND t.parent_id IS NULL;
                 """;
 
-        try (Connection connection = dataSource.getConnection()){
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement pstmt = connection.prepareStatement(getTasks);
             pstmt.setLong(1, projectId);
             ResultSet rs = pstmt.executeQuery();
