@@ -13,7 +13,7 @@ public class CalculationServiceTests {
 
     @Test
     public void testCalculate() {
-        ProjectStatsDto stats = calculationService.getStats(1);
+        ProjectStatsDto stats = calculationService.getProjectStats(1);
         System.out.println(stats);
     }
 }
