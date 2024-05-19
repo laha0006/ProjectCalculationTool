@@ -35,8 +35,7 @@
                             <tr th:each="task : ${allTasks}">
                                 <td>
                                     <a th:text="${task.resourceEntityName}"
-                                       th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/task/{taskId} (orgId=${orgId}, deptId=${deptId}, teamId=${teamId}, projectId=${task.projectId()}, taskId=${task.id})}"> TODO DEFINDE ENDPOINT FOR
-                                        SUBTASK VIEW
+                                       th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/task/{taskId} (orgId=${orgId}, deptId=${deptId}, teamId=${teamId}, projectId=${task.projectId()}, taskId=${task.id})}">
                                     </a>
                                 </td>
                                 <td th:text="${task.deadline}"></td>
