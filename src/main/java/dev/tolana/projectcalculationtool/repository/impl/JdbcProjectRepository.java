@@ -212,6 +212,54 @@ public class JdbcProjectRepository implements ProjectRepository {
 
         return taskList;
     }
+    @Override
+    public List<Project> getSubProjects(long projectId) {
+        List<Project> subProjects = new ArrayList<>();
+        String getTasks = """
+                SELECT p.id,
+                       p.name,
+                       p.description,
+                       p.team_id,
+                       p.date_created,
+                       p.deadline,
+                       p.allotted_hours,
+                       s.name,
+                       p.parent_id,
+                       p.archived
+                FROM project p
+                     LEFT JOIN status s
+                          ON p.status = s.id
+                WHERE p.parent_id = ?;
+                """;
+
+        try (Connection connection = dataSource.getConnection()) {
+            PreparedStatement pstmt = connection.prepareStatement(getTasks);
+            pstmt.setLong(1, projectId);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                System.out.println("PROJECT ID " + rs.getLong(1));
+                Project project = new Project(
+                        rs.getLong(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getTimestamp(5).toLocalDateTime(),
+                        rs.getBoolean(10),
+                        rs.getTimestamp(6).toLocalDateTime(),
+                        Status.valueOf(rs.getString(8)),
+                        rs.getLong(9),
+                        rs.getLong(4),
+                        rs.getInt(7)
+                );
+                subProjects.add(project);
+            }
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+
+        return subProjects;
+    }
+
 
     @Override
     public boolean editEntity(Entity entity) {
