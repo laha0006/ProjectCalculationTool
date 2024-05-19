@@ -191,6 +191,7 @@ public class JdbcProjectRepository implements ProjectRepository {
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
+                System.out.println("TASK ID " + rs.getLong(1));
                 Task task = new Task(
                         rs.getLong(1),
                         rs.getString(2),
@@ -291,7 +292,7 @@ public class JdbcProjectRepository implements ProjectRepository {
                 connection.setAutoCommit(true);
                 throw new RuntimeException(sqlException);
             }
-        }catch (SQLException sqlException) {
+        } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
         }
 
@@ -310,7 +311,7 @@ public class JdbcProjectRepository implements ProjectRepository {
 
     @Override
     public boolean assignUser(long projectId, List<String> selectedTeamMembers, UserRole role) {
-       boolean isAssigned = false;
+        boolean isAssigned = false;
 
         String assignTeamMembersToProject = """
                 INSERT INTO user_entity_role (username, role_id, project_id) VALUES (?, ?, ?);
@@ -318,10 +319,10 @@ public class JdbcProjectRepository implements ProjectRepository {
         long roleId = role.getRoleId();
 
         try (Connection connection = dataSource.getConnection()) {
-            try{
+            try {
                 connection.setAutoCommit(false);
 
-                for (String member :selectedTeamMembers) {
+                for (String member : selectedTeamMembers) {
                     PreparedStatement pstmt = connection.prepareStatement(assignTeamMembersToProject);
                     pstmt.setString(1, member);
                     pstmt.setLong(2, roleId);
@@ -348,15 +349,15 @@ public class JdbcProjectRepository implements ProjectRepository {
     public List<UserInformationDto> getUsersFromEntityId(long teamId) {
         List<UserInformationDto> userInformationDtoList = new ArrayList<>();
         String getTeamMembersFromTeamId = """
-               
-                SELECT uer.*
-               FROM user_entity_role AS uer
-               LEFT JOIN user_entity_role AS uer_project
-                   ON uer.username = uer_project.username
-                   AND uer_project.project_id IS NOT NULL
-               WHERE uer.team_id = ?
-                   AND uer_project.username IS NULL;
-                """;
+                               
+                 SELECT uer.*
+                FROM user_entity_role AS uer
+                LEFT JOIN user_entity_role AS uer_project
+                    ON uer.username = uer_project.username
+                    AND uer_project.project_id IS NOT NULL
+                WHERE uer.team_id = ?
+                    AND uer_project.username IS NULL;
+                 """;
         //TODO THIS QUERY MIGHT NOT WORK
         //TODO OLD QUERY
 //        SELECT uer.username
@@ -393,7 +394,7 @@ public class JdbcProjectRepository implements ProjectRepository {
                 FROM role
                 WHERE name = 'PROJECT_ADMIN' OR name = 'PROJECT_MEMBER';
                 """;
-        try(Connection connection = dataSource.getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement pstmt = connection.prepareStatement(getAllUserRoles);
             ResultSet userRoles = pstmt.executeQuery();
 
@@ -401,7 +402,7 @@ public class JdbcProjectRepository implements ProjectRepository {
                 roles.add(UserRole.valueOf(userRoles.getString(1)));
             }
 
-        }catch (SQLException sqlException) {
+        } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
         }
         return roles;
