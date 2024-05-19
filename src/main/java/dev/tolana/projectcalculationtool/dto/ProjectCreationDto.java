@@ -7,6 +7,7 @@ public record ProjectCreationDto(
         String description,
         long parentId,
         long teamId,
-        LocalDateTime deadline
+        LocalDateTime deadline,
+        int allottedHours
 ) {
 }
