@@ -43,7 +43,7 @@ class ProjectControllerTest {
         when(projectService.getProject(1))
                 .thenReturn(new ResourceEntityViewDto("name", "description", 1, 1, 1, 1, LocalDateTime.now(), 1, 1, 1, Status.TODO));
         when(projectService.getProjectStats(1))
-                .thenReturn(new ProjectStatsDto(1,1,1,1,1,1,,1,1,new HashMap<>(),new HashMap<>()));
+                .thenReturn(new ProjectStatsDto(1,1,1,1,1,1,1,1,new HashMap<>(),new HashMap<>()));
         mockMvc.perform(get("/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}", 1, 1, 1, 1))
                 .andExpect(status().isOk())
                 .andExpect(view().name("project/projectView"));
