@@ -22,8 +22,12 @@ public class CalculationService {
         this.taskRepository = taskRepository;
     }
 
-    public ProjectStatsDto getStats(long projectId) {
-        List<Entity> allTasks = getAll(projectId);
+    public ProjectStatsDto getProjectStats(long projectId) {
+        List<Entity> allTasks = getAllTasksAndSubtasksFromProjectAndSubProjects(projectId);
+        return getProjectStats(allTasks);
+    }
+
+    private static ProjectStatsDto getProjectStats(List<Entity> allTasks) {
         int totalEstiamtedHours = 0;
         int totalActualHours = 0;
         int tasksDone = 0;
