@@ -94,9 +94,22 @@ public class EntityDtoMapper {
                 false,
                 projectCreationDto.deadline(),
                 Status.IN_PROGRESS,
-                -1,
+                projectCreationDto.parentId(),
                 projectCreationDto.teamId(),
                 -1
+        );
+    }
+
+    public Entity toEntity(TaskDto taskDto) {
+        return new Task(
+                taskDto.taskId(),
+                taskDto.taskName(),
+                taskDto.taskDescription(),
+                taskDto.deadline(),
+                taskDto.status(),
+                taskDto.parentId(),
+                taskDto.projectId(),
+                taskDto.estimatedHours()
         );
     }
 
@@ -253,19 +266,6 @@ public class EntityDtoMapper {
             }
         }
         return entityViewDtoList;
-    }
-
-    public Entity convertToEntity(TaskDto taskDto) {
-        return new Task(
-                taskDto.taskId(),
-                taskDto.taskName(),
-                taskDto.taskDescription(),
-                taskDto.deadline(),
-                taskDto.status(),
-                taskDto.parentId(),
-                taskDto.projectId(),
-                taskDto.estimatedHours()
-        );
     }
 
     public List<TaskDto> toTaskDtoList(List<Entity> taskList) {
