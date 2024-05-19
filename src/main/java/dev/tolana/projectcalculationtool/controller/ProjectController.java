@@ -36,8 +36,6 @@ public class ProjectController {
         List<ResourceEntityViewDto> allSubProjects = projectService.getSubProjects(projectId);
         model.addAttribute("allSubProjects", allSubProjects);
 
-
-
         ProjectStatsDto stats = projectService.getProjectStats(projectId);
         model.addAttribute("projectStats", stats);
 
@@ -126,6 +124,6 @@ public class ProjectController {
                                 @PathVariable long projectId) {
 
         projectService.deleteProject(projectId);
-        return "redirect:/organisation/" + orgId + "/department/" + deptId + "/team/" + teamId + "/project/" + projectId;
+        return "redirect:/organisation/" + orgId + "/department/" + deptId + "/team/" + teamId;
     }
 }
