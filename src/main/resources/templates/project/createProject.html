@@ -12,24 +12,37 @@
         <div>
             <header th:replace="~{fragments/header :: header}"></header>
             <main class="d-flex justify-content-center text-center bg-secondary-subtle py-3 px-5 rounded shadow">
-                <div>
+
+<!--                START OF FORM USED FOR CREATION ORDINARY PROJECT-->
+                <div th:if="${newProject.parentId() == -1}">
+
                     <h2>Nyt Projekt</h2>
 
                     <form th:action="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/create (orgId = ${orgId}, deptId = ${deptId}, teamId = ${teamId})}" method="post" th:object="${newProject}">
+
                         <div class="form-group">
-                            <label class="form-label" for="name">Name: </label>
-                            <input id="name" type="text" name="name" th:name="projectName" required>
+                            <label class="form-label" >Navn:
+                                <input type="text" th:name="projectName" required>
+                            </label>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label" for="description">Description: </label>
-                            <input id="description" type="text" th:name="description" required>
+                            <label class="form-label">Beskrivelse:
+                                <input type="text" th:name="description" required>
+                            </label>
                         </div>
 
 
                         <div class="form-group">
-                            <label class="form-label" for="deadline">Deadline: </label>
-                            <input id="deadline" type="datetime-local" th:name="deadline" required>
+                            <label class="form-label">Deadline:
+                                <input type="datetime-local" th:name="deadline" required>
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label>
+                                <input type="number" th:field="*{parentId}" hidden="hidden">
+                            </label>
                         </div>
 
                         <div class="form-group">
@@ -37,14 +50,76 @@
                                 <input type="number" th:field="*{teamId}" hidden="hidden">
                             </label>
                         </div>
-                        <button class="btn btn-success fw-bold" type="submit">Opret</button>
 
-                        <a class="btn btn-warning fw-bold"
-                           th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId} (orgId = ${orgId}, deptId = ${deptId}, teamId = ${teamId})}">
-                            Annullér
-                        </a>
+                       <div class="d-flex">
+                          <div class="d-inline">
+                              <button class="btn btn-success fw-bold" type="submit">Opret</button>
+                          </div>
+
+                           <div class="d-inline">
+                               <a class="btn btn-warning fw-bold"
+                                  th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId} (orgId = ${orgId}, deptId = ${deptId}, teamId = ${teamId})}">
+                                   Annullér
+                               </a>
+                           </div>
+                       </div>
                     </form>
                 </div>
+<!--                END OF FORM USED FOR CREATION ORDINARY PROJECT-->
+
+<!--                START OF FORM USED FOR CREATION OF SUBPROJECT-->
+                <div th:unless="${newProject.parentId() == -1}">
+
+                    <h2>Nyt sub-projekt</h2>
+                    
+                    <form th:action="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/create (orgId = ${orgId}, deptId = ${deptId}, teamId = ${teamId})}" method="post" th:object="${newProject}">
+
+                        <div class="form-group">
+                            <label class="form-label" >Navn:
+                                <input type="text" th:name="projectName" required>
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Beskrivelse:
+                                <input type="text" th:name="description" required>
+                            </label>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="form-label">Deadline:
+                                <input type="datetime-local" th:name="deadline" required>
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label>
+                                <input type="number" th:field="*{parentId}" hidden="hidden">
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label>
+                                <input type="number" th:field="*{teamId}" hidden="hidden">
+                            </label>
+                        </div>
+
+                        <div class="d-flex">
+                            <div class="d-inline">
+                                <button class="btn btn-success fw-bold" type="submit">Opret</button>
+                            </div>
+
+                            <div class="d-inline">
+                                <a class="btn btn-warning fw-bold"
+                                   th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId} (orgId = ${orgId}, deptId = ${deptId}, teamId = ${teamId}, projectId=${newProject.parentId})}">
+                                    Annullér
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+<!--                END OF FORM USED FOR CREATION OF SUBPROJECT-->
             </main>
         </div>
         <footer th:replace="~{fragments/footer :: footer}"></footer>
