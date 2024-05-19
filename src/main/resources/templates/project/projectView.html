@@ -75,16 +75,13 @@
                     <!--      Stats section   -->
                     <div>
                         <h5> Stats</h5>
-                        <p th:text="${'Tasks Done:' + projectStats.tasksDone()}"></p>
-                        <p th:text="${'Total Time Spent: ' + projectStats.totalActualHours()}"></p>
-                        <p th:text="${'Total Estimated Time' + projectStats.totalEstimatedHours()}"></p>
-                        <p th:text="${'Købte Timer' + project.allottedHours()}"></p>
-                        <p>Brugte timer i procenter i forhold til købte timer.</p>
-                        <div style="width: 800px;" class="progress" role="progressbar" aria-label="Success example"
-                             aria-valuenow="25"
-                             aria-valuemin="0" aria-valuemax="100"
-                             th:with="statOneWidth=${(((0.0 + projectStats.totalActualHours)/project.allottedHours)*100)}">
-                            <div class="progress-bar bg-success fw-bold" th:style="'width:' + ${statOneWidth}+'%;'" th:text="${statOneWidth} + '%'"></div>
+                        <h6>Tid brugt i forhold til tildelte timer.</h6>
+                        <div style="width: 800px">
+                            <div th:replace="~{fragments/stats/progressBar :: progressBar(width=${projectStats.actualOverAllottedHours})}"></div>
+                        </div>
+                        <h6>Estimeret tid i forhold til tildelte timer.</h6>
+                        <div style="width: 800px">
+                            <div th:replace="~{fragments/stats/progressBar :: progressBar(width=${projectStats.estimatedOverAllottedHours()})}"></div>
                         </div>
                     </div>
                     <!--   End of stats section -->
