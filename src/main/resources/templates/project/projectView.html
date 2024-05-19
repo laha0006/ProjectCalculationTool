@@ -22,17 +22,48 @@
 
                     <!--                    LISTS ALL SUBPROJECTS ON PROJECT -->
                     <div th:unless="${allSubProjects.isEmpty()}">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>Subprojekt</th>
+                                <th>Deadline</th>
+                                <th>Estimerede timer</th>
+                                <th>Status</th>
+                            </tr>
+                            </thead>
 
+                            <tbody>
+                            <tr th:each="projekt : ${allSubProjects}">
+                                <td>
+                                    <a th:text="${project.resourceEntityName}"
+                                       th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId} (orgId=${orgId}, deptId=${deptId}, teamId=${teamId}, projectId=${project.id}) }">
+                                    </a>
+                                </td>
+                                <td th:text="${project.deadline}"></td>
+                                <td th:text="${project.estimatedHours}"></td>
+                                <td th:text="${project.status}"></td>
+                                <td>
+                                    <div class="d-inline">
+                                        <form th:action="@{{projectId}/task/{taskId}/delete (projectId=${task.projectId}, taskId=${task.id})}"
+                                              method="post">
+                                            <button class="btn btn-danger fw-bold">Slet</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
                     </div>
                     <!--                    LISTS ALL SUBPROJECTS ON PROJECT END-->
 
 
                     <!--                    LISTS ALL TASKS ON PROJECT END-->
-                    <div th:unless="${allTasks.isEmpty()}">
+                    <div th:unless="${allSubProjects.isEmpty()}">
                         <table>
                             <thead>
                             <tr>
                                 <th>Navn</th>
+                                <th>Beskrivelse</th>
                                 <th>Deadline</th>
                                 <th>Estimerede timer</th>
                                 <th>Status</th>
@@ -44,21 +75,12 @@
                                 <td>
                                     <a th:text="${task.resourceEntityName}"
                                        th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/task/{taskId} (orgId=${orgId}, deptId=${deptId}, teamId=${teamId}, projectId=${task.projectId()}, taskId=${task.id})}">
-                                        TODO DEFINDE ENDPOINT FOR
-                                        SUBTASK VIEW
                                     </a>
                                 </td>
+                                <td th:text="${task.description}"></td>
                                 <td th:text="${task.deadline}"></td>
                                 <td th:text="${task.estimatedHours}"></td>
                                 <td th:text="${task.status}"></td>
-                                <td>
-                                    <div class="d-inline">
-                                        <form th:action="@{{projectId}/task/{taskId}/delete (projectId=${task.projectId}, taskId=${task.id})}"
-                                              method="post">
-                                            <button class="btn btn-danger fw-bold">Slet</button>
-                                        </form>
-                                    </div>
-                                </td>
                             </tr>
                             </tbody>
                         </table>
