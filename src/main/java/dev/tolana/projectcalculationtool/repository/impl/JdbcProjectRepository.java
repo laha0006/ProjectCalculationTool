@@ -206,7 +206,7 @@ public class JdbcProjectRepository implements ProjectRepository {
                 );
                 taskList.add(task);
             }
-        }catch (SQLException sqlException) {
+        } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
         }
 
