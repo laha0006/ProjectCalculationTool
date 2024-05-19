@@ -96,7 +96,7 @@
                         <div th:if="${allTasks.isEmpty() && allSubProjects.isEmpty()}">
 
                             <div class="d-inline">
-                                <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/task/create (orgId = ${orgId}, deptId = ${deptId}, teamId = ${project.teamId}, projectId=${project.id} )}">
+                                <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/create/subproject (orgId = ${orgId}, deptId = ${deptId}, teamId = ${project.teamId}, projectId=${project.id} )}">
                                     <button class="btn btn-success fw-bold">Opret sub-projekt</button>
                                 </a>
                             </div>
@@ -111,7 +111,7 @@
 <!--                        IF THERE ARE SUBPROJECTS IN PROJECT ONLY DISPLAY OPTION FOR CREATION OTHER SUBPROJECTS-->
                         <div th:if="${allTasks.isEmpty() && !allSubProjects.isEmpty()}">
                             <div class="d-inline">
-                                <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/task/create (orgId = ${orgId}, deptId = ${deptId}, teamId = ${project.teamId}, projectId=${project.id} )}">
+                                <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/create/subproject (orgId = ${orgId}, deptId = ${deptId}, teamId = ${project.teamId}, projectId=${project.id} )}">
                                     <button class="btn btn-success fw-bold">Opret sub-projekt</button>
                                 </a>
                             </div>
