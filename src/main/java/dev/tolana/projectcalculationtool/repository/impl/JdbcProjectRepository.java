@@ -102,7 +102,7 @@ public class JdbcProjectRepository implements ProjectRepository {
                         rs.getInt(7)
                 );
             }
-        }catch (SQLException sqlException) {
+        } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
         }
 
