@@ -36,6 +36,8 @@
                                 <td>
                                     <a th:text="${task.resourceEntityName}"
                                        th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/task/{taskId} (orgId=${orgId}, deptId=${deptId}, teamId=${teamId}, projectId=${task.projectId()}, taskId=${task.id})}">
+                                        TODO DEFINDE ENDPOINT FOR
+                                        SUBTASK VIEW
                                     </a>
                                 </td>
                                 <td th:text="${task.deadline}"></td>
@@ -43,7 +45,8 @@
                                 <td th:text="${task.status}"></td>
                                 <td>
                                     <div class="d-inline">
-                                        <form th:action="@{{projectId}/task/{taskId}/delete (projectId=${task.projectId}, taskId=${task.id})}" method="post">
+                                        <form th:action="@{{projectId}/task/{taskId}/delete (projectId=${task.projectId}, taskId=${task.id})}"
+                                              method="post">
                                             <button class="btn btn-danger fw-bold">Slet</button>
                                         </form>
                                     </div>
@@ -69,12 +72,19 @@
                             </form>
                         </div>
                     </div>
+                    <!--      Stats section   -->
                     <div>
                         <h5> Stats</h5>
-                        <p th:text="${'Tasks Done:' + projectStats.tasksDone()}"></p>
-                        <p th:text="${'Total Time Spent: ' + projectStats.totalActualHours()}"></p>
-                        <p th:text="${'Total Estimated Time' + projectStats.totalEstimatedHours()}"></p>
+                        <h6>Tid brugt i forhold til tildelte timer.</h6>
+                        <div style="width: 800px">
+                            <div th:replace="~{fragments/stats/progressBar :: progressBar(width=${projectStats.actualOverAllottedHours})}"></div>
+                        </div>
+                        <h6>Estimeret tid i forhold til tildelte timer.</h6>
+                        <div style="width: 800px">
+                            <div th:replace="~{fragments/stats/progressBar :: progressBar(width=${projectStats.estimatedOverAllottedHours()})}"></div>
+                        </div>
                     </div>
+                    <!--   End of stats section -->
 
                     <div class="d-inline">
                         <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId} (orgId=${orgId}, deptId=${deptId}, teamId=${project.teamId})}">
