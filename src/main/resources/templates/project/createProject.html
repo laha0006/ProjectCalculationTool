@@ -14,7 +14,7 @@
             <main class="d-flex justify-content-center text-center bg-secondary-subtle py-3 px-5 rounded shadow">
 
 <!--                START OF FORM USED FOR CREATION ORDINARY PROJECT-->
-                <div th:if="${newProject.parentId() == -1}">
+                <div th:if="${newProject.parentId() == 0}">
 
                     <h2>Nyt Projekt</h2>
 
@@ -74,7 +74,7 @@
 <!--                END OF FORM USED FOR CREATION ORDINARY PROJECT-->
 
 <!--                START OF FORM USED FOR CREATION OF SUBPROJECT-->
-                <div th:unless="${newProject.parentId() == -1}">
+                <div th:unless="${newProject.parentId() == 0}">
 
                     <h2>Nyt sub-projekt</h2>
                     
