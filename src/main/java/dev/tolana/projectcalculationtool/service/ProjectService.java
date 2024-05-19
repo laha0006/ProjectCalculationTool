@@ -60,9 +60,17 @@ public class ProjectService {
         projectRepository.deleteEntity(projectId);
     }
 
-    public List<ResourceEntityViewDto> getChildren(long projectId) {
+    public List<ResourceEntityViewDto> getSubProjects(long projectId) {
+        List<Project> subProjects = projectRepository.getSubProjects(projectId);
+        List<ResourceEntity> upCastedSubProjects = fromProjectoResourceEntityList(subProjects);
+
+        return entityDtoMapper.toResourceEntityViewDtoList(upCastedSubProjects);
+    }
+
+    public List<ResourceEntityViewDto> getTasks(long projectId) {
         List<Entity> taskList = projectRepository.getChildren(projectId);
         List<ResourceEntity> downCastedTaskList = toResourceEntityList(taskList);
+
         return entityDtoMapper.toResourceEntityViewDtoList(downCastedTaskList);
     }
 
@@ -74,5 +82,9 @@ public class ProjectService {
         }
 
         return resourceEntityList;
+    }
+
+    private List<ResourceEntity> fromProjectoResourceEntityList(List<Project> entityList){
+        return new ArrayList<>(entityList);
     }
 }
