@@ -242,7 +242,8 @@ VALUES (17, 25),
 INSERT INTO status(name)
 VALUES ('IN_PROGRESS'),
        ('DONE'),
-       ('IN_REVIEW');
+       ('IN_REVIEW'),
+       ("TODO");
 
 INSERT INTO organisation(name,description) VALUES('EvilCorp','Evil Organisation');
 INSERT INTO organisation(name,description) VALUES('Apple','Fruit Organisation');
@@ -267,7 +268,7 @@ INSERT INTO team(name,description,department_id) VALUES('Backend Team','Backend 
 INSERT INTO team(name,description,department_id) VALUES('Frontend Team','Frontend Team',7);
 INSERT INTO team(name,description,department_id) VALUES('Backend Team','Backend Team',8);
 
-INSERT INTO project(name,description,team_id) VALUES('Frontend Project','a project',1);
+INSERT INTO project(name,description,team_id,allotted_hours,deadline) VALUES('Frontend Project','a project',1,100,now() + INTERVAL 1 WEEK);
 INSERT INTO project(name,description,team_id) VALUES('Backend Project','a project',2);
 INSERT INTO project(name,description,team_id) VALUES('Frontend Project','a project',3);
 INSERT INTO project(name,description,team_id) VALUES('Backend Project','a project',4);
@@ -275,11 +276,15 @@ INSERT INTO project(name,description,team_id) VALUES('Frontend Project','a proje
 INSERT INTO project(name,description,team_id) VALUES('Backend Project','a project',6);
 INSERT INTO project(name,description,team_id) VALUES('Frontend Project','a project',7);
 INSERT INTO project(name,description,team_id) VALUES('Backend Project','a project',8);
-INSERT INTO project(name,description,team_id, parent_id) VALUES('sub one','one',8, 1);
-INSERT INTO project(name,description,team_id, parent_id) VALUES('sub two','two',8, 9);
-INSERT INTO project(name,description,team_id, parent_id) VALUES('sub three','three',8,10);
+INSERT INTO project(name,description,team_id, parent_id,allotted_hours,deadline) VALUES('sub one','one',8, 1,100,now() + INTERVAL 1 WEEK);
 
-INSERT INTO task(name,description,project_id) VALUES('Frontend Task','Task',1);
+INSERT INTO task(name,description,project_id,actual_hours, deadline) VALUES('Frontend Task','Task',1,10, now() + INTERVAL 1 WEEK);
+INSERT INTO task(name,description,project_id,actual_hours, deadline) VALUES('Frontend Task','Task',1,15, now() + INTERVAL 1 WEEK);
+INSERT INTO task(name,description,project_id,actual_hours, deadline) VALUES('Frontend Task','Task',1,8, now() + INTERVAL 1 WEEK);
+INSERT INTO task(name,description,project_id,actual_hours, deadline) VALUES('Frontend Task','Task',1,12, now() + INTERVAL 1 WEEK);
+INSERT INTO task(name,description,project_id,actual_hours, deadline) VALUES('Frontend Task','Task',1,7, now() + INTERVAL 1 WEEK);
+INSERT INTO task(name,description,project_id,actual_hours, deadline) VALUES('Frontend Task','Task',1,16, now() + INTERVAL 1 WEEK);
+INSERT INTO task(name,description,project_id,actual_hours, deadline) VALUES('Frontend Task','Task',1,26, now() + INTERVAL 1 WEEK);
 INSERT INTO task(name,description,project_id) VALUES('Backend Task','Task',2);
 INSERT INTO task(name,description,project_id) VALUES('Frontend Task','Task',3);
 INSERT INTO task(name,description,project_id) VALUES('Backend Task','Task',4);

@@ -35,17 +35,17 @@ public class JdbcProjectRepository implements ProjectRepository {
 
         try (Connection connection = dataSource.getConnection()) {
             String insertNewProject = "INSERT INTO project (name, description, team_id," +
-                    "status, deadline) " +
-                    "VALUES (?,?,?,?,?);";
+                                      "status, deadline) " +
+                                      "VALUES (?,?,?,?,?);";
 
             PreparedStatement pstmt = connection.prepareStatement(insertNewProject,
                     Statement.RETURN_GENERATED_KEYS);
 
             pstmt.setString(1, project.getName());
             pstmt.setString(2, project.getDescription());
-            pstmt.setLong(3, ((Project)project).getTeamId());
-            pstmt.setLong(4, ((Project)project).getStatusId());
-            pstmt.setDate(5,Date.valueOf(((Project) project).getDeadline().toLocalDate()));
+            pstmt.setLong(3, ((Project) project).getTeamId());
+            pstmt.setLong(4, ((Project) project).getStatusId());
+            pstmt.setDate(5, Date.valueOf(((Project) project).getDeadline().toLocalDate()));
             pstmt.executeUpdate();
 
             ResultSet generatedKeys = pstmt.getGeneratedKeys();
@@ -83,7 +83,7 @@ public class JdbcProjectRepository implements ProjectRepository {
                 WHERE p.id = ?;
                 """;
 
-        try(Connection connection = dataSource.getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement pstmt = connection.prepareStatement(selectProjectOnId);
             pstmt.setLong(1, projectId);
             ResultSet rs = pstmt.executeQuery();
@@ -102,7 +102,7 @@ public class JdbcProjectRepository implements ProjectRepository {
                         rs.getInt(7)
                 );
             }
-        }catch (SQLException sqlException) {
+        } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
         }
 
@@ -185,12 +185,13 @@ public class JdbcProjectRepository implements ProjectRepository {
                 WHERE t.project_id = ? AND t.parent_id IS NULL;
                 """;
 
-        try (Connection connection = dataSource.getConnection()){
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement pstmt = connection.prepareStatement(getTasks);
             pstmt.setLong(1, projectId);
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
+                System.out.println("TASK ID " + rs.getLong(1));
                 Task task = new Task(
                         rs.getLong(1),
                         rs.getString(2),
@@ -206,12 +207,60 @@ public class JdbcProjectRepository implements ProjectRepository {
                 );
                 taskList.add(task);
             }
-        }catch (SQLException sqlException) {
+        } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
         }
 
         return taskList;
     }
+    @Override
+    public List<Project> getSubProjects(long projectId) {
+        List<Project> subProjects = new ArrayList<>();
+        String getTasks = """
+                SELECT p.id,
+                       p.name,
+                       p.description,
+                       p.team_id,
+                       p.date_created,
+                       p.deadline,
+                       p.allotted_hours,
+                       s.name,
+                       p.parent_id,
+                       p.archived
+                FROM project p
+                     LEFT JOIN status s
+                          ON p.status = s.id
+                WHERE p.parent_id = ?;
+                """;
+
+        try (Connection connection = dataSource.getConnection()) {
+            PreparedStatement pstmt = connection.prepareStatement(getTasks);
+            pstmt.setLong(1, projectId);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                System.out.println("PROJECT ID " + rs.getLong(1));
+                Project project = new Project(
+                        rs.getLong(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getTimestamp(5).toLocalDateTime(),
+                        rs.getBoolean(10),
+                        rs.getTimestamp(6).toLocalDateTime(),
+                        Status.valueOf(rs.getString(8)),
+                        rs.getLong(9),
+                        rs.getLong(4),
+                        rs.getInt(7)
+                );
+                subProjects.add(project);
+            }
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+
+        return subProjects;
+    }
+
 
     @Override
     public boolean editEntity(Entity entity) {
@@ -226,7 +275,7 @@ public class JdbcProjectRepository implements ProjectRepository {
                 DELETE FROM project
                 WHERE project.id = ?;
                 """;
-        try (Connection connection = dataSource.getConnection()){
+        try (Connection connection = dataSource.getConnection()) {
             try {
                 connection.setAutoCommit(false);
                 PreparedStatement pstmt = connection.prepareStatement(deleteProject);
@@ -243,7 +292,7 @@ public class JdbcProjectRepository implements ProjectRepository {
                 connection.setAutoCommit(true);
                 throw new RuntimeException(sqlException);
             }
-        }catch (SQLException sqlException) {
+        } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
         }
 
@@ -262,7 +311,7 @@ public class JdbcProjectRepository implements ProjectRepository {
 
     @Override
     public boolean assignUser(long projectId, List<String> selectedTeamMembers, UserRole role) {
-       boolean isAssigned = false;
+        boolean isAssigned = false;
 
         String assignTeamMembersToProject = """
                 INSERT INTO user_entity_role (username, role_id, project_id) VALUES (?, ?, ?);
@@ -270,10 +319,10 @@ public class JdbcProjectRepository implements ProjectRepository {
         long roleId = role.getRoleId();
 
         try (Connection connection = dataSource.getConnection()) {
-            try{
+            try {
                 connection.setAutoCommit(false);
 
-                for (String member :selectedTeamMembers) {
+                for (String member : selectedTeamMembers) {
                     PreparedStatement pstmt = connection.prepareStatement(assignTeamMembersToProject);
                     pstmt.setString(1, member);
                     pstmt.setLong(2, roleId);
@@ -300,15 +349,15 @@ public class JdbcProjectRepository implements ProjectRepository {
     public List<UserInformationDto> getUsersFromEntityId(long teamId) {
         List<UserInformationDto> userInformationDtoList = new ArrayList<>();
         String getTeamMembersFromTeamId = """
-               
-                SELECT uer.*
-               FROM user_entity_role AS uer
-               LEFT JOIN user_entity_role AS uer_project
-                   ON uer.username = uer_project.username
-                   AND uer_project.project_id IS NOT NULL
-               WHERE uer.team_id = ?
-                   AND uer_project.username IS NULL;
-                """;
+                               
+                 SELECT uer.*
+                FROM user_entity_role AS uer
+                LEFT JOIN user_entity_role AS uer_project
+                    ON uer.username = uer_project.username
+                    AND uer_project.project_id IS NOT NULL
+                WHERE uer.team_id = ?
+                    AND uer_project.username IS NULL;
+                 """;
         //TODO THIS QUERY MIGHT NOT WORK
         //TODO OLD QUERY
 //        SELECT uer.username
@@ -345,7 +394,7 @@ public class JdbcProjectRepository implements ProjectRepository {
                 FROM role
                 WHERE name = 'PROJECT_ADMIN' OR name = 'PROJECT_MEMBER';
                 """;
-        try(Connection connection = dataSource.getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement pstmt = connection.prepareStatement(getAllUserRoles);
             ResultSet userRoles = pstmt.executeQuery();
 
@@ -353,7 +402,7 @@ public class JdbcProjectRepository implements ProjectRepository {
                 roles.add(UserRole.valueOf(userRoles.getString(1)));
             }
 
-        }catch (SQLException sqlException) {
+        } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
         }
         return roles;

@@ -16,10 +16,12 @@ import java.util.List;
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
+    private final CalculationService calculationService;
     private final EntityDtoMapper entityDtoMapper;
 
-    public ProjectService(ProjectRepository projectRepository, EntityDtoMapper entityDtoMapper) {
+    public ProjectService(ProjectRepository projectRepository,CalculationService calculationService, EntityDtoMapper entityDtoMapper) {
         this.projectRepository = projectRepository;
+        this.calculationService = calculationService;
         this.entityDtoMapper = entityDtoMapper;
     }
 
@@ -31,6 +33,10 @@ public class ProjectService {
     public void createProject(String username, ProjectCreationDto project) {
         Entity newProject = entityDtoMapper.toEntity(project);
         projectRepository.createEntity(username, newProject);
+    }
+
+    public ProjectStatsDto getProjectStats(long projectId) {
+        return calculationService.getProjectStats(projectId);
     }
 
 //    public List<ProjectOverviewDto> getAllProjects(String username) {

@@ -4,6 +4,8 @@ import dev.tolana.projectcalculationtool.dto.*;
 import dev.tolana.projectcalculationtool.enums.EntityType;
 import dev.tolana.projectcalculationtool.enums.UserRole;
 import dev.tolana.projectcalculationtool.model.Entity;
+import dev.tolana.projectcalculationtool.service.CalculationService;
+import dev.tolana.projectcalculationtool.service.OrganisationService;
 import dev.tolana.projectcalculationtool.service.ProjectService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -30,6 +32,9 @@ public class ProjectController {
 
         List<ResourceEntityViewDto> tasks = projectService.getChildren(projectId);
         model.addAttribute("allTasks", tasks);
+
+        ProjectStatsDto stats = projectService.getProjectStats(projectId);
+        model.addAttribute("projectStats", stats);
 
         model.addAttribute("orgId", orgId);
         model.addAttribute("deptId", deptId);

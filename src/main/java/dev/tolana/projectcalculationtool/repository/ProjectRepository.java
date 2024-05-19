@@ -6,4 +6,5 @@ import dev.tolana.projectcalculationtool.model.Project;
 import java.util.List;
 
 public interface ProjectRepository extends ResourceEntityCrudOperations{
+    List<Project> getSubProjects(long projectId);
 }
