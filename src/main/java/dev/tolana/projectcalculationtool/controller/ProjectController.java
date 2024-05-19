@@ -51,7 +51,7 @@ public class ProjectController {
                                            @PathVariable long orgId,
                                            @PathVariable long deptId,
                                            @PathVariable long teamId) {
-        model.addAttribute("newProject", new ProjectCreationDto("", "", -1, teamId, LocalDateTime.now(), 0));
+        model.addAttribute("newProject", new ProjectCreationDto("", "", 0, teamId, LocalDateTime.now(), 0));
         model.addAttribute("orgId", orgId);
         model.addAttribute("deptId", deptId);
         //TODO add something that makes it possible to display Team/Department/Organization/whatever
