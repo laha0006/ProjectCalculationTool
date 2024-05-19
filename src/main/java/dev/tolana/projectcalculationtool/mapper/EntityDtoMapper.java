@@ -96,7 +96,7 @@ public class EntityDtoMapper {
                 Status.IN_PROGRESS,
                 projectCreationDto.parentId(),
                 projectCreationDto.teamId(),
-                -1
+                projectCreationDto.allottedHours()
         );
     }
 
