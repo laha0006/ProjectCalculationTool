@@ -30,8 +30,13 @@ public class ProjectController {
         ResourceEntityViewDto project = projectService.getProject(projectId);
         model.addAttribute("project", project);
 
-        List<ResourceEntityViewDto> tasks = projectService.getChildren(projectId);
+        List<ResourceEntityViewDto> tasks = projectService.getTasks(projectId);
         model.addAttribute("allTasks", tasks);
+
+        List<ResourceEntityViewDto> allSubProjects = projectService.getSubProjects(projectId);
+        model.addAttribute("allSubProjects", allSubProjects);
+
+
 
         ProjectStatsDto stats = projectService.getProjectStats(projectId);
         model.addAttribute("projectStats", stats);
@@ -44,7 +49,7 @@ public class ProjectController {
     }
 
     @GetMapping("/create")
-    public String showPageForAddingProject(Model model,
+    public String showPageForCreatingProject(Model model,
                                            @PathVariable long orgId,
                                            @PathVariable long deptId,
                                            @PathVariable long teamId) {
