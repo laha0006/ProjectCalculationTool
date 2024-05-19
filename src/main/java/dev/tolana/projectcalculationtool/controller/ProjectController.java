@@ -31,6 +31,9 @@ public class ProjectController {
         List<ResourceEntityViewDto> tasks = projectService.getChildren(projectId);
         model.addAttribute("allTasks", tasks);
 
+        ProjectStatsDto stats = projectService.getProjectStats(projectId);
+        model.addAttribute("projectStats", stats);
+
         model.addAttribute("orgId", orgId);
         model.addAttribute("deptId", deptId);
         model.addAttribute("teamId", teamId);
