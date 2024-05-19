@@ -69,10 +69,10 @@ public class JdbcProjectRepository implements ProjectRepository {
 
         if (idSpecifier == -1) {
             //query for project
-            return "INSERT INTO project (name, description, team_id, deadline) VALUES (?,?,?,?);";
+            return "INSERT INTO project (name, description, team_id, deadline, allotted_hours) VALUES (?,?,?,?,?);";
         } else {
             //query for subproject creation
-            return "INSERT INTO project (name, description, parent_id, team_id, deadline) VALUES (?,?,?,?,?);";
+            return "INSERT INTO project (name, description, parent_id, team_id, deadline, allotted_hours) VALUES (?,?,?,?,?,?);";
         }
     }
 
@@ -83,6 +83,7 @@ public class JdbcProjectRepository implements ProjectRepository {
             pstmt.setString(2, project.getDescription());
             pstmt.setLong(3, ((Project) project).getTeamId());
             pstmt.setDate(4, Date.valueOf(((Project) project).getDeadline().toLocalDate()));
+            pstmt.setInt(5, ((Project) project).getAllottedHours());
             pstmt.executeUpdate();
             return pstmt.getGeneratedKeys();
 
@@ -92,6 +93,7 @@ public class JdbcProjectRepository implements ProjectRepository {
             pstmt.setLong(3, ((Project) project).getParentId());
             pstmt.setLong(4, ((Project) project).getTeamId());
             pstmt.setDate(5, Date.valueOf(((Project) project).getDeadline().toLocalDate()));
+            pstmt.setInt(6, ((Project) project).getAllottedHours());
             pstmt.executeUpdate();
             return pstmt.getGeneratedKeys();
         }
