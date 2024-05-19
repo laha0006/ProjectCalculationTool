@@ -56,7 +56,7 @@ public class CalculationService {
         return tasks;
     }
 
-    private List<Entity> getAllTasksAndSubTasks(long projectId) {
+    private List<Entity> getAllTasksAndSubTasksFromProject(long projectId) {
         List<Entity> tasks = projectRepository.getChildren(projectId);
         List<Entity> subTasks = new ArrayList<>();
         for (Entity task : tasks) {
