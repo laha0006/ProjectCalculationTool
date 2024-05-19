@@ -33,7 +33,6 @@ public class CalculationService {
         List<Project> subProjects = projectRepository.getSubProjects(projectId);
         ProjectStatsDto projectStats = getProjectStats(project);
         if (subProjects.isEmpty()) {
-            System.out.println("is empty");
             return projectStats;
         }
         Map<Long, ProjectStatsDto> subProjectStatsMap = new HashMap<>();
@@ -55,18 +54,18 @@ public class CalculationService {
             totalTaskCount += projectStatsDto.totalTaskCount();
             taskDone += projectStatsDto.tasksDone();
         }
-        double actualOverAllotedHours = ((double) totalActualHours / alottedHours) * 100;
+        double actualOverAllottedHours = ((double) totalActualHours / alottedHours) * 100;
         double actualOverEstimatedHours = ((double) totalActualHours / totalEstimatedHours) * 100;
-        double estiamtedOverAllottedHours = ((double) totalEstimatedHours / alottedHours) * 100;
+        double estimatedOverAllottedHours = ((double) totalEstimatedHours / alottedHours) * 100;
         return new ProjectStatsDto(
                 alottedHours,
                 totalEstimatedHours,
                 totalActualHours,
                 totalTaskCount,
                 taskDone,
-                actualOverAllotedHours,
+                actualOverAllottedHours,
                 actualOverEstimatedHours,
-                estiamtedOverAllottedHours,
+                estimatedOverAllottedHours,
                 projectStats.tasksMap(),
                 subProjectStatsMap
         );
@@ -81,7 +80,7 @@ public class CalculationService {
         for (Entity task : tasks) {
             taskStatsMap.put(task.getId(), getTaskStats(task));
         }
-        int alottedHours = project.getAllottedHours();
+        int allottedHours = project.getAllottedHours();
         int totalEstimatedHours = 0;
         int totalActualHours = 0;
         int totalTaskCount = tasks.size();
@@ -93,18 +92,18 @@ public class CalculationService {
                 taskDone++;
             }
         }
-        double actualOverAllotedHours = ((double) totalActualHours / alottedHours) * 100;
+        double actualOverAllottedHours = ((double) totalActualHours / allottedHours) * 100;
         double actualOverEstimatedHours = ((double) totalActualHours / totalEstimatedHours) * 100;
-        double estiamtedOverAllottedHours = ((double) totalEstimatedHours / alottedHours) * 100;
+        double estimatedOverAllottedHours = ((double) totalEstimatedHours / allottedHours) * 100;
         return new ProjectStatsDto(
-                alottedHours,
+                allottedHours,
                 totalEstimatedHours,
                 totalActualHours,
                 totalTaskCount,
                 taskDone,
-                actualOverAllotedHours,
+                actualOverAllottedHours,
                 actualOverEstimatedHours,
-                estiamtedOverAllottedHours,
+                estimatedOverAllottedHours,
                 taskStatsMap,
                 new HashMap<>()
         );
@@ -119,20 +118,20 @@ public class CalculationService {
         int subTasksTotal = 0;
         int subTasksDone = 0;
         estimatedHours = task.getEstimatedHours();
-        System.out.println("TASK ID IN GET TASK STATS: " + task.getId());
+
         List<Entity> subTasks = taskRepository.getChildren(task.getId());
-        System.out.println("SubTask Size: " + subTasks.size());
+
         if (subTasks.isEmpty()) {
-            System.out.println("SUBTASKS EMPTY??? WAT");
             totalEstimatedHours = task.getEstimatedHours();
             totalActualHours = task.getActualHours();
+
         } else {
             subTasksTotal = subTasks.size();
             for (Entity entitySubTask : subTasks) {
                 Task subTask = (Task) entitySubTask;
                 totalEstimatedHours += subTask.getEstimatedHours();
                 totalActualHours += subTask.getActualHours();
-                System.out.println("total actual: " + subTask.getActualHours());
+
                 if (subTask.getStatus() == Status.DONE) {
                     subTasksDone++;
                 }
@@ -148,65 +147,4 @@ public class CalculationService {
                 subTasksDone
         );
     }
-//    private void addSubProjectStats(Map<Long, ProjectStatsDto> subProjectMap, long projectId) {
-//        List<Project> subProjects = projectRepository.getSubProjects(projectId);
-//        for (Project subProject : subProjects) {
-//            List<Entity> allSubProjectTasks = getAllTasksAndSubTasksFromProject(subProject.getId());
-//            ProjectStatsDto subProjectStats = getStatsForProject(allSubProjectTasks);
-//            subProjectMap.put(subProject.getId(), subProjectStats);
-//        }
-//    }
-//
-//
-//    public ProjectStatsDto getAllProjectStats(long projectId) {
-//        List<Entity> allTasks = getAllTasksAndSubtasksFromProjectAndSubProjects(projectId);
-//        ProjectStatsDto allProjectStats = getStatsForProject(allTasks);
-//        addSubProjectStats(allProjectStats.subProjects(), projectId);
-//        return
-//    }
-//
-//    private ProjectStatsDto getStatsForProject(List<Entity> tasks) {
-//        int totalEstiamtedHours = 0;
-//        int totalActualHours = 0;
-//        int tasksDone = 0;
-//        for (Entity entity : tasks) {
-//            Task task = (Task) entity;
-//            totalEstiamtedHours += task.getEstimatedHours();
-//            totalActualHours += task.getActualHours();
-//            if ( task.getStatus() == Status.DONE) {
-//                tasksDone++;
-//            }
-//        }
-//        return new ProjectStatsDto(
-//                totalEstiamtedHours,
-//                totalActualHours,
-//                tasksDone,
-//                new HashMap<>()
-//        );
-//    }
-//
-//
-//    private List<Entity> getAllTasksAndSubtasksFromProjectAndSubProjects(long projectId) {
-//        List<Entity> tasks = getAllTasksAndSubTasksFromProject(projectId);
-//        List<Project> subProjects = projectRepository.getSubProjects(projectId);
-//        for (Project subProject : subProjects) {
-//            tasks.addAll(getAllTasksAndSubTasksFromProject(subProject.getId()));
-//        }
-//        return tasks;
-//    }
-//
-//    private List<Entity> getAllTasksAndSubTasksFromProject(long projectId) {
-//        List<Entity> tasks = projectRepository.getChildren(projectId);
-//        List<Entity> subTasks = new ArrayList<>();
-//        for (Entity task : tasks) {
-//            long taskId = task.getId();
-//            subTasks.addAll(taskRepository.getChildren(taskId));
-//        }
-//        tasks.addAll(subTasks);
-//        return tasks;
-//    }
-//    get tasks
-//    get sub-tasks
-//    get sub-projects
-//    get tasks of sub projects
 }
