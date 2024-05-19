@@ -35,8 +35,8 @@ public class JdbcProjectRepository implements ProjectRepository {
 
         try (Connection connection = dataSource.getConnection()) {
             String insertNewProject = "INSERT INTO project (name, description, team_id," +
-                    "status, deadline) " +
-                    "VALUES (?,?,?,?,?);";
+                                      "status, deadline) " +
+                                      "VALUES (?,?,?,?,?);";
 
             PreparedStatement pstmt = connection.prepareStatement(insertNewProject,
                     Statement.RETURN_GENERATED_KEYS);
