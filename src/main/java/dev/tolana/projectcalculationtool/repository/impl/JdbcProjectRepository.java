@@ -191,7 +191,6 @@ public class JdbcProjectRepository implements ProjectRepository {
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                System.out.println("TASK ID " + rs.getLong(1));
                 Task task = new Task(
                         rs.getLong(1),
                         rs.getString(2),
