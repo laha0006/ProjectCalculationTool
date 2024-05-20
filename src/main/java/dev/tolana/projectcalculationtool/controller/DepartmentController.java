@@ -2,6 +2,7 @@ package dev.tolana.projectcalculationtool.controller;
 
 import dev.tolana.projectcalculationtool.dto.EntityCreationDto;
 import dev.tolana.projectcalculationtool.dto.EntityViewDto;
+import dev.tolana.projectcalculationtool.dto.UserEntityRoleDto;
 import dev.tolana.projectcalculationtool.enums.EntityType;
 import dev.tolana.projectcalculationtool.service.DepartmentService;
 import org.springframework.security.core.Authentication;
@@ -31,6 +32,20 @@ public class DepartmentController {
         model.addAttribute("allTeams", teams);
 
         return "department/departmentView";
+    }
+
+    @GetMapping("{deptId}/members")
+    public String organisationMembersView(@PathVariable("deptId") long departmentId, Model model){
+        EntityViewDto department = departmentService.getDepartment(departmentId);
+        model.addAttribute("department", department);
+
+        EntityViewDto organisation = organisationService.getOrganisation(department.parentId());
+        model.addAttribute("organisation", organisation);
+
+        List<UserEntityRoleDto> users = organisationService.getUsersFromOrganisationId(organisationId);
+        model.addAttribute("users",users);
+
+        return "department/viewMembers";
     }
 
     @GetMapping("/create")
