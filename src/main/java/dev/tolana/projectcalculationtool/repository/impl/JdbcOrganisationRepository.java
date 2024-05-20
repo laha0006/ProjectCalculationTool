@@ -212,8 +212,41 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
     }
 
     @Override
-    public List<UserInformationDto> getUsersFromEntityId(long entityId) {
+    public List<UserInformationDto> getUsersFromEntityId(long entityId){
         return null;
+    }
+
+    @Override
+    public List<UserInformationDto> getUsersFromOrganisationId(long entityId) {
+        List<UserInformationDto> users = new ArrayList<>();
+
+        try (Connection connection = dataSource.getConnection()) {
+            String getAllUsersFromOrganisation = """
+                    SELECT users.username
+                    FROM users
+                    JOIN user_entity_role ON users.username = user_entity_role.username
+                    JOIN organisation ON user_entity_role.organisation_id = organisation.id
+                    WHERE organisation.id = ?;
+                    """;
+
+            PreparedStatement pstmt = connection.prepareStatement(getAllUsersFromOrganisation);
+            pstmt.setLong(1, entityId);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+
+                String username = rs.getString(1);
+
+                users.add(new UserInformationDto(username));
+            }
+
+
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
+
+        return users;
     }
 
     @Override

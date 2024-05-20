@@ -2,6 +2,7 @@ package dev.tolana.projectcalculationtool.controller;
 
 import dev.tolana.projectcalculationtool.dto.EntityCreationDto;
 import dev.tolana.projectcalculationtool.dto.EntityViewDto;
+import dev.tolana.projectcalculationtool.dto.UserInformationDto;
 import dev.tolana.projectcalculationtool.enums.EntityType;
 import dev.tolana.projectcalculationtool.service.DepartmentService;
 import dev.tolana.projectcalculationtool.service.OrganisationService;
@@ -42,6 +43,13 @@ public class OrganisationController {
         }
         model.addAttribute("allDepartments", departments);
         return "organisation/organisationView";
+    }
+
+    @GetMapping("/{orgId}/members")
+    public String organisationMembersView(@PathVariable("orgId") long organisationId, Model model){
+        List<UserInformationDto> users = organisationService.getUsersFromOrganisationId(organisationId);
+        model.addAttribute("users",users);
+        return "organisation/members";
     }
 
     @GetMapping("/create")

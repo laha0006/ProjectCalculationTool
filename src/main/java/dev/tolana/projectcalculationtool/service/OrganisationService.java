@@ -2,6 +2,7 @@ package dev.tolana.projectcalculationtool.service;
 
 import dev.tolana.projectcalculationtool.dto.EntityCreationDto;
 import dev.tolana.projectcalculationtool.dto.EntityViewDto;
+import dev.tolana.projectcalculationtool.dto.UserInformationDto;
 import dev.tolana.projectcalculationtool.mapper.EntityDtoMapper;
 import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.Invitation;
@@ -53,6 +54,11 @@ public class OrganisationService {
                   "T(dev.tolana.projectcalculationtool.enums.Permission).ORGANISATION_INVITE)")
     public List<Invitation> getAllOutstandingInvitations(long orgId) {
         return organisationRepository.getAllOutstandingInvitations(orgId);
+    }
+
+    //add authorisation check
+    public List<UserInformationDto> getUsersFromOrganisationId(long organisationId){
+        return organisationRepository.getUsersFromOrganisationId(organisationId);
     }
 
     public void deleteOrganisation(long organisationId) {
