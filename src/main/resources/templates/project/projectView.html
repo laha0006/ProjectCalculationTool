@@ -135,6 +135,12 @@
                                     <button class="btn btn-success fw-bold">Opret sub-projekt</button>
                                 </a>
                             </div>
+
+                            <div class="d-inline">
+                                <form th:action="@{{projectId}/edit (projectId=${project.id()})}" method="get">
+                                    <button class="btn btn-primary fw-bold">Ændre projekt</button>
+                                </form>
+                            </div>
                         </div>
 
 <!--                        IF THERE ARE TASKS IN PROJECT, ONLY DISPLAY OPTION FOR CREATION OTHER TASKS AND NOT SUBPROJECTS-->
