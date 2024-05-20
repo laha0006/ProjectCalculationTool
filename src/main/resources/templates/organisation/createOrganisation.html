@@ -14,7 +14,7 @@
             <main class="d-flex justify-content-center text-center bg-secondary-subtle py-3 px-5 rounded shadow">
                 <div class="box-400">
 
-                    <form th:action="@{/organisation/create}" method="post" th:object="${organisation}">
+                    <form th:action="@{create}" method="post" th:object="${organisation}">
 
                         <div class="form-group">
                             <label class="form-label" for="name">Organisation navn: </label>
@@ -44,9 +44,9 @@
                 </div>
                 </form>
 
-
+            </main>
         </div>
-        </main>
+
     </div>
     <footer th:replace="~{fragments/footer :: footer}"></footer>
 </div>
