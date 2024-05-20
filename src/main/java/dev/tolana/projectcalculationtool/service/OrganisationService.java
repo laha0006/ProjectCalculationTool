@@ -1,9 +1,6 @@
 package dev.tolana.projectcalculationtool.service;
 
-import dev.tolana.projectcalculationtool.dto.EntityCreationDto;
-import dev.tolana.projectcalculationtool.dto.EntityViewDto;
-import dev.tolana.projectcalculationtool.dto.UserEntityRoleDto;
-import dev.tolana.projectcalculationtool.dto.UserInformationDto;
+import dev.tolana.projectcalculationtool.dto.*;
 import dev.tolana.projectcalculationtool.mapper.EntityDtoMapper;
 import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.Invitation;
@@ -60,6 +57,18 @@ public class OrganisationService {
     //add authorisation check
     public List<UserEntityRoleDto> getUsersFromOrganisationId(long organisationId){
         return organisationRepository.getUsersFromOrganisationId(organisationId);
+    }
+
+    @PreAuthorize("@auth.hasOrgansiationAccess(#organisationId, " +
+            "T(dev.tolana.projectcalculationtool.enums.Permission).ORGANISATION_EDIT )")
+    public EntityEditDto getOrganisationToEdit(long organisationId) {
+        Entity organisation = organisationRepository.getEntityOnId(organisationId);
+        return entityDtoMapper.toEntityEditDto(organisation);
+    }
+
+    public void editOrganisation(EntityEditDto editInfo) {
+        Entity editedOrganisation = entityDtoMapper.toEntity(editInfo);
+        organisationRepository.editEntity(editedOrganisation);
     }
 
     @PreAuthorize("@auth.hasOrgansiationAccess(#organisationId, " +

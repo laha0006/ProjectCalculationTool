@@ -42,7 +42,7 @@ public class DepartmentController {
         EntityViewDto organisation = organisationService.getOrganisation(department.parentId());
         model.addAttribute("organisation", organisation);
 
-        List<UserEntityRoleDto> users = organisationService.getUsersFromOrganisationId(organisationId);
+        List<UserEntityRoleDto> users = departmentService.getUsersFromOrganisationId(organisationId);
         model.addAttribute("users",users);
 
         return "department/viewMembers";
