@@ -1,6 +1,7 @@
 package dev.tolana.projectcalculationtool.controller;
 
 import dev.tolana.projectcalculationtool.dto.EntityCreationDto;
+import dev.tolana.projectcalculationtool.dto.EntityEditDto;
 import dev.tolana.projectcalculationtool.dto.EntityViewDto;
 import dev.tolana.projectcalculationtool.dto.UserEntityRoleDto;
 import dev.tolana.projectcalculationtool.dto.UserInformationDto;
@@ -32,8 +33,8 @@ public class OrganisationController {
         return "organisation/userOrganisations";
     }
 
-    @GetMapping("/{orgId}")
-    public String organisationPage(@PathVariable("orgId") long organisationId, Model model) {
+    @GetMapping("/{organisationId}")
+    public String organisationPage(@PathVariable("organisationId") long organisationId, Model model) {
         EntityViewDto organisation = organisationService.getOrganisation(organisationId);
         model.addAttribute("organisation", organisation);
 
@@ -76,6 +77,21 @@ public class OrganisationController {
         organisationService.deleteOrganisation(organisationId);
 
         return "redirect:/organisation";
+    }
+
+    @GetMapping("/{organisationId}/edit")
+    public String editOrganisation(Model model, @PathVariable long organisationId) {
+        EntityEditDto editDto = organisationService.getOrganisationToEdit(organisationId);
+        model.addAttribute("organisation", editDto);
+
+        return "organisation/editOrganisation";
+    }
+
+    @PostMapping("/{organisationId}/edit")
+    public String editOrganisation(@ModelAttribute EntityEditDto editDto) {
+
+        organisationService.editOrganisation(editDto);
+        return "redirect:/organisation/{organisationId}";
     }
 
 }

@@ -62,6 +62,8 @@ public class OrganisationService {
         return organisationRepository.getUsersFromOrganisationId(organisationId);
     }
 
+    @PreAuthorize("@auth.hasOrgansiationAccess(#organisationId, " +
+                  "T(dev.tolana.projectcalculationtool.enums.Permission).ORGANISATION_DELETE)")
     public void deleteOrganisation(long organisationId) {
         organisationRepository.deleteEntity(organisationId);
     }
