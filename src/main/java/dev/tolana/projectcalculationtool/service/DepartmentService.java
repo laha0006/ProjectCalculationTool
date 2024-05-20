@@ -6,6 +6,7 @@ import dev.tolana.projectcalculationtool.mapper.EntityDtoMapper;
 import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.repository.DepartmentRepository;
 import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,6 +27,8 @@ public class DepartmentService {
         return entityDtoMapper.toEntityViewDto(department);
     }
 
+    @PreAuthorize("@auth.hasOrgansiationAccess(#departmentCreationInfo.parentId()," +
+                  "T(dev.tolana.projectcalculationtool.enums.Permission).DEPARTMENT_CREATE)")
     public void createDepartment(EntityCreationDto departmentCreationInfo, String username) {
         Entity departmentToCreate = entityDtoMapper.toEntity(departmentCreationInfo);
         jdbcDepartmentRepository.createEntity(username, departmentToCreate);
