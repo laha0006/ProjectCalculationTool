@@ -159,10 +159,10 @@ public class ProjectController {
                               @PathVariable long teamId,
                               @ModelAttribute ResourceEntityViewDto projectToEdit) {
 
-        long projectParentId = projectToEdit.parentId();
+        long projectId = projectToEdit.id();
         projectService.editProject(projectToEdit);
 
-        return determineRedirection(orgId, deptId, teamId, projectParentId);
+        return "redirect:/" + "organisation/" + orgId + "/department/" + deptId + "/team/" + teamId + "/project/" + projectId;
     }
 
     private String determineRedirection(long orgId, long deptId, long teamId, long projectParentId) {
