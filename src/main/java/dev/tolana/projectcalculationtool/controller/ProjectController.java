@@ -30,6 +30,10 @@ public class ProjectController {
         ResourceEntityViewDto project = projectService.getProject(projectId);
         model.addAttribute("project", project);
 
+        System.out.println("PARENT ID:"+project.parentId());
+        System.out.println("PARENT NAME:"+project.resourceEntityName());
+        System.out.println("ID:"+project.id());
+
         List<ResourceEntityViewDto> tasks = projectService.getTasks(projectId);
         model.addAttribute("allTasks", tasks);
 
