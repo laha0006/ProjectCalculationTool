@@ -26,34 +26,14 @@ public class ProjectService {
         this.entityDtoMapper = entityDtoMapper;
     }
 
-    public ResourceEntityViewDto getProject(long projectId) {
-        Entity project = projectRepository.getEntityOnId(projectId);
-        return entityDtoMapper.toResourceEntityViewDto(project);
-    }
-
     public void createProject(String username, ProjectCreationDto project) {
         Entity newProject = entityDtoMapper.toEntity(project);
         projectRepository.createEntity(username, newProject);
     }
 
-    public ProjectStatsDto getProjectStats(long projectId) {
-        return calculationService.getProjectStats(projectId);
-    }
-
-    public List<UserInformationDto> getAllTeamMembersFromTeamId(long teamId) {
-        return projectRepository.getUsersFromEntityId(teamId);
-    }
-
-    public void assignTeamMembersToProject(long projectId, List<String> selectedTeamMembers, UserRole userRole) {
-        projectRepository.assignUser(projectId, selectedTeamMembers, userRole);
-    }
-
-    public List<UserRole> getAllUserRoles() {
-        return projectRepository.getAllUserRoles();
-    }
-
-    public void deleteProject(long projectId) {
-        projectRepository.deleteEntity(projectId);
+    public ResourceEntityViewDto getProject(long projectId) {
+        Entity project = projectRepository.getEntityOnId(projectId);
+        return entityDtoMapper.toResourceEntityViewDto(project);
     }
 
     public List<ResourceEntityViewDto> getSubProjects(long projectId) {
@@ -63,11 +43,31 @@ public class ProjectService {
         return entityDtoMapper.toResourceEntityViewDtoList(upCastedSubProjects);
     }
 
+    public ProjectStatsDto getProjectStats(long projectId) {
+        return calculationService.getProjectStats(projectId);
+    }
+
     public List<ResourceEntityViewDto> getTasks(long projectId) {
         List<Entity> taskList = projectRepository.getChildren(projectId);
         List<ResourceEntity> downCastedTaskList = toResourceEntityList(taskList);
 
         return entityDtoMapper.toResourceEntityViewDtoList(downCastedTaskList);
+    }
+
+    public List<UserInformationDto> getAllTeamMembersFromTeamId(long teamId) {
+        return projectRepository.getUsersFromEntityId(teamId);
+    }
+
+    public List<UserRole> getAllUserRoles() {
+        return projectRepository.getAllUserRoles();
+    }
+
+    public void assignTeamMembersToProject(long projectId, List<String> selectedTeamMembers, UserRole userRole) {
+        projectRepository.assignUser(projectId, selectedTeamMembers, userRole);
+    }
+
+    public void deleteProject(long projectId) {
+        projectRepository.deleteEntity(projectId);
     }
 
     private List<ResourceEntity> toResourceEntityList(List<Entity> entityList){
@@ -86,5 +86,10 @@ public class ProjectService {
 
     public List<Status> getStatusList() {
         return projectRepository.getStatusList();
+    }
+
+    public void editProject(ResourceEntityViewDto projectToEdit) {
+        Entity project = entityDtoMapper.toEntity(projectToEdit);
+        projectRepository.editEntity(project);
     }
 }
