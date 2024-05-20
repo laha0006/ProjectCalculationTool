@@ -1,6 +1,7 @@
 package dev.tolana.projectcalculationtool.service;
 
 import dev.tolana.projectcalculationtool.dto.*;
+import dev.tolana.projectcalculationtool.enums.Status;
 import dev.tolana.projectcalculationtool.enums.UserRole;
 import dev.tolana.projectcalculationtool.mapper.EntityDtoMapper;
 import dev.tolana.projectcalculationtool.model.Entity;
@@ -81,5 +82,9 @@ public class ProjectService {
 
     private List<ResourceEntity> fromProjectoResourceEntityList(List<Project> entityList){
         return new ArrayList<>(entityList);
+    }
+
+    public List<Status> getStatusList() {
+        return projectRepository.getStatusList();
     }
 }
