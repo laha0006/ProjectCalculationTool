@@ -47,6 +47,11 @@
                         </div>
 
                         <div class="d-inline">
+                            <a th:href="@{{deptId}/members (deptId = ${department.id})}"
+                               class="btn btn-success fw-bold">Se medlemmer</a>
+                        </div>
+
+                        <div class="d-inline">
                             <form th:action="@{{id}/delete (id = ${department.id})}" method="post">
                                 <button class="btn btn-danger fw-bold">Slet afdeling</button>
                             </form>

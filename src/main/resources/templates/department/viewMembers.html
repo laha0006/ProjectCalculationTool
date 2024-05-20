@@ -17,23 +17,24 @@
                     <h1 th:text="${'Brugere i afdeling '+ organisation.name}"></h1>
                     <table class="table rounded align-middle">
                         <tbody>
-                        <tr th:each="user : ${users}">
+                        <tr th:each="user : ${orgUsers}">
                             <td th:text="${user.username}"></td>
                             <td>
                                 <div class="d-flex d-inline">
 
-                                        <!--TODO
-                                            add functionality to buttons
-                                            make buttons dynamic, so that only "invite" shows up if not invited,
-                                            and only "kick" if they are already members
-                                        -->
+                                    <!--TODO
+                                        add functionality to buttons
+                                        make buttons dynamic, so that only "invite" shows up if not invited,
+                                        and only "kick" if they are already members
+                                    -->
 
+                                    <span th:if="${user.departmentId() != null}">
                                         <button class="btn btn-success btn-sm fw-bold" type="submit">Invite</button>
-
-                                        <button class="btn btn-success btn-sm fw-bold" type="submit">Rettigheder</button>
-
+                                    </span>
+                                    <button class="btn btn-success btn-sm fw-bold" type="submit">Rettigheder</button>
+                                    <span th:unless="${user.departmentId() == null}">
                                         <button class="btn btn-danger btn-sm fw-bold" type="submit">Kick</button>
-
+                                    </span>
                                 </div>
                             </td>
                         </tr>
@@ -42,31 +43,10 @@
 
 
                     <div class="d-flex">
-                        <!--TODO MAKE SURE THIS IS HOW YOU CHECK ENUM VALUES-->
-                        <!--<div th:if="${userRole == 'ORGANISATION_OWNER' || userRole == 'ORGANISATION_ADMIN'}">-->
                         <div class="d-inline">
-                            <a th:href="@{/organisation/{id}/department/create (id = ${organisation.id}) }"
-                               class="btn btn-success fw-bold">Opret Afdeling</a>
-                        </div>
-
-                        <div class="d-inline">
-                            <a th:href="@{/organisation/{id}/invite (id = ${organisation.id}) }"
-                               class="btn btn-success fw-bold">Invitér brugere</a>
-                        </div>
-
-                        <div class="d-inline">
-                            <a th:href="@{/organisation/{id}/members (id = ${organisation.id}) }"
-                               class="btn btn-success fw-bold">Brugere</a>
-                        </div>
-
-                        <div class="d-inline">
-                            <form th:action="@{{id}/delete (id = ${organisation.id})}" method="post">
-                                <button class="btn btn-danger fw-bold">Slet organisation</button>
-                            </form>
-                        </div>
-
-                        <div class="d-inline">
-                            <a href="/organisation" class="btn btn-warning fw-bold">Gå tilbage</a>
+                            <a th:href="@{/organisation/{orgId}/department/{deptId}
+                            (orgId = ${department.parentId}, deptId = ${department.id})}"
+                               class="btn btn-warning fw-bold">Gå tilbage</a>
                         </div>
                     </div>
                 </div>

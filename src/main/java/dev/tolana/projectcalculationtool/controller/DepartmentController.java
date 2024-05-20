@@ -39,11 +39,12 @@ public class DepartmentController {
         EntityViewDto department = departmentService.getDepartment(departmentId);
         model.addAttribute("department", department);
 
-        EntityViewDto organisation = departmentService.getParentOrganisation(department.parentId());
+        EntityViewDto organisation = departmentService.getParent(department.parentId());
         model.addAttribute("organisation", organisation);
 
-        List<UserEntityRoleDto> users = departmentService.getUsersFromOrganisationId(organisationId);
-        model.addAttribute("users",users);
+        List<UserEntityRoleDto> users = departmentService.getUsersFromOrganisationId(
+                            organisation.id());
+        model.addAttribute("orgUsers",users);
 
         return "department/viewMembers";
     }
