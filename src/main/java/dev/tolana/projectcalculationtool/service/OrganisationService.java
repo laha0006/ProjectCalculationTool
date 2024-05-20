@@ -1,6 +1,7 @@
 package dev.tolana.projectcalculationtool.service;
 
 import dev.tolana.projectcalculationtool.dto.EntityCreationDto;
+import dev.tolana.projectcalculationtool.dto.EntityEditDto;
 import dev.tolana.projectcalculationtool.dto.EntityViewDto;
 import dev.tolana.projectcalculationtool.mapper.EntityDtoMapper;
 import dev.tolana.projectcalculationtool.model.Entity;
@@ -49,12 +50,26 @@ public class OrganisationService {
         return entityDtoMapper.toEntityViewDto(organisation);
     }
 
-    @PreAuthorize("@auth.hasOrgansiationAccess(#orgId, " +
-                  "T(dev.tolana.projectcalculationtool.enums.Permission).ORGANISATION_INVITE)")
-    public List<Invitation> getAllOutstandingInvitations(long orgId) {
-        return organisationRepository.getAllOutstandingInvitations(orgId);
+    @PreAuthorize("@auth.hasOrgansiationAccess(#organisationId, " +
+                  "T(dev.tolana.projectcalculationtool.enums.Permission).ORGANISATION_EDIT )")
+    public EntityEditDto getOrganisationToEdit(long organisationId) {
+        Entity organisation = organisationRepository.getEntityOnId(organisationId);
+        return entityDtoMapper.toEntityEditDto(organisation);
     }
 
+    public void editOrganisation(EntityEditDto editInfo) {
+        Entity editedOrganisation = entityDtoMapper.toEntity(editInfo);
+        organisationRepository.editEntity(editedOrganisation);
+    }
+
+    @PreAuthorize("@auth.hasOrgansiationAccess(#organisationId, " +
+                  "T(dev.tolana.projectcalculationtool.enums.Permission).ORGANISATION_INVITE)")
+    public List<Invitation> getAllOutstandingInvitations(long organisationId) {
+        return organisationRepository.getAllOutstandingInvitations(organisationId);
+    }
+
+    @PreAuthorize("@auth.hasOrgansiationAccess(#organisationId, " +
+                  "T(dev.tolana.projectcalculationtool.enums.Permission).ORGANISATION_DELETE)")
     public void deleteOrganisation(long organisationId) {
         organisationRepository.deleteEntity(organisationId);
     }
