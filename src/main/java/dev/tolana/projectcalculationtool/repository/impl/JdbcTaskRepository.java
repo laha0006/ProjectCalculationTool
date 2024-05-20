@@ -306,4 +306,25 @@ public class JdbcTaskRepository implements TaskRepository {
     public boolean changeStatus(long resourceEntityId) {
         return false;
     }
+
+    @Override
+    public List<Status> getStatusList() {
+        List<Status> statusList = new ArrayList<>();
+        String selectQuery = """
+                SELECT name FROM status;
+                """;
+
+        try(Connection connection = dataSource.getConnection()) {
+            PreparedStatement pstmt = connection.prepareStatement(selectQuery);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                statusList.add(Status.valueOf(rs.getString(1)));
+            }
+
+        }catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+
+        return statusList;
+    }
 }
