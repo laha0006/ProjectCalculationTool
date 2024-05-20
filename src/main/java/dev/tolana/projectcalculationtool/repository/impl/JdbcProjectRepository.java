@@ -448,4 +448,9 @@ public class JdbcProjectRepository implements ProjectRepository {
     public boolean changeStatus(long resourceEntityId) {
         return false;
     }
+
+    @Override
+    public List<Status> getStatusList() {
+        return null;
+    }
 }
