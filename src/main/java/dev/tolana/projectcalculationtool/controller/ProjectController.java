@@ -82,7 +82,15 @@ public class ProjectController {
         String username = authentication.getName();
         projectService.createProject(username, newProject);
 
-        return "redirect:/" + "organisation/" + orgId + "/department/" + deptId + "/team/" + teamId;
+        String redirectionUrl;
+        if (newProject.parentId() == 0){
+            redirectionUrl = "redirect:/" + "organisation/" + orgId + "/department/" + deptId + "/team/" + teamId;
+
+        } else {
+            redirectionUrl = "redirect:/" + "organisation/" + orgId + "/department/" + deptId + "/team/" + teamId + "/project/" + newProject.parentId();
+        }
+
+        return redirectionUrl;
     }
 
     @GetMapping("/{projectId}/assign/members")
