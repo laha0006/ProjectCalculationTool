@@ -41,9 +41,19 @@
                                 <td th:text="${task.estimatedHours}"></td>
                                 <td th:text="${task.status}"></td>
                                 <td>
-                                    <form th:action="@{{taskId}/delete (taskId=${task.taskId()})}" method="post">
-                                        <button class="btn btn-warning fw-bold">Slet</button>
-                                    </form>
+                                    <div class="d-flex">
+                                        <div class="d-inline">
+                                            <a th:href="@{{taskId}/edit (taskId=${task.taskId})}">
+                                                <button class="btn btn-warning fw-bold">Ændre</button>
+                                            </a>
+                                        </div>
+
+                                        <div class="d-inline">
+                                            <form th:action="@{{taskId}/delete (taskId=${task.taskId()})}" method="post">
+                                                <button class="btn btn-danger fw-bold">Slet</button>
+                                            </form>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                             </tbody>
