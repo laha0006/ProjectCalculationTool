@@ -135,7 +135,18 @@ public class ProjectController {
                                 @PathVariable long teamId,
                                 @PathVariable long projectId) {
 
+        ResourceEntityViewDto projectToDelete = projectService.getProject(projectId);
+
+        String redirectionUrl;
+        if (projectToDelete.parentId() == 0){
+            redirectionUrl = "redirect:/" + "organisation/" + orgId + "/department/" + deptId + "/team/" + teamId;
+
+        } else {
+            redirectionUrl = "redirect:/" + "organisation/" + orgId + "/department/" + deptId + "/team/" + teamId + "/project/" + projectToDelete.parentId();
+        }
+
         projectService.deleteProject(projectId);
-        return "redirect:/organisation/" + orgId + "/department/" + deptId + "/team/" + teamId;
+
+        return redirectionUrl;
     }
 }
