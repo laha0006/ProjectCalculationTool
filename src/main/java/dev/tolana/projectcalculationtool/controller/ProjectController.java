@@ -85,16 +85,9 @@ public class ProjectController {
 
         String username = authentication.getName();
         projectService.createProject(username, newProject);
+        long projectParentId = newProject.parentId();
 
-        String redirectionUrl;
-        if (newProject.parentId() == 0){
-            redirectionUrl = "redirect:/" + "organisation/" + orgId + "/department/" + deptId + "/team/" + teamId;
-
-        } else {
-            redirectionUrl = "redirect:/" + "organisation/" + orgId + "/department/" + deptId + "/team/" + teamId + "/project/" + newProject.parentId();
-        }
-
-        return redirectionUrl;
+        return determineRedirection(orgId, deptId, teamId, projectParentId);
     }
 
     @GetMapping("/{projectId}/assign/members")
@@ -136,17 +129,18 @@ public class ProjectController {
                                 @PathVariable long projectId) {
 
         ResourceEntityViewDto projectToDelete = projectService.getProject(projectId);
-
-        String redirectionUrl;
-        if (projectToDelete.parentId() == 0){
-            redirectionUrl = "redirect:/" + "organisation/" + orgId + "/department/" + deptId + "/team/" + teamId;
-
-        } else {
-            redirectionUrl = "redirect:/" + "organisation/" + orgId + "/department/" + deptId + "/team/" + teamId + "/project/" + projectToDelete.parentId();
-        }
-
+        long projectParentId = projectToDelete.parentId();
         projectService.deleteProject(projectId);
 
-        return redirectionUrl;
+        return determineRedirection(orgId, deptId, teamId, projectParentId);
+    }
+
+    private String determineRedirection(long orgId, long deptId, long teamId, long projectParentId) {
+        if (projectParentId == 0){
+            return "redirect:/" + "organisation/" + orgId + "/department/" + deptId + "/team/" + teamId;
+
+        } else {
+            return  "redirect:/" + "organisation/" + orgId + "/department/" + deptId + "/team/" + teamId + "/project/" + projectParentId;
+        }
     }
 }
