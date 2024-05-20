@@ -1,9 +1,11 @@
 package dev.tolana.projectcalculationtool.repository.impl;
 
+import dev.tolana.projectcalculationtool.dto.UserEntityRoleDto;
 import dev.tolana.projectcalculationtool.dto.UserInformationDto;
 import dev.tolana.projectcalculationtool.enums.UserRole;
 import dev.tolana.projectcalculationtool.model.Department;
 import dev.tolana.projectcalculationtool.model.Entity;
+import dev.tolana.projectcalculationtool.model.Organisation;
 import dev.tolana.projectcalculationtool.model.Team;
 import dev.tolana.projectcalculationtool.repository.DepartmentRepository;
 import dev.tolana.projectcalculationtool.repository.EntityCrudOperations;
@@ -145,6 +147,28 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
     }
 
     @Override
+    public Entity getParent(long parentId) {
+        Entity parent = null;
+        try (Connection con = dataSource.getConnection()) {
+            PreparedStatement pstmt = con.prepareStatement("SELECT * FROM organisation WHERE id = ?");
+            pstmt.setLong(1, parentId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                parent = new Organisation(
+                        rs.getLong(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getTimestamp(4).toLocalDateTime(),
+                        rs.getBoolean(5)
+                );
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return parent;
+    }
+
+    @Override
     public boolean editEntity(Entity entity) {
         return false;
     }
@@ -202,5 +226,45 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
     @Override
     public List<UserRole> getAllUserRoles() {
         return null;
+    }
+
+    @Override
+    public List<UserEntityRoleDto> getUsersFromOrganisationId(long organisationId){
+        List<UserEntityRoleDto> users = new ArrayList<>();
+
+        try (Connection connection = dataSource.getConnection()) {
+            String getAllUsersFromOrganisation = """
+                    SELECT username, role_id, task_id, project_id, team_id, department_id, organisation_id
+                    FROM user_entity_role
+                    JOIN organisation ON user_entity_role.organisation_id = organisation.id
+                    JOIN role ON user_entity_role.role_id = role.id
+                    WHERE organisation.id = ?;
+                    """;
+
+            PreparedStatement pstmt = connection.prepareStatement(getAllUsersFromOrganisation);
+            pstmt.setLong(1, organisationId);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+
+                String username = rs.getString(1);
+                long roleId = rs.getLong(2);
+                long taskId = rs.getLong(3);
+                long projectId = rs.getLong(4);
+                long teamId = rs.getLong(5);
+                long deptId = rs.getLong(6);
+                long orgId = rs.getLong(7);
+
+                users.add(new UserEntityRoleDto(username,roleId,taskId,projectId,
+                        teamId,deptId,orgId));
+            }
+
+
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
+
+        return users;
     }
 }

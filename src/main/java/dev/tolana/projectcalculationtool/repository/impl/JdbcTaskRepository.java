@@ -69,6 +69,11 @@ public class JdbcTaskRepository implements TaskRepository {
         return sql;
     }
 
+    @Override
+    public Entity getParent(long parentId) {
+        return null;
+    }
+
     private void setTaskAttributeValues(PreparedStatement pstmt, Task task) {
         try {
             if (task.getParentId() == 0) {
