@@ -2,6 +2,7 @@ package dev.tolana.projectcalculationtool.controller;
 
 import dev.tolana.projectcalculationtool.dto.*;
 import dev.tolana.projectcalculationtool.enums.EntityType;
+import dev.tolana.projectcalculationtool.enums.Status;
 import dev.tolana.projectcalculationtool.enums.UserRole;
 import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.service.CalculationService;
@@ -48,9 +49,9 @@ public class ProjectController {
 
     @GetMapping("/create")
     public String showPageForCreatingProject(Model model,
-                                           @PathVariable long orgId,
-                                           @PathVariable long deptId,
-                                           @PathVariable long teamId) {
+                                             @PathVariable long orgId,
+                                             @PathVariable long deptId,
+                                             @PathVariable long teamId) {
         model.addAttribute("newProject", new ProjectCreationDto("", "", 0, teamId, LocalDateTime.now(), 0));
         model.addAttribute("orgId", orgId);
         model.addAttribute("deptId", deptId);
@@ -105,7 +106,7 @@ public class ProjectController {
     }
 
     @PostMapping("/{projectId}/assign/members")
-    public String assignTeamMembersToProject(@RequestParam(value="teamMember", required = false) List<String> selectedTeamMembers,
+    public String assignTeamMembersToProject(@RequestParam(value = "teamMember", required = false) List<String> selectedTeamMembers,
                                              @RequestParam UserRole role,
                                              @PathVariable long orgId,
                                              @PathVariable long deptId,
@@ -115,7 +116,7 @@ public class ProjectController {
             projectService.assignTeamMembersToProject(projectId, selectedTeamMembers, role);
         }
 
-        return "redirect:/organisation/" + orgId + "/department/" +  deptId +"/team/" + teamId;
+        return "redirect:/organisation/" + orgId + "/department/" + deptId + "/team/" + teamId;
     }
 
     @PostMapping("/{projectId}/delete")
@@ -131,12 +132,32 @@ public class ProjectController {
         return determineRedirection(orgId, deptId, teamId, projectParentId);
     }
 
+    @GetMapping("{projectId}/edit")
+    public String displayEditProjectPage(@PathVariable long orgId,
+                                         @PathVariable long deptId,
+                                         @PathVariable long teamId,
+                                         @PathVariable long projectId,
+                                         Model model) {
+
+        List<Status> statusList = projectService.getStatusList();
+        model.addAttribute("statusList", statusList);
+
+        ResourceEntityViewDto projectToEdit = projectService.getProject(projectId);
+        model.addAttribute("projectToEdit", projectToEdit);
+
+        model.addAttribute("projectId", projectId);
+        model.addAttribute("deptId", deptId);
+        model.addAttribute("orgId", orgId);
+
+        return "project/editProject";
+    }
+
     private String determineRedirection(long orgId, long deptId, long teamId, long projectParentId) {
-        if (projectParentId == 0){
+        if (projectParentId == 0) {
             return "redirect:/" + "organisation/" + orgId + "/department/" + deptId + "/team/" + teamId;
 
         } else {
-            return  "redirect:/" + "organisation/" + orgId + "/department/" + deptId + "/team/" + teamId + "/project/" + projectParentId;
+            return "redirect:/" + "organisation/" + orgId + "/department/" + deptId + "/team/" + teamId + "/project/" + projectParentId;
         }
     }
 }
