@@ -4,7 +4,7 @@
       data-bs-theme="dark">
 <head>
     <th:block th:insert="~{fragments/head :: headFiles}"></th:block>
-    <title>Ændre opgave</title>
+    <title>Ændre projekt</title>
 </head>
 <body>
 <div class="container">
@@ -14,20 +14,32 @@
             <main class="d-flex justify-content-center text-center bg-secondary-subtle py-3 px-5 rounded shadow">
 
                 <div>
-                    <h1 th:text="'Ændre: ' + ${taskToEdit.taskName}"></h1>
+                    <h1 th:text="'Ændre: ' + ${projectToEdit.resourceEntityName()}"></h1>
 
-                    <form th:action="@{edit}" method="post" th:object="${taskToEdit}">
+                    <form th:action="@{edit}" method="post" th:object="${projectToEdit}">
                         <p>
                             <label>Navn:
-                                <input type="text" th:field="*{taskName}" required>
+                                <input type="text" th:field="*{resourceEntityName}" required>
                             </label>
                         </p>
 
                         <p>
                             <label>Beskrivelse:
-                                <input type="text" th:field="*{taskDescription}" required>
+                                <input type="text" th:field="*{description}" required>
                             </label>
                         </p>
+
+                        <label>
+                            <input type="number" th:field="*{id}" hidden="hidden">
+                        </label>
+
+                        <label>
+                            <input type="number" th:field="*{parentId}" hidden="hidden">
+                        </label>
+
+                        <label>
+                            <input type="number" th:field="*{teamId}" hidden="hidden">
+                        </label>
 
                         <label>
                             <input type="number" th:field="*{projectId}" hidden="hidden">
@@ -45,6 +57,18 @@
                             </label>
                         </p>
 
+                        <p>
+                            <label>Antal anvendt timer for færdiggørelse:
+                                <input type="number" th:field="*{actualHours}" required>
+                            </label>
+                        </p>
+
+                        <p>
+                            <label>Antal betalte timer:
+                                <input type="number" th:field="*{allottedHours}" required>
+                            </label>
+                        </p>
+
                         <label>Status:
                             <select th:field="*{status}" required>
                                 <option th:each="status : ${statusList}" th:value="${status}"
@@ -52,28 +76,12 @@
                             </select>
                         </label>
 
-                        <label>
-                            <input type="number" th:field="*{parentId}" hidden="hidden">
-                        </label>
-
-                        <label>
-                            <input type="number" th:field="*{taskId}" hidden="hidden">
-                        </label>
-
                         <button type="submit" class="btn btn-success fw-bold in-line">Bekræft</button>
                     </form>
 
-                    <div th:if="${taskToEdit.parentId == 0}">
-                        <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId} (orgId=${orgId}, deptId=${deptId}, teamId=${teamId}, projectId=${taskToEdit.projectId()})}">
-                            <button class="btn btn-secondary fw-bold in-line">Annullér</button>
-                        </a>
-                    </div>
-
-                    <div th:if="${taskToEdit.parentId != 0}">
-                        <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/task/{taskId} (orgId=${orgId}, deptId=${deptId}, teamId=${teamId}, projectId=${taskToEdit.projectId}, taskId=${taskToEdit.parentId()})}">
-                            <button class="btn btn-secondary fw-bold in-line">Annullér</button>
-                        </a>
-                    </div>
+                    <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId} (orgId=${orgId}, deptId=${deptId}, teamId=${teamId}, projectId=${projectToEdit.id})}">
+                        <button class="btn btn-secondary fw-bold in-line">Annullér</button>
+                    </a>
                 </div>
 
             </main>
