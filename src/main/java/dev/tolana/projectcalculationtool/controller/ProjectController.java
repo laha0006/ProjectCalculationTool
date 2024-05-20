@@ -146,6 +146,7 @@ public class ProjectController {
         model.addAttribute("projectToEdit", projectToEdit);
 
         model.addAttribute("projectId", projectId);
+        model.addAttribute("teamId", teamId);
         model.addAttribute("deptId", deptId);
         model.addAttribute("orgId", orgId);
 
