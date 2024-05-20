@@ -1,6 +1,7 @@
 package dev.tolana.projectcalculationtool.controller;
 
 import dev.tolana.projectcalculationtool.dto.EntityCreationDto;
+import dev.tolana.projectcalculationtool.dto.EntityEditDto;
 import dev.tolana.projectcalculationtool.dto.EntityViewDto;
 import dev.tolana.projectcalculationtool.dto.ResourceEntityViewDto;
 import dev.tolana.projectcalculationtool.enums.EntityType;
@@ -54,6 +55,19 @@ public class TeamController {
         teamService.createTeam(teamDto, authentication.getName());
         redirectAttributes.addFlashAttribute("alertSuccess", "Team created successfully");
         return "redirect:/" + "organisation/" + orgId + "/department/" + deptId;
+    }
+
+    @GetMapping("{teamId}/edit")
+    public String editTeam(Model model, @PathVariable long teamId) {
+        EntityEditDto team = teamService.getTeamToEdit(teamId);
+        model.addAttribute("team", team);
+        return "team/editTeam";
+    }
+
+    @PostMapping("{teamId}/edit")
+    public String editTeamSave(@ModelAttribute EntityEditDto teamDto,@PathVariable long teamId) {
+        teamService.editTeam(teamDto);
+        return "redirect:/organisation/{orgId}/department/{deptId}/team/"+teamId;
     }
 
     @PostMapping("/{teamId}/delete")

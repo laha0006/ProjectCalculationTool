@@ -52,23 +52,30 @@
                         </table>
                     </div>
 
-                    <div class="d-flex">
+                    <div class="d-flex justify-content-between">
                         <div class="d-inline">
                             <form th:action="@{{teamId}/project/create (teamId=${team.id})}">
                                 <button class="btn btn-success fw-bold">Opret projekt</button>
                             </form>
                         </div>
-
                         <div class="d-inline">
-                            <form th:action="@{{teamId}/delete (teamId=${team.id})}" method="post">
-                                <button class="btn btn-danger fw-bold">Slet</button>
-                            </form>
+                            <a class="btn btn-primary" th:href="@{{teamId}/edit (teamId=${team.id})}">Edit</a>
                         </div>
+
+
 
                         <div class="d-inline">
                             <a th:href="@{/organisation/{orgId}/department/{deptId} (orgId=${orgId}, deptId=${team.parentId})}">
                                 <button class="btn btn-secondary fw-bold">Tilbage</button>
                             </a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>Farligt!</h3>
+                        <div class="d-inline">
+                            <form th:action="@{{teamId}/delete (teamId=${team.id})}" method="post">
+                                <button class="btn btn-danger fw-bold">Slet</button>
+                            </form>
                         </div>
                     </div>
                 </div>

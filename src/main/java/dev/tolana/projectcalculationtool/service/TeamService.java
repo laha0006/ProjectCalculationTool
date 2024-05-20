@@ -1,6 +1,7 @@
 package dev.tolana.projectcalculationtool.service;
 
 import dev.tolana.projectcalculationtool.dto.EntityCreationDto;
+import dev.tolana.projectcalculationtool.dto.EntityEditDto;
 import dev.tolana.projectcalculationtool.dto.EntityViewDto;
 import dev.tolana.projectcalculationtool.dto.ResourceEntityViewDto;
 import dev.tolana.projectcalculationtool.mapper.EntityDtoMapper;
@@ -33,6 +34,16 @@ public class TeamService {
     public EntityViewDto getTeam(long teamId){
         Entity team = teamRepository.getEntityOnId(teamId);
         return entityDtoMapper.toEntityViewDto(team);
+    }
+
+    public EntityEditDto getTeamToEdit(long teamId){
+        Entity team = teamRepository.getEntityOnId(teamId);
+        return entityDtoMapper.toEntityEditDto(team);
+    }
+
+    public void editTeam(EntityEditDto editDto) {
+        Entity teamToEdit = entityDtoMapper.toEntity(editDto);
+        teamRepository.editEntity(teamToEdit);
     }
 
     public void createTeam(EntityCreationDto teamCreationInfo, String username) {
