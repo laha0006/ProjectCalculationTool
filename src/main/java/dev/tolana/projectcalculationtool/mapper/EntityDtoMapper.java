@@ -113,6 +113,15 @@ public class EntityDtoMapper {
         );
     }
 
+    public Entity toEntity(EntityEditDto editDto) {
+        return new Entity(
+                editDto.id(),
+                editDto.name(),
+                editDto.description()
+        );
+    }
+
+
     public EntityViewDto toEntityViewDto(Entity entity) {
 
         if (entity instanceof Organisation organisation) {
@@ -143,6 +152,14 @@ public class EntityDtoMapper {
         }
 
         return null;
+    }
+
+    public EntityEditDto toEntityEditDto(Entity entity) {
+        return new EntityEditDto(
+                entity.getName(),
+                entity.getDescription(),
+                entity.getId()
+        );
     }
 
     public List<EntityViewDto> toEntityViewDtoList(List<Entity> entityList) {
