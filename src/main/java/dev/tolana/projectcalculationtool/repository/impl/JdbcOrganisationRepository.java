@@ -163,13 +163,41 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
 
     @Override
     public boolean editEntity(Entity entity) {
-        return false;
+        boolean isEdited;
+        String editOrganisation = """
+                UPDATE organisation
+                SET name = ?, description = ?
+                WHERE id = ?;
+                """;
+        try (Connection connection = dataSource.getConnection()){
+            try {
+                connection.setAutoCommit(false);
+
+                PreparedStatement pstmt = connection.prepareStatement(editOrganisation);
+                pstmt.setString(1, entity.getName());
+                pstmt.setString(2, entity.getDescription());
+                pstmt.setLong(3, entity.getId());
+                int affectedRows = pstmt.executeUpdate();
+
+                isEdited = affectedRows > 0;
+
+                connection.commit();
+                connection.setAutoCommit(true);
+            } catch (SQLException sqlException) {
+                connection.rollback();
+                connection.setAutoCommit(true);
+                throw new RuntimeException(sqlException);
+            }
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+        return isEdited;
     }
 
     @Override
     public boolean deleteEntity(long organisationId) {
         boolean isDeleted;
-        String deleteTask = """
+        String deleteOrganisation = """
                 DELETE FROM organisation WHERE id = ?;
                 """;
 
@@ -177,7 +205,7 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
             try {
                 connection.setAutoCommit(false);
 
-                PreparedStatement pstmt = connection.prepareStatement(deleteTask);
+                PreparedStatement pstmt = connection.prepareStatement(deleteOrganisation);
                 pstmt.setLong(1, organisationId);
                 int affectedRows = pstmt.executeUpdate();
 
