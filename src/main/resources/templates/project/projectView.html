@@ -80,6 +80,11 @@
                                 <td th:text="${task.deadline}"></td>
                                 <td th:text="${task.estimatedHours}"></td>
                                 <td th:text="${task.status}"></td>
+                                <td>
+                                    <form th:action="@{{projectId}/task/{taskId}/delete (projectId=${task.projectId()}, taskId=${task.id})}" method="post">
+                                        <button class="btn btn-danger fw-bold">Slet</button>
+                                    </form>
+                                </td>
                             </tr>
                             </tbody>
                         </table>
