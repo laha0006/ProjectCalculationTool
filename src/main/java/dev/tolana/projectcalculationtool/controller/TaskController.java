@@ -102,6 +102,28 @@ public class TaskController {
         return determineRedirection(orgId, deptId, teamId, projectId, parentTaskId);
     }
 
+    @GetMapping("{taskId}/edit")
+    public String editTask(@PathVariable long orgId,
+                           @PathVariable long deptId,
+                           @PathVariable long teamId,
+                           @PathVariable long projectId,
+                           @PathVariable long taskId,
+                           Model model) {
+
+        TaskDto taskToEdit = taskService.getTask(taskId);
+        model.addAttribute("taskToEdit", taskToEdit);
+
+        List<Status> statusList = taskService.getStatusList();
+        model.addAttribute("statusList", statusList);
+
+        model.addAttribute("orgId", orgId);
+        model.addAttribute("deptId", deptId);
+        model.addAttribute("teamId", teamId);
+        model.addAttribute("projectId", projectId);
+
+        return "task/editTask";
+    }
+
     private String determineRedirection(long orgId, long deptId, long teamId, long projectId, long parentTaskId) {
         if (parentTaskId == 0){ //if parentId == 0, it means it has no parent, therefor it's not a subtask.
            return "redirect:/organisation/" + orgId + "/department/" + deptId + "/team/" + teamId + "/project/" + projectId;
