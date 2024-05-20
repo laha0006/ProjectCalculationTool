@@ -244,7 +244,38 @@ public class JdbcTaskRepository implements TaskRepository {
 
     @Override
     public boolean editEntity(Entity entity) {
-        return false;
+        boolean isEdited;
+        String edit = """
+                UPDATE task SET name=?, description=?, deadline=?, estimated_hours=?, status=? WHERE id =?;
+                """;
+
+        try (Connection connection = dataSource.getConnection()){
+            try {
+                connection.setAutoCommit(false);
+
+                PreparedStatement pstmt = connection.prepareStatement(edit);
+                pstmt.setString(1, entity.getName());
+                pstmt.setString(2, entity.getDescription());
+                pstmt.setDate(3, Date.valueOf(((Task)entity).getDeadline().toLocalDate()));
+                pstmt.setInt(4, ((Task)entity).getEstimatedHours());
+                pstmt.setLong(5, ((Task)entity).getStatusId());
+                pstmt.setLong(6, entity.getId());
+                int affectedRows = pstmt.executeUpdate();
+
+                isEdited = affectedRows > 0;
+
+                connection.commit();
+                connection.setAutoCommit(true);
+            }catch (SQLException sqlException) {
+                connection.rollback();
+                connection.setAutoCommit(true);
+                throw new RuntimeException(sqlException);
+            }
+        }catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+
+        return isEdited;
     }
 
     @Override
