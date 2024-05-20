@@ -152,6 +152,18 @@ public class ProjectController {
         return "project/editProject";
     }
 
+    @PostMapping("{projectId}/edit")
+    public String editProject(@PathVariable long orgId,
+                              @PathVariable long deptId,
+                              @PathVariable long teamId,
+                              @ModelAttribute ResourceEntityViewDto projectToEdit) {
+
+        long projectParentId = projectToEdit.parentId();
+        projectService.editProject(projectToEdit);
+
+        return determineRedirection(orgId, deptId, teamId, projectParentId);
+    }
+
     private String determineRedirection(long orgId, long deptId, long teamId, long projectParentId) {
         if (projectParentId == 0) {
             return "redirect:/" + "organisation/" + orgId + "/department/" + deptId + "/team/" + teamId;
