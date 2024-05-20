@@ -133,12 +133,6 @@ public class TaskController {
                            @ModelAttribute TaskDto taskToEdit) {
 
         long parentTaskId = taskToEdit.parentId();
-
-        model.addAttribute("orgId", orgId);
-        model.addAttribute("deptId", deptId);
-        model.addAttribute("teamId", teamId);
-        model.addAttribute("projectId", projectId);
-
         taskService.editTask(taskToEdit);
 
         return determineRedirection(orgId, deptId, teamId, projectId, parentTaskId);
