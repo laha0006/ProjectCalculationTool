@@ -79,17 +79,9 @@
                         <button type="submit" class="btn btn-success fw-bold in-line">Bekræft</button>
                     </form>
 
-                    <div th:if="${projectToEdit.parentId == 0}">
-                        <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId} (orgId=${orgId}, deptId=${deptId}, teamId=${teamId})}">
-                            <button class="btn btn-secondary fw-bold in-line">Annullér</button>
-                        </a>
-                    </div>
-
-                    <div th:if="${projectToEdit.parentId != 0}">
-                        <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId} (orgId=${orgId}, deptId=${deptId}, teamId=${teamId}, projectId=${projectToEdit.projectId})}">
-                            <button class="btn btn-secondary fw-bold in-line">Annullér</button>
-                        </a>
-                    </div>
+                    <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId} (orgId=${orgId}, deptId=${deptId}, teamId=${teamId}, projectId=${projectToEdit.id})}">
+                        <button class="btn btn-secondary fw-bold in-line">Annullér</button>
+                    </a>
                 </div>
 
             </main>
