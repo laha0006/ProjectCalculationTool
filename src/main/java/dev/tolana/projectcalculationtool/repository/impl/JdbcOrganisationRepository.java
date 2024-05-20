@@ -163,6 +163,11 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
     }
 
     @Override
+    public Entity getParent(long parentId) {
+        return null;
+    }
+
+    @Override
     public boolean editEntity(Entity entity) {
         boolean isEdited;
         String editOrganisation = """

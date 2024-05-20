@@ -174,6 +174,11 @@ public class JdbcTeamRepository implements TeamRepository {
     }
 
     @Override
+    public Entity getParent(long parentId) {
+        return null;
+    }
+
+    @Override
     public boolean createEntity(String username, Entity entity) {
         boolean isCreated = false;
 

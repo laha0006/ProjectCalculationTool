@@ -39,7 +39,7 @@ public class DepartmentController {
         EntityViewDto department = departmentService.getDepartment(departmentId);
         model.addAttribute("department", department);
 
-        EntityViewDto organisation = organisationService.getOrganisation(department.parentId());
+        EntityViewDto organisation = departmentService.getParentOrganisation(department.parentId());
         model.addAttribute("organisation", organisation);
 
         List<UserEntityRoleDto> users = departmentService.getUsersFromOrganisationId(organisationId);
@@ -69,4 +69,5 @@ public class DepartmentController {
         departmentService.deleteDepartment(deptId);
         return "redirect:/organisation/" + orgId;
     }
+
 }

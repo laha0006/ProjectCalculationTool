@@ -145,6 +145,11 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
     }
 
     @Override
+    public Entity getParent(long parentId) {
+        return null;
+    }
+
+    @Override
     public boolean editEntity(Entity entity) {
         return false;
     }

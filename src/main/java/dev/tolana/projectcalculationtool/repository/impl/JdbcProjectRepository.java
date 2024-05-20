@@ -250,6 +250,11 @@ public class JdbcProjectRepository implements ProjectRepository {
     }
 
     @Override
+    public Entity getParent(long parentId) {
+        return null;
+    }
+
+    @Override
     public List<Project> getSubProjects(long projectId) {
         List<Project> subProjects = new ArrayList<>();
         String getTasks = """

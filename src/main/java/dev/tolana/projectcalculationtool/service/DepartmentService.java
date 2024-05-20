@@ -6,6 +6,7 @@ import dev.tolana.projectcalculationtool.mapper.EntityDtoMapper;
 import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.repository.DepartmentRepository;
 import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -47,5 +48,12 @@ public class DepartmentService {
 
     public void deleteDepartment(long deptId) {
         jdbcDepartmentRepository.deleteEntity(deptId);
+    }
+
+    @PreAuthorize("@auth.hasOrgansiationAccess(#organisationId, " +
+            "T(dev.tolana.projectcalculationtool.enums.Permission).ORGANISATION_READ )")
+    public EntityViewDto getParent(long parentId) {
+        Entity organisation = jdbcDepartmentRepository.getEntityOnId(parentId);
+        return entityDtoMapper.toEntityViewDto(organisation);
     }
 }
