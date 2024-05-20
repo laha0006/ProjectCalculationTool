@@ -83,14 +83,9 @@ public class TaskController {
 
         String username = authentication.getName();
         taskService.createTask(username, newTask);
+        long parentTaskId = newTask.parentId();
 
-        String redirectUrl;
-        if (newTask.parentId() == 0){ //if parentId == 0, it means it has no parent, therefor it's not a subtask.
-            redirectUrl = "redirect:/organisation/" + orgId + "/department/" + deptId + "/team/" + teamId + "/project/" + projectId;
-        } else
-            redirectUrl = "redirect:/organisation/" + orgId + "/department/" + deptId + "/team/" + teamId + "/project/" + projectId + "/task/" + newTask.parentId();
-
-        return redirectUrl;
+        return determineRedirection(orgId, deptId, teamId, projectId, parentTaskId);
     }
 
     @PostMapping("/{taskId}/delete")
@@ -100,8 +95,18 @@ public class TaskController {
                              @PathVariable long projectId,
                              @PathVariable long taskId) {
 
+        TaskDto taskToDelete = taskService.getTask(taskId);
+        long parentTaskId = taskToDelete.parentId();
         taskService.deleteTask(taskId);
 
-        return "redirect:/organisation/" + orgId + "/department/" + deptId + "/team/" + teamId + "/project/" + projectId;
+        return determineRedirection(orgId, deptId, teamId, projectId, parentTaskId);
+    }
+
+    private String determineRedirection(long orgId, long deptId, long teamId, long projectId, long parentTaskId) {
+        if (parentTaskId == 0){ //if parentId == 0, it means it has no parent, therefor it's not a subtask.
+           return "redirect:/organisation/" + orgId + "/department/" + deptId + "/team/" + teamId + "/project/" + projectId;
+
+        } else
+            return "redirect:/organisation/" + orgId + "/department/" + deptId + "/team/" + teamId + "/project/" + projectId + "/task/" + parentTaskId;
     }
 }
