@@ -1,5 +1,6 @@
 package dev.tolana.projectcalculationtool.service;
 
+import dev.tolana.projectcalculationtool.enums.Status;
 import dev.tolana.projectcalculationtool.mapper.EntityDtoMapper;
 import dev.tolana.projectcalculationtool.dto.TaskDto;
 import dev.tolana.projectcalculationtool.model.Entity;
@@ -41,5 +42,9 @@ public class TaskService {
     public List<TaskDto> getChildren(long taskId) {
         List<Entity> taskList = taskRepository.getChildren(taskId);
         return entityDtoMapper.toTaskDtoList(taskList);
+    }
+
+    public List<Status> getStatusList() {
+        return taskRepository.getStatusList();
     }
 }
