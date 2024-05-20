@@ -50,6 +50,38 @@ public class EntityDtoMapper {
         }
     }
 
+    public Entity toEntity(ResourceEntityViewDto resourceEntityViewDto) {
+        if (resourceEntityViewDto.projectId() == 0) { //if it doesnt have a projectId it means its a task, otherwise its a project
+            return new Project(
+                    resourceEntityViewDto.id(),
+                    resourceEntityViewDto.resourceEntityName(),
+                    resourceEntityViewDto.description(),
+                    LocalDateTime.now(),
+                    false,
+                    resourceEntityViewDto.deadline(),
+                    resourceEntityViewDto.status(),
+                    resourceEntityViewDto.parentId(),
+                    resourceEntityViewDto.teamId(),
+                    resourceEntityViewDto.allottedHours()
+            );
+
+        } else {
+            return new Task(
+                    resourceEntityViewDto.id(),
+                    resourceEntityViewDto.resourceEntityName(),
+                    resourceEntityViewDto.description(),
+                    LocalDateTime.now(),
+                    false,
+                    resourceEntityViewDto.deadline(),
+                    resourceEntityViewDto.status(),
+                    resourceEntityViewDto.parentId(),
+                    resourceEntityViewDto.projectId(),
+                    resourceEntityViewDto.estimatedHours(),
+                    resourceEntityViewDto.actualHours()
+            );
+        }
+    }
+
 //    public Entity toEntity(ResourceEntityCreationDto reCreationDto) {
 //
 //        switch (reCreationDto.entityType()) {
@@ -213,10 +245,10 @@ public class EntityDtoMapper {
                     project.getId(),
                     project.getParentId(),
                     project.getTeamId(),
-                    -1,
+                    0,
                     project.getDeadline(),
-                    -1, //TODO add estimatedHours to Project to calculate hours to finish whole project
-                    -1,
+                    0, //TODO add estimatedHours to Project to calculate hours to finish whole project
+                    0,
                     project.getAllottedHours(),
                     project.getStatus()
             );
@@ -253,10 +285,10 @@ public class EntityDtoMapper {
                         project.getId(),
                         project.getParentId(),
                         project.getTeamId(),
-                        -1,
+                        0,
                         project.getDeadline(),
-                        -1, //TODO add estimatedHours to Project to calculate hours to finish whole project
-                        -1,
+                        0, //TODO add estimatedHours to Project to calculate hours to finish whole project
+                        0,
                         project.getAllottedHours(),
                         project.getStatus()
                 );
@@ -270,12 +302,12 @@ public class EntityDtoMapper {
                         task.getDescription(),
                         task.getId(),
                         task.getParentId(), //used for CRUD on subtasks
-                        -1,
+                        0,
                         task.getProjectId(),
                         task.getDeadline(),
                         task.getEstimatedHours(),
                         task.getActualHours(),
-                        -1,
+                        0,
                         task.getStatus()
                 );
 
