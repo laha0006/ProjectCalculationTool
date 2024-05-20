@@ -48,7 +48,6 @@
 
                         <label>Status:
                             <select th:field="*{status}" required>
-                                <option value="">Ændre status</option>
                                 <option th:each="status : ${statusList}" th:value="${status}" th:text="${status}"></option>
                             </select>
                         </label>
@@ -64,7 +63,7 @@
                         <button type="submit" class="btn btn-success fw-bold in-line">Bekræft</button>
                     </form>
 
-                    <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId} (orgId=${orgId}, deptId=${deptId}, teamId=${teamId}, projectId=${taskToEdit.parentId})}">
+                    <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId} (orgId=${orgId}, deptId=${deptId}, teamId=${teamId}, projectId=${taskToEdit.projectId()})}">
                         <button class="btn btn-secondary fw-bold in-line">Annullér</button>
                     </a>
                 </div>
@@ -107,7 +106,6 @@
 
                         <label>Status:
                             <select th:field="*{status}" required>
-                                <option value="">Ændre status</option>
                                 <option th:each="status : ${statusList}" th:value="${status}" th:text="${status}"></option>
                             </select>
                         </label>
@@ -123,7 +121,7 @@
                         <button class="btn btn-success fw-bold in-line" type="submit">Bekræft</button>
                     </form>
 
-                    <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/task/{taskId} (orgId=${orgId}, deptId=${deptId}, teamId=${teamId}, projectId=${taskToEdit.projectId}, taskId=${taskToEdit.taskId})}">
+                    <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/task/{taskId} (orgId=${orgId}, deptId=${deptId}, teamId=${teamId}, projectId=${taskToEdit.projectId}, taskId=${taskToEdit.parentId()})}">
                         <button class="btn btn-secondary fw-bold in-line">Annullér</button>
                     </a>
                 </div>
