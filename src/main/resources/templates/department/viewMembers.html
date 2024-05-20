@@ -28,11 +28,11 @@
                                         and only "kick" if they are already members
                                     -->
 
-                                    <span th:if="${user.departmentId() != null}">
+                                    <span th:if="${user.departmentId == 0}">
                                         <button class="btn btn-success btn-sm fw-bold" type="submit">Invite</button>
                                     </span>
-                                    <button class="btn btn-success btn-sm fw-bold" type="submit">Rettigheder</button>
-                                    <span th:unless="${user.departmentId() == null}">
+                                    <span th:if="${user.departmentId == department.id}">
+                                        <button class="btn btn-success btn-sm fw-bold" type="submit">Rettigheder</button>
                                         <button class="btn btn-danger btn-sm fw-bold" type="submit">Kick</button>
                                     </span>
                                 </div>
@@ -44,9 +44,8 @@
 
                     <div class="d-flex">
                         <div class="d-inline">
-                            <a th:href="@{/organisation/{orgId}/department/{deptId}
-                            (orgId = ${department.parentId}, deptId = ${department.id})}"
-                               class="btn btn-warning fw-bold">Gå tilbage</a>
+                            <a th:href="@{/organisation/{orgId}/department/{deptId} (orgId = ${department.parentId},
+                            deptId = ${department.id})}" class="btn btn-warning fw-bold">Gå tilbage</a>
                         </div>
                     </div>
                 </div>
