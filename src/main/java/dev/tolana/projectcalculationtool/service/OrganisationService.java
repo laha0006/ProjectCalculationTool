@@ -2,6 +2,7 @@ package dev.tolana.projectcalculationtool.service;
 
 import dev.tolana.projectcalculationtool.dto.EntityCreationDto;
 import dev.tolana.projectcalculationtool.dto.EntityViewDto;
+import dev.tolana.projectcalculationtool.dto.UserEntityRoleDto;
 import dev.tolana.projectcalculationtool.dto.UserInformationDto;
 import dev.tolana.projectcalculationtool.mapper.EntityDtoMapper;
 import dev.tolana.projectcalculationtool.model.Entity;
@@ -57,7 +58,7 @@ public class OrganisationService {
     }
 
     //add authorisation check
-    public List<UserInformationDto> getUsersFromOrganisationId(long organisationId){
+    public List<UserEntityRoleDto> getUsersFromOrganisationId(long organisationId){
         return organisationRepository.getUsersFromOrganisationId(organisationId);
     }
 
