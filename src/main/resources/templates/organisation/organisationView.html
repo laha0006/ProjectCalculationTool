@@ -35,8 +35,8 @@
 
 
                     <div class="d-flex">
-                        <!--TODO MAKE SURE THIS IS HOW YOU CHECK ENUM VALUES-->
-                        <!--<div th:if="${userRole == 'ORGANISATION_OWNER' || userRole == 'ORGANISATION_ADMIN'}">-->
+                        <!--                        TODO MAKE SURE THIS IS HOW YOU CHECK ENUM VALUES-->
+                        <!--                        <div th:if="${userRole == 'ORGANISATION_OWNER' || userRole == 'ORGANISATION_ADMIN'}">-->
                         <div class="d-inline">
                             <a th:href="@{/organisation/{id}/department/create (id = ${organisation.id}) }"
                                class="btn btn-success fw-bold">Opret Afdeling</a>
@@ -48,8 +48,8 @@
                         </div>
 
                         <div class="d-inline">
-                            <a th:href="@{/organisation/{id}/members (id = ${organisation.id}) }"
-                               class="btn btn-success fw-bold">Brugere</a>
+                            <a th:href="@{/organisation/{id}/edit (id = ${organisation.id}) }"
+                               class="btn btn-warning fw-bold">Ændr organisation</a>
                         </div>
 
                         <div class="d-inline">
