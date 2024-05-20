@@ -124,7 +124,7 @@ public class TaskController {
         return "task/editTask";
     }
 
-    @PostMapping("/edit")
+    @PostMapping("{taskId}/edit")
     public String editTask(Model model,
                            @PathVariable long orgId,
                            @PathVariable long deptId,
@@ -132,16 +132,16 @@ public class TaskController {
                            @PathVariable long projectId,
                            @ModelAttribute TaskDto taskToEdit) {
 
-        long taskId = taskToEdit.taskId();
+        long parentTaskId = taskToEdit.parentId();
 
         model.addAttribute("orgId", orgId);
         model.addAttribute("deptId", deptId);
         model.addAttribute("teamId", teamId);
         model.addAttribute("projectId", projectId);
 
-        taskService.editTask(taskId);
+        taskService.editTask(taskToEdit);
 
-        return determineRedirection(orgId, deptId, teamId, projectId, taskId);
+        return determineRedirection(orgId, deptId, teamId, projectId, parentTaskId);
     }
 
     private String determineRedirection(long orgId, long deptId, long teamId, long projectId, long parentTaskId) {
