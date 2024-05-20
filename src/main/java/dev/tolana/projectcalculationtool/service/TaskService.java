@@ -47,4 +47,9 @@ public class TaskService {
     public List<Status> getStatusList() {
         return taskRepository.getStatusList();
     }
+
+    public void editTask(TaskDto task) {
+        Entity taskToEdit = entityDtoMapper.toEntity(task);
+        taskRepository.editEntity(taskToEdit);
+    }
 }
