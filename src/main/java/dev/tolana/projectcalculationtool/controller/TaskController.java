@@ -103,7 +103,7 @@ public class TaskController {
     }
 
     @GetMapping("{taskId}/edit")
-    public String editTask(@PathVariable long orgId,
+    public String displayEditTaskPage(@PathVariable long orgId,
                            @PathVariable long deptId,
                            @PathVariable long teamId,
                            @PathVariable long projectId,
@@ -122,6 +122,26 @@ public class TaskController {
         model.addAttribute("projectId", projectId);
 
         return "task/editTask";
+    }
+
+    @PostMapping("/edit")
+    public String editTask(Model model,
+                           @PathVariable long orgId,
+                           @PathVariable long deptId,
+                           @PathVariable long teamId,
+                           @PathVariable long projectId,
+                           @ModelAttribute TaskDto taskToEdit) {
+
+        long taskId = taskToEdit.taskId();
+
+        model.addAttribute("orgId", orgId);
+        model.addAttribute("deptId", deptId);
+        model.addAttribute("teamId", teamId);
+        model.addAttribute("projectId", projectId);
+
+        taskService.editTask(taskId);
+
+        return determineRedirection(orgId, deptId, teamId, projectId, taskId);
     }
 
     private String determineRedirection(long orgId, long deptId, long teamId, long projectId, long parentTaskId) {
