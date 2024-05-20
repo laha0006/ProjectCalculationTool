@@ -17,7 +17,7 @@
                 <div th:if="${taskToEdit.parentId == 0}">
                     <h1 th:text="'Ændre: ' + ${taskToEdit.taskName}"></h1>
 
-                    <form th:action="@{{taskId}/edit (taskId=${taskToEdit.taskId})}" method="post" th:object="${taskToEdit}">
+                    <form th:action="@{edit}" method="post" th:object="${taskToEdit}">
                         <p>
                             <label>Navn:
                                 <input type="text" th:field="*{taskName}">
@@ -75,7 +75,7 @@
                 <div th:unless="${taskToEdit.parentId == 0}">
                     <h1 th:text="'Ændre: ' + ${taskToEdit.taskName()}"></h1>
 
-                    <form th:action="@{{taskId}/edit (taskId=${taskToEdit.taskId})}"
+                    <form th:action="@{edit}"
                           method="post" th:object="${taskToEdit}">
                         <p>
                             <label>Navn:
