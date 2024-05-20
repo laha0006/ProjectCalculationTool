@@ -13,6 +13,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -83,9 +85,67 @@ class TaskControllerTest {
     @Test
     @WithMockUser
     void deleteTask() throws Exception {
+        TaskDto taskToDelete = new TaskDto("name", "description", 1, LocalDateTime.now(), 1, Status.TODO, 0, 1);
+        when(taskService.getTask(1))
+                .thenReturn(taskToDelete);
         mockMvc.perform(post("/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/task/{taskId}/delete", 1, 1, 1, 1, 1)
                 .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/organisation/1/department/1/team/1/project/1"));
+    }
+
+    @Test
+    @WithMockUser
+    void deleteSubTask() throws Exception {
+        TaskDto subTaskToDelete = new TaskDto("name", "description", 1, LocalDateTime.now(), 1, Status.TODO, 1, 1);
+        when(taskService.getTask(1))
+                .thenReturn(subTaskToDelete);
+        mockMvc.perform(post("/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/task/{taskId}/delete", 1, 1, 1, 1, 1)
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/organisation/1/department/1/team/1/project/1/task/1"));
+    }
+
+    @Test
+    @WithMockUser
+    void displayEditTaskPage() throws Exception {
+        TaskDto taskToEdit = new TaskDto("name", "description", 1, LocalDateTime.now(), 1, Status.TODO, 0, 1);
+        when(taskService.getTask(1))
+                .thenReturn(taskToEdit);
+
+        List<Status> statusList = new ArrayList<>();
+        statusList.add(Status.DONE);
+        when(taskService.getStatusList())
+                .thenReturn(statusList);
+
+        mockMvc.perform(get("/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/task/{taskId}/edit", 1, 1, 1, 1, 1))
+                .andExpect(status().isOk())
+                .andExpect(view().name("task/editTask"));
+    }
+
+    @Test
+    @WithMockUser
+    void editTask() throws Exception {
+        TaskDto taskToEdit = new TaskDto("name", "description", 1, LocalDateTime.now(), 1, Status.TODO, 0, 1);
+        when(taskService.getTask(1))
+                .thenReturn(taskToEdit);
+
+        mockMvc.perform(post("/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/task/{taskId}/delete", 1, 1, 1, 1, 1)
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/organisation/1/department/1/team/1/project/1"));
+    }
+
+    @Test
+    @WithMockUser
+    void editSubTask() throws Exception {
+        TaskDto taskToEdit = new TaskDto("name", "description", 1, LocalDateTime.now(), 1, Status.TODO, 1, 1);
+        when(taskService.getTask(1))
+                .thenReturn(taskToEdit);
+
+        mockMvc.perform(post("/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/task/{taskId}/delete", 1, 1, 1, 1, 1)
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/organisation/1/department/1/team/1/project/1/task/1"));
     }
 }
