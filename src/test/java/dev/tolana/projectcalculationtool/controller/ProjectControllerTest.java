@@ -51,7 +51,7 @@ class ProjectControllerTest {
 
     @Test
     @WithMockUser
-    void showPageForAddingProject() throws Exception {
+    void showPageForCreatingProject() throws Exception {
         mockMvc.perform(get("/organisation/{orgId}/department/{deptId}/team/{teamId}/project/create", 1, 1, 1, 1))
                 .andExpect(status().isOk())
                 .andExpect(view().name("project/createProject"));
@@ -61,7 +61,28 @@ class ProjectControllerTest {
     @WithMockUser
     void createProject() throws Exception {
         mockMvc.perform(post("/organisation/{orgId}/department/{deptId}/team/{teamId}/project/create", 1,1,1)
-                .with(csrf()))
+                .with(csrf())
+                        .param("projectName", "name")
+                        .param("description", "description")
+                        .param("parentId", "1")
+                        .param("teamId", "1")
+                        .param("deadline", "2024-05-01T10:32")
+                        .param("allottedHours", "1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/organisation/1/department/1/team/1/project/1"));
+    }
+
+    @Test
+    @WithMockUser
+    void createSubProject() throws Exception {
+        mockMvc.perform(post("/organisation/{orgId}/department/{deptId}/team/{teamId}/project/create", 1,1,1)
+                        .with(csrf())
+                        .param("projectName", "name")
+                        .param("description", "description")
+                        .param("parentId", "0")
+                        .param("teamId", "1")
+                        .param("deadline", "2024-05-01T10:32")
+                        .param("allottedHours", "1"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/organisation/1/department/1/team/1"));
     }
@@ -90,6 +111,21 @@ class ProjectControllerTest {
     @Test
     @WithMockUser
     void deleteProject() throws Exception {
+        ResourceEntityViewDto projectToDelete = new ResourceEntityViewDto("name", "description", 1, 0, 1, 1, LocalDateTime.now(), 1, 1, 1, Status.IN_PROGRESS);
+        when(projectService.getProject(1))
+                .thenReturn(projectToDelete);
+        mockMvc.perform(post("/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/delete",1,1,1,1)
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/organisation/1/department/1/team/1"));
+    }
+
+    @Test
+    @WithMockUser
+    void deleteSubProject() throws Exception {
+        ResourceEntityViewDto projectToDelete = new ResourceEntityViewDto("name", "description", 1, 1, 1, 1, LocalDateTime.now(), 1, 1, 1, Status.IN_PROGRESS);
+        when(projectService.getProject(1))
+                .thenReturn(projectToDelete);
         mockMvc.perform(post("/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/delete",1,1,1,1)
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())

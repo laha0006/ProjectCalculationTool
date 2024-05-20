@@ -20,7 +20,7 @@ public class TaskService {
     }
 
     public void createTask(String username, TaskDto newTask) {
-        Entity task =  entityDtoMapper.convertToEntity(newTask);
+        Entity task =  entityDtoMapper.toEntity(newTask);
         taskRepository.createEntity(username, task);
     }
 

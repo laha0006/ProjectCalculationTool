@@ -34,26 +34,28 @@ public class JdbcProjectRepository implements ProjectRepository {
         boolean isCreated = false;
 
         try (Connection connection = dataSource.getConnection()) {
-            String insertNewProject = "INSERT INTO project (name, description, team_id," +
-                                      "status, deadline) " +
-                                      "VALUES (?,?,?,?,?);";
+            try {
+                connection.setAutoCommit(false);
+                String insertNewProject = determineCreationQueryType(((Project) project).getParentId());
+                PreparedStatement pstmt = connection.prepareStatement(insertNewProject,
+                        Statement.RETURN_GENERATED_KEYS);
 
-            PreparedStatement pstmt = connection.prepareStatement(insertNewProject,
-                    Statement.RETURN_GENERATED_KEYS);
+                ResultSet generatedKey = setValues(pstmt, project);
 
-            pstmt.setString(1, project.getName());
-            pstmt.setString(2, project.getDescription());
-            pstmt.setLong(3, ((Project) project).getTeamId());
-            pstmt.setLong(4, ((Project) project).getStatusId());
-            pstmt.setDate(5, Date.valueOf(((Project) project).getDeadline().toLocalDate()));
-            pstmt.executeUpdate();
+                long projectId;
+                if (generatedKey.next()) {
+                    projectId = generatedKey.getLong(1);
+                    RoleAssignUtil.assignProjectRole(connection, projectId, UserRole.PROJECT_OWNER, username);
+                    isCreated = true;
+                }
 
-            ResultSet generatedKeys = pstmt.getGeneratedKeys();
-            long projectId;
-            if (generatedKeys.next()) {
-                projectId = generatedKeys.getLong(1);
-                RoleAssignUtil.assignProjectRole(connection, projectId, UserRole.PROJECT_OWNER, username);
-                isCreated = true;
+                connection.commit();
+                connection.setAutoCommit(true);
+
+            } catch (SQLException sqlException) {
+                connection.rollback();
+                connection.setAutoCommit(true);
+                throw new RuntimeException(sqlException);
             }
 
         } catch (SQLException e) {
@@ -61,6 +63,40 @@ public class JdbcProjectRepository implements ProjectRepository {
         }
 
         return isCreated;
+    }
+
+    private String determineCreationQueryType(long idSpecifier) {
+
+        if (idSpecifier == 0) {
+            //query for project
+            return "INSERT INTO project (name, description, team_id, deadline, allotted_hours) VALUES (?,?,?,?,?);";
+        } else {
+            //query for subproject creation
+            return "INSERT INTO project (name, description, parent_id, team_id, deadline, allotted_hours) VALUES (?,?,?,?,?,?);";
+        }
+    }
+
+    private ResultSet setValues(PreparedStatement pstmt, Entity project) throws SQLException {
+
+        if (((Project) project).getParentId() == 0) {
+            pstmt.setString(1, project.getName());
+            pstmt.setString(2, project.getDescription());
+            pstmt.setLong(3, ((Project) project).getTeamId());
+            pstmt.setDate(4, Date.valueOf(((Project) project).getDeadline().toLocalDate()));
+            pstmt.setInt(5, ((Project) project).getAllottedHours());
+            pstmt.executeUpdate();
+            return pstmt.getGeneratedKeys();
+
+        } else {
+            pstmt.setString(1, project.getName());
+            pstmt.setString(2, project.getDescription());
+            pstmt.setLong(3, ((Project) project).getParentId());
+            pstmt.setLong(4, ((Project) project).getTeamId());
+            pstmt.setDate(5, Date.valueOf(((Project) project).getDeadline().toLocalDate()));
+            pstmt.setInt(6, ((Project) project).getAllottedHours());
+            pstmt.executeUpdate();
+            return pstmt.getGeneratedKeys();
+        }
     }
 
     @Override
@@ -191,7 +227,6 @@ public class JdbcProjectRepository implements ProjectRepository {
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                System.out.println("TASK ID " + rs.getLong(1));
                 Task task = new Task(
                         rs.getLong(1),
                         rs.getString(2),
@@ -213,6 +248,7 @@ public class JdbcProjectRepository implements ProjectRepository {
 
         return taskList;
     }
+
     @Override
     public List<Project> getSubProjects(long projectId) {
         List<Project> subProjects = new ArrayList<>();

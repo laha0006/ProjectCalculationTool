@@ -30,8 +30,11 @@ public class ProjectController {
         ResourceEntityViewDto project = projectService.getProject(projectId);
         model.addAttribute("project", project);
 
-        List<ResourceEntityViewDto> tasks = projectService.getChildren(projectId);
+        List<ResourceEntityViewDto> tasks = projectService.getTasks(projectId);
         model.addAttribute("allTasks", tasks);
+
+        List<ResourceEntityViewDto> allSubProjects = projectService.getSubProjects(projectId);
+        model.addAttribute("allSubProjects", allSubProjects);
 
         ProjectStatsDto stats = projectService.getProjectStats(projectId);
         model.addAttribute("projectStats", stats);
@@ -44,14 +47,27 @@ public class ProjectController {
     }
 
     @GetMapping("/create")
-    public String showPageForAddingProject(Model model,
+    public String showPageForCreatingProject(Model model,
                                            @PathVariable long orgId,
                                            @PathVariable long deptId,
                                            @PathVariable long teamId) {
-        model.addAttribute("newProject",new ProjectCreationDto("", "", teamId, LocalDateTime.now()));
+        model.addAttribute("newProject", new ProjectCreationDto("", "", 0, teamId, LocalDateTime.now(), 0));
         model.addAttribute("orgId", orgId);
         model.addAttribute("deptId", deptId);
         //TODO add something that makes it possible to display Team/Department/Organization/whatever
+
+        return "project/createProject";
+    }
+
+    @GetMapping("/{projectId}/create/subproject")
+    public String showSubProjectCreationPage(Model model,
+                                             @PathVariable long orgId,
+                                             @PathVariable long deptId,
+                                             @PathVariable long teamId,
+                                             @PathVariable long projectId) {
+        model.addAttribute("newProject", new ProjectCreationDto("", "", projectId, teamId, LocalDateTime.now(), 0));
+        model.addAttribute("orgId", orgId);
+        model.addAttribute("deptId", deptId);
 
         return "project/createProject";
     }
@@ -65,8 +81,9 @@ public class ProjectController {
 
         String username = authentication.getName();
         projectService.createProject(username, newProject);
+        long projectParentId = newProject.parentId();
 
-        return "redirect:/" + "organisation/" + orgId + "/department/" + deptId + "/team/" + teamId;
+        return determineRedirection(orgId, deptId, teamId, projectParentId);
     }
 
     @GetMapping("/{projectId}/assign/members")
@@ -107,7 +124,19 @@ public class ProjectController {
                                 @PathVariable long teamId,
                                 @PathVariable long projectId) {
 
+        ResourceEntityViewDto projectToDelete = projectService.getProject(projectId);
+        long projectParentId = projectToDelete.parentId();
         projectService.deleteProject(projectId);
-        return "redirect:/organisation/" + orgId + "/department/" + deptId + "/team/" + teamId + "/project/" + projectId;
+
+        return determineRedirection(orgId, deptId, teamId, projectParentId);
+    }
+
+    private String determineRedirection(long orgId, long deptId, long teamId, long projectParentId) {
+        if (projectParentId == 0){
+            return "redirect:/" + "organisation/" + orgId + "/department/" + deptId + "/team/" + teamId;
+
+        } else {
+            return  "redirect:/" + "organisation/" + orgId + "/department/" + deptId + "/team/" + teamId + "/project/" + projectParentId;
+        }
     }
 }
