@@ -13,7 +13,14 @@
             <header th:replace="~{fragments/header :: header}"></header>
             <main class="d-flex justify-content-center text-center bg-secondary-subtle py-3 px-5 rounded shadow">
                 <div>
-                    <h1 th:text="'Projekt: ' + ${project.resourceEntityName}"></h1>
+                    <div th:if="${project.parentId() == 0}">
+                        <h1 th:text="'Projekt: ' + ${project.resourceEntityName}"></h1>
+                    </div>
+
+                    <div th:if="${project.parentId() != 0}">
+                        <h1 th:text="'Sub-projekt: ' + ${project.resourceEntityName}"></h1>
+                    </div>
+
                     <div th:if="${allTasks.isEmpty() && allSubProjects.isEmpty()}">
                         <h3>
                             Projektet er tomt, der er ingen opgaver eller sub-projekter.
@@ -36,7 +43,7 @@
                             <tr th:each="subProjekt : ${allSubProjects}">
                                 <td>
                                     <a th:text="${subProjekt.resourceEntityName}"
-                                       th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId} (orgId=${orgId}, deptId=${deptId}, teamId=${teamId}, projectId=${project.id}) }">
+                                       th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId} (orgId=${orgId}, deptId=${deptId}, teamId=${teamId}, projectId=${subProjekt.id}) }">
                                     </a>
                                 </td>
                                 <td th:text="${subProjekt.description}"></td>
@@ -62,7 +69,7 @@
                         <table>
                             <thead>
                             <tr>
-                                <th>Navn</th>
+                                <th>Opgave</th>
                                 <th>Beskrivelse</th>
                                 <th>Deadline</th>
                                 <th>Estimerede timer</th>
@@ -93,7 +100,7 @@
 
 
 <!--                        IF THERE ARE NO TASKS OR SUBPROJECTS IN PROJECT HEAD SHOW OPTION FOR CREATING EITHER SUBPROJECT OR TASK.-->
-                        <div th:if="${allTasks.isEmpty() && allSubProjects.isEmpty()}">
+                        <div th:if="${allTasks.isEmpty() && allSubProjects.isEmpty() && project.parentId() == 0}">
 
                             <div class="d-inline">
                                 <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/create/subproject (orgId = ${orgId}, deptId = ${deptId}, teamId = ${project.teamId}, projectId=${project.id} )}">
@@ -109,7 +116,7 @@
                         </div>
 
 <!--                        IF THERE ARE SUBPROJECTS IN PROJECT ONLY DISPLAY OPTION FOR CREATION OTHER SUBPROJECTS-->
-                        <div th:if="${allTasks.isEmpty() && !allSubProjects.isEmpty()}">
+                        <div th:if="${allTasks.isEmpty() && !allSubProjects.isEmpty() }">
                             <div class="d-inline">
                                 <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/create/subproject (orgId = ${orgId}, deptId = ${deptId}, teamId = ${project.teamId}, projectId=${project.id} )}">
                                     <button class="btn btn-success fw-bold">Opret sub-projekt</button>
@@ -118,7 +125,7 @@
                         </div>
 
 <!--                        IF THERE ARE TASKS IN PROJECT ONLY DISPLAY OPTION FOR CREATION OTHER TASKS AND NOT SUBPROJECTS-->
-                        <div th:if="${!allTasks.isEmpty() && allSubProjects.isEmpty()}">
+                        <div th:if="${!allTasks.isEmpty() && allSubProjects.isEmpty() || project.parentId() != 0}">
                             <div class="d-inline">
                                 <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/task/create (orgId = ${orgId}, deptId = ${deptId}, teamId = ${project.teamId}, projectId=${project.id} )}">
                                     <button class="btn btn-success fw-bold">Opret opgave</button>
@@ -148,8 +155,16 @@
                     </div>
                     <!--   END OF STATS SECTION -->
 
-                    <div class="d-inline">
+<!--                    BACK BUTTON FOR MAIN PROJECT-->
+                    <div th:if="${project.parentId() == 0}" class="d-inline">
                         <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId} (orgId=${orgId}, deptId=${deptId}, teamId=${project.teamId})}">
+                            <button class="btn btn-secondary fw-bold">Tilbage</button>
+                        </a>
+                    </div>
+
+<!--                    BACK BUTTON FOR SUBPROJECT THAT DIRECT TO MAIN PROJECT-->
+                    <div th:if="${project.parentId() != 0}" class="d-inline">
+                        <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectParentId} (orgId=${orgId}, deptId=${deptId}, teamId=${project.teamId}, projectParentId=${project.parentId})}">
                             <button class="btn btn-secondary fw-bold">Tilbage</button>
                         </a>
                     </div>
