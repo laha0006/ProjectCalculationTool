@@ -1,6 +1,7 @@
 package dev.tolana.projectcalculationtool.service;
 
 import dev.tolana.projectcalculationtool.dto.EntityCreationDto;
+import dev.tolana.projectcalculationtool.dto.EntityEditDto;
 import dev.tolana.projectcalculationtool.dto.EntityViewDto;
 import dev.tolana.projectcalculationtool.dto.UserEntityRoleDto;
 import dev.tolana.projectcalculationtool.mapper.EntityDtoMapper;
@@ -52,6 +53,20 @@ public class DepartmentService {
     public void deleteDepartment(long deptId) {
         jdbcDepartmentRepository.deleteEntity(deptId);
     }
+    @PreAuthorize("@auth.hasDepartmentAccess(#departmentId, " +
+                  "T(dev.tolana.projectcalculationtool.enums.Permission).DEPARTMENT_EDIT)")
+    public EntityEditDto getDepartmentToEdit(long departmentId) {
+        Entity department = jdbcDepartmentRepository.getEntityOnId(departmentId);
+        return entityDtoMapper.toEntityEditDto(department);
+    }
+
+    @PreAuthorize("@auth.hasDepartmentAccess(#editInfo.id(), " +
+                  "T(dev.tolana.projectcalculationtool.enums.Permission).DEPARTMENT_EDIT)")
+    public void editDepartment(EntityEditDto editInfo) {
+        Entity editedDepartment = entityDtoMapper.toEntity(editInfo);
+        jdbcDepartmentRepository.editEntity(editedDepartment);
+    }
+
 
     //TODO add authorisation check
     public EntityViewDto getParent(long parentId) {

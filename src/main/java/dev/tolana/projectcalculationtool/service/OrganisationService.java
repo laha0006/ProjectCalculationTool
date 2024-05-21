@@ -65,7 +65,8 @@ public class OrganisationService {
         Entity organisation = organisationRepository.getEntityOnId(organisationId);
         return entityDtoMapper.toEntityEditDto(organisation);
     }
-
+    @PreAuthorize("@auth.hasOrgansiationAccess(#editInfo.id(), " +
+                  "T(dev.tolana.projectcalculationtool.enums.Permission).ORGANISATION_EDIT)")
     public void editOrganisation(EntityEditDto editInfo) {
         Entity editedOrganisation = entityDtoMapper.toEntity(editInfo);
         organisationRepository.editEntity(editedOrganisation);

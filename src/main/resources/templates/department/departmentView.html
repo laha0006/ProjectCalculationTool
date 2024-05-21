@@ -4,7 +4,7 @@
       data-bs-theme="dark">
 <head>
     <th:block th:insert="~{fragments/head :: headFiles}"></th:block>
-    <title>Title</title>
+    <title th:text="${department.name}"></title>
 </head>
 <body>
 <div class="container">
@@ -52,13 +52,19 @@
                         </div>
 
                         <div class="d-inline">
+                            <a th:href="@{/organisation/{orgId}/department/{deptId}/edit (orgId = ${department.parentId}, deptId = ${department.id})}"
+                               class="btn btn-primary fw-bold">Ændr afdeling</a>
+                        </div>
+
+                        <div class="d-inline">
                             <form th:action="@{{id}/delete (id = ${department.id})}" method="post">
                                 <button class="btn btn-danger fw-bold">Slet afdeling</button>
                             </form>
                         </div>
 
                         <div class="d-inline">
-                            <a th:href="@{/organisation/{orgId} (orgId = ${department.parentId})}" class="btn btn-warning fw-bold">Gå tilbage</a>
+                            <a th:href="@{/organisation/{orgId} (orgId = ${department.parentId})}"
+                               class="btn btn-warning fw-bold">Gå tilbage</a>
                         </div>
                     </div>
                 </div>
