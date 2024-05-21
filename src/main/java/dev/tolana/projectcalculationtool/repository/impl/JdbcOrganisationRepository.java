@@ -204,10 +204,10 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
             } catch (SQLException sqlException) {
                 connection.rollback();
                 connection.setAutoCommit(true);
-                throw new RuntimeException(sqlException);
+                throw new OrganisationException("Noget gik galt! Kunne ikke opdatere organisation.");
             }
         } catch (SQLException sqlException) {
-            throw new RuntimeException(sqlException);
+            throw new OrganisationException("Noget gik galt! Kunne ikke opdatere organisation.");
         }
         return isEdited;
     }
@@ -234,10 +234,10 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
             } catch (SQLException sqlException) {
                 connection.rollback();
                 connection.setAutoCommit(true);
-                throw new RuntimeException(sqlException);
+                throw new OrganisationException("Kunne ikke slette organisation!");
             }
         } catch (SQLException sqlException) {
-            throw new RuntimeException(sqlException);
+            throw new OrganisationException("Kunne ikke slette organisation!");
         }
         return isDeleted;
     }
@@ -296,7 +296,7 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
 
 
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            throw new OrganisationException("Kunne ikke hente organisations medlemmer.");
         }
 
         return users;
