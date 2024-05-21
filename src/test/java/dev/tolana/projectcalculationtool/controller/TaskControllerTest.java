@@ -1,7 +1,5 @@
 package dev.tolana.projectcalculationtool.controller;
 
-import dev.tolana.projectcalculationtool.dto.TaskCreationDto;
-import dev.tolana.projectcalculationtool.dto.TaskDto;
 import dev.tolana.projectcalculationtool.dto.TaskEditDto;
 import dev.tolana.projectcalculationtool.dto.TaskViewDto;
 import dev.tolana.projectcalculationtool.enums.Status;
