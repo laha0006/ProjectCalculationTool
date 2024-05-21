@@ -13,10 +13,8 @@ public class EntityExceptionHandlerImpl implements EntityExceptionHandler {
     public String handleException(EntityException ex, HttpServletRequest request, RedirectAttributes redirectAttributes) {
         String referer = request.getHeader("referer");
         switch(ex.getAlert()) {
-            case WARNING:
-                redirectAttributes.addFlashAttribute("alertWarning", ex.getMessage());
-            case DANGER:
-                redirectAttributes.addFlashAttribute("alertDanger", ex.getMessage());
+            case WARNING -> redirectAttributes.addFlashAttribute("alertWarning", ex.getMessage());
+            case DANGER -> redirectAttributes.addFlashAttribute("alertDanger", ex.getMessage());
         }
         if(referer == null) {
             return "redirect:/dashboard";
