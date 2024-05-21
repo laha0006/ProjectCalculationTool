@@ -6,10 +6,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @ControllerAdvice
-public class OrganisationExceptionHandler implements EntityExceptionHandler {
+public class EntityExceptionHandlerImpl implements EntityExceptionHandler {
 
     @Override
-    @ExceptionHandler(OrganisationException.class)
+    @ExceptionHandler(EntityException.class)
     public String handleException(EntityException ex, HttpServletRequest request, RedirectAttributes redirectAttributes) {
         String referer = request.getHeader("referer");
         switch(ex.getAlert()) {
@@ -17,6 +17,9 @@ public class OrganisationExceptionHandler implements EntityExceptionHandler {
                 redirectAttributes.addFlashAttribute("alertWarning", ex.getMessage());
             case DANGER:
                 redirectAttributes.addFlashAttribute("alertDanger", ex.getMessage());
+        }
+        if(referer == null) {
+            return "redirect:/dashboard";
         }
         return "redirect:" + referer;
     }
