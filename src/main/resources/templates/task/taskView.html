@@ -25,10 +25,11 @@
                         <table >
                             <thead>
                             <tr>
-                                <th>Navn</th>
+                                <th>Under opgave</th>
                                 <th>Beskrivelse</th>
                                 <th>Deadline</th>
                                 <th>Estimerede timer</th>
+                                <th>Brugte timer</th>
                                 <th>Status</th>
                             </tr>
                             </thead>
@@ -36,20 +37,21 @@
                             <tbody>
                             <tr th:each="task : ${allTasks}">
                                 <td th:text="${task.taskName}"></td>
-                                <td th:text="${task.taskDescription()}"></td>
+                                <td th:text="${task.description}"></td>
                                 <td th:text="${task.deadline}"></td>
                                 <td th:text="${task.estimatedHours}"></td>
+                                <td th:text="${task.actualHours}"></td>
                                 <td th:text="${task.status}"></td>
                                 <td>
                                     <div class="d-flex">
                                         <div class="d-inline">
-                                            <a th:href="@{{taskId}/edit (taskId=${task.taskId})}">
-                                                <button class="btn btn-warning fw-bold">Ændre</button>
+                                            <a th:href="@{{taskId}/edit (taskId=${task.id})}">
+                                                <button class="btn btn-primary fw-bold">Ændre</button>
                                             </a>
                                         </div>
 
                                         <div class="d-inline">
-                                            <form th:action="@{{taskId}/delete (taskId=${task.taskId()})}" method="post">
+                                            <form th:action="@{{taskId}/delete (taskId=${task.id()})}" method="post">
                                                 <button class="btn btn-danger fw-bold">Slet</button>
                                             </form>
                                         </div>
@@ -62,13 +64,13 @@
 
                     <div class="d-flex">
                         <div class="d-inline">
-                            <a th:href="@{{taskId}/create/subtask (taskId=${parentTask.taskId})}">
+                            <a th:href="@{{taskId}/create/subtask (taskId=${parentTask.id})}">
                                 <button class="btn btn-success fw-bold">Tilføj underopgave</button>
                             </a>
                         </div>
 
                         <div class="d-inline">
-                            <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId} (orgId=${orgId}, deptId=${deptId}, teamId=${teamId}, projectId=${parentTask.projectId})}">
+                            <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId} (orgId=${orgId}, deptId=${deptId}, teamId=${teamId}, projectId=${projectId})}">
                                 <button class="btn btn-secondary fw-bold">Tilbage</button>
                             </a>
                         </div>
