@@ -342,4 +342,51 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
         }
         return cleanedUsers;
     }
+
+    public UserEntityRoleDto getUserFromOrganisationId(String username, long organisationId) {
+        UserEntityRoleDto user = null;
+
+        try (Connection connection = dataSource.getConnection()) {
+            String getAllUsersFromOrganisation = """
+                    SELECT username, role_id, task_id, project_id, team_id, department_id, organisation_id
+                    FROM user_entity_role
+                    WHERE username = ? AND organisation_id = ?
+                    """;
+
+            PreparedStatement pstmt = connection.prepareStatement(getAllUsersFromOrganisation);
+            pstmt.setString(1, username);
+            pstmt.setLong(2, organisationId);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+
+                String name = rs.getString(1);
+                long roleId = rs.getLong(2);
+                long taskId = rs.getLong(3);
+                long projectId = rs.getLong(4);
+                long teamId = rs.getLong(5);
+                long deptId = rs.getLong(6);
+                long orgId = rs.getLong(7);
+
+                user = new UserEntityRoleDto(name, roleId, taskId, projectId,
+                        teamId, deptId, orgId);
+            }
+
+
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
+
+        return user;
+    }
+
+    public void assignMemberToDepartment(long deptId, String username){
+        try (Connection connection = dataSource.getConnection()) {
+           RoleAssignUtil.assignDepartmentRole(connection,deptId,
+                   UserRole.DEPARTMENT_MEMBER,username);
+        } catch (SQLException sqlException) {
+
+        }
+    }
 }

@@ -1,11 +1,9 @@
 package dev.tolana.projectcalculationtool.controller;
 
-import dev.tolana.projectcalculationtool.dto.EntityCreationDto;
-import dev.tolana.projectcalculationtool.dto.EntityEditDto;
-import dev.tolana.projectcalculationtool.dto.EntityViewDto;
-import dev.tolana.projectcalculationtool.dto.UserEntityRoleDto;
+import dev.tolana.projectcalculationtool.dto.*;
 import dev.tolana.projectcalculationtool.enums.EntityType;
 import dev.tolana.projectcalculationtool.service.DepartmentService;
+import dev.tolana.projectcalculationtool.util.RoleAssignUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -85,5 +83,19 @@ public class DepartmentController {
 
         departmentService.editDepartment(editDto);
         return "redirect:../{deptId}";
+    }
+
+    @PostMapping("/{deptId}/members/assign/{username}")
+    public String assignMemberToDepartment(@PathVariable("deptId") long departmentId,
+                                           @PathVariable("username") String username){
+
+        EntityViewDto department = departmentService.getDepartment(departmentId);
+        UserEntityRoleDto user = departmentService.getUserFromOrganisationId(username,
+                department.parentId());
+
+        departmentService.assignMemberToDepartment(departmentId,user.username());
+
+
+        return "department/viewMembers";
     }
 }

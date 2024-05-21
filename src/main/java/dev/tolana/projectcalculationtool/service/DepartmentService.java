@@ -1,9 +1,6 @@
 package dev.tolana.projectcalculationtool.service;
 
-import dev.tolana.projectcalculationtool.dto.EntityCreationDto;
-import dev.tolana.projectcalculationtool.dto.EntityEditDto;
-import dev.tolana.projectcalculationtool.dto.EntityViewDto;
-import dev.tolana.projectcalculationtool.dto.UserEntityRoleDto;
+import dev.tolana.projectcalculationtool.dto.*;
 import dev.tolana.projectcalculationtool.mapper.EntityDtoMapper;
 import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.repository.DepartmentRepository;
@@ -76,5 +73,13 @@ public class DepartmentService {
 
     public List<UserEntityRoleDto> getUsersFromOrganisationId(long organisationId,long departmentId){
         return jdbcDepartmentRepository.getUsersFromOrganisationId(organisationId,departmentId);
+    }
+
+    public UserEntityRoleDto getUserFromOrganisationId(String username, long orgId){
+        return jdbcDepartmentRepository.getUserFromOrganisationId(username,orgId);
+    }
+
+    public void assignMemberToDepartment(long deptId, String username){
+        jdbcDepartmentRepository.assignMemberToDepartment(deptId,username);
     }
 }
