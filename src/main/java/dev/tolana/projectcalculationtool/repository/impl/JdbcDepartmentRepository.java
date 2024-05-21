@@ -2,7 +2,9 @@ package dev.tolana.projectcalculationtool.repository.impl;
 
 import dev.tolana.projectcalculationtool.dto.UserEntityRoleDto;
 import dev.tolana.projectcalculationtool.dto.UserInformationDto;
+import dev.tolana.projectcalculationtool.enums.Alert;
 import dev.tolana.projectcalculationtool.enums.UserRole;
+import dev.tolana.projectcalculationtool.exception.EntityException;
 import dev.tolana.projectcalculationtool.model.Department;
 import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.Organisation;
@@ -48,17 +50,24 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
                     long departmentId = rs.getLong(1);
                     RoleAssignUtil.assignDepartmentRole(connection, departmentId,
                             UserRole.DEPARTMENT_OWNER, username);
+                } else {
+                    connection.rollback();
+                    connection.setAutoCommit(true);
+                    throw new EntityException("Afdeling blev ikke oprettet, noget gik galt!", Alert.DANGER);
                 }
-
-                connection.commit();
-                connection.setAutoCommit(true);
 
             } catch (Exception exception) {
                 connection.rollback();
                 connection.setAutoCommit(true);
+                if(exception instanceof DataTruncation) {
+                    throw new EntityException("Afdeling blev ikke oprettet, navn eller beskrivelse er for lang!", Alert.WARNING);
+                }
+                throw new EntityException("Afdeling blev ikke oprettet, noget gik galt!", Alert.DANGER);
             }
+            connection.commit();
+            connection.setAutoCommit(true);
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            throw new EntityException("Afdeling blev ikke oprettet, noget gik galt!", Alert.DANGER);
         }
         return isCreated;
     }
@@ -81,7 +90,7 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
                 );
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new EntityException("Kunne ikke finde afdeling", Alert.WARNING);
         }
         return department;
     }
