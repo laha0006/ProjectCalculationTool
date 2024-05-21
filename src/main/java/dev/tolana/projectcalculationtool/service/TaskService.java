@@ -1,8 +1,12 @@
 package dev.tolana.projectcalculationtool.service;
 
+import dev.tolana.projectcalculationtool.dto.TaskCreationDto;
+import dev.tolana.projectcalculationtool.dto.TaskEditDto;
+import dev.tolana.projectcalculationtool.dto.TaskViewDto;
 import dev.tolana.projectcalculationtool.enums.Status;
 import dev.tolana.projectcalculationtool.mapper.EntityDtoMapper;
 import dev.tolana.projectcalculationtool.dto.TaskDto;
+import dev.tolana.projectcalculationtool.mapper.TaskDtoMapper;
 import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.Task;
 import dev.tolana.projectcalculationtool.repository.TaskRepository;
@@ -14,42 +18,43 @@ import java.util.List;
 public class TaskService {
 
     private final TaskRepository taskRepository;
-    private final EntityDtoMapper entityDtoMapper;
-    public TaskService(TaskRepository taskRepository, EntityDtoMapper entityDtoMapper) {
+    private final TaskDtoMapper taskDtoMapper;
+
+    public TaskService(TaskRepository taskRepository, TaskDtoMapper taskDtoMapper) {
         this.taskRepository = taskRepository;
-        this.entityDtoMapper = entityDtoMapper;
+        this.taskDtoMapper = taskDtoMapper;
     }
 
-    public void createTask(String username, TaskDto newTask) {
-        Entity task =  entityDtoMapper.toEntity(newTask);
+    public void createTask(String username, TaskCreationDto newTask) {
+        Entity task =  taskDtoMapper.toEntity(newTask);
         taskRepository.createEntity(username, task);
     }
 
-    public List<TaskDto> getAllProjectTasks(long projectId) {
-        List<Entity> taskList = taskRepository.getAllEntitiesOnId(projectId);
-        return entityDtoMapper.toTaskDtoList(taskList);
+    public TaskViewDto getTaskToView(long taskId) {
+        Entity task = taskRepository.getEntityOnId(taskId);
+        return taskDtoMapper.toTaskViewDto(task);
     }
 
-    public TaskDto getTask(long taskId) {
+    public TaskEditDto getTaskToEdit(long taskId) {
         Entity task = taskRepository.getEntityOnId(taskId);
-        return entityDtoMapper.convertToTaskDto((Task) task);
+        return taskDtoMapper.toTaskEditDto(task);
     }
 
     public void deleteTask(long taskId) {
         taskRepository.deleteEntity(taskId);
     }
 
-    public List<TaskDto> getChildren(long taskId) {
+    public List<TaskViewDto> getChildren(long taskId) {
         List<Entity> taskList = taskRepository.getChildren(taskId);
-        return entityDtoMapper.toTaskDtoList(taskList);
+        return taskDtoMapper.toTaskDtoViewList(taskList);
     }
 
     public List<Status> getStatusList() {
         return taskRepository.getStatusList();
     }
 
-    public void editTask(TaskDto task) {
-        Entity taskToEdit = entityDtoMapper.toEntity(task);
+    public void editTask(TaskEditDto task) {
+        Entity taskToEdit = taskDtoMapper.toEntity(task);
         taskRepository.editEntity(taskToEdit);
     }
 }
