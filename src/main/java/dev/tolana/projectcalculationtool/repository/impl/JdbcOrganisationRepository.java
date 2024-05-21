@@ -3,6 +3,7 @@ package dev.tolana.projectcalculationtool.repository.impl;
 import dev.tolana.projectcalculationtool.dto.UserEntityRoleDto;
 import dev.tolana.projectcalculationtool.dto.UserInformationDto;
 import dev.tolana.projectcalculationtool.enums.UserRole;
+import dev.tolana.projectcalculationtool.exception.organisation.OrganisationCreationFailureException;
 import dev.tolana.projectcalculationtool.model.*;
 import dev.tolana.projectcalculationtool.repository.OrganisationRepository;
 import dev.tolana.projectcalculationtool.util.RoleAssignUtil;
@@ -44,6 +45,10 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
                     organisationId = rs.getLong(1);
                     RoleAssignUtil.assignOrganisationRole(connection, organisationId, UserRole.ORGANISATION_OWNER, username);
                     isCreated = true;
+                } else {
+                    connection.rollback();
+                    connection.setAutoCommit(true);
+                    throw new OrganisationCreationFailureException("Organisation blev ikke lavet, noget gik galt!");
                 }
 
                 connection.commit();
@@ -52,6 +57,10 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
             } catch (Exception exception) {
                 connection.rollback();
                 connection.setAutoCommit(true);
+                if (exception instanceof DataTruncation) {
+                    throw new OrganisationCreationFailureException("Navn eller beskrivelse er for lang!");
+                }
+                throw new OrganisationCreationFailureException("Organisation blev ikke lavet, noget gik galt!");
             }
         } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
