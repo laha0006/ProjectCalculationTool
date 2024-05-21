@@ -49,7 +49,7 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
                 } else {
                     connection.rollback();
                     connection.setAutoCommit(true);
-                    throw new EntityException("Organisation blev ikke lavet, noget gik galt!", Alert.WARNING);
+                    throw new EntityException("Organisation blev ikke oprettet, noget gik galt!", Alert.WARNING);
                 }
 
                 connection.commit();
@@ -59,12 +59,12 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
                 connection.rollback();
                 connection.setAutoCommit(true);
                 if (exception instanceof DataTruncation) {
-                    throw new EntityException("Navn eller beskrivelse er for lang!", Alert.DANGER);
+                    throw new EntityException("Organisation blev ikke oprettet, navn eller beskrivelse er for lang!", Alert.WARNING);
                 }
-                throw new EntityException("Organisation blev ikke lavet, noget gik galt!", Alert.DANGER);
+                throw new EntityException("Organisation blev ikke oprettet, noget gik galt!", Alert.DANGER);
             }
         } catch (SQLException sqlException) {
-            throw new EntityException("Organisation blev ikke lavet, noget gik galt!", Alert.DANGER);
+            throw new EntityException("Organisation blev ikke oprettet, noget gik galt!", Alert.DANGER);
         }
         return isCreated;
     }
