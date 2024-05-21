@@ -11,7 +11,7 @@ public class OrganisationExceptionHandler {
     @ExceptionHandler(OrganisationException.class)
     public String organisationCreationFailureException(OrganisationException ex, HttpServletRequest request, RedirectAttributes redirectAttributes) {
         String referer = request.getHeader("referer");
-        redirectAttributes.addFlashAttribute(ex.getMessage());
+        redirectAttributes.addFlashAttribute("alertWarning",ex.getMessage());
         return "redirect:" + referer;
     }
 }
