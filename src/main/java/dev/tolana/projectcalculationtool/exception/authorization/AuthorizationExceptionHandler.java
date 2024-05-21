@@ -1,8 +1,6 @@
 package dev.tolana.projectcalculationtool.exception.authorization;
 
 
-import dev.tolana.projectcalculationtool.exception.InviteFailureException;
-import dev.tolana.projectcalculationtool.exception.UserAlreadyInOrganisationException;
 import dev.tolana.projectcalculationtool.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.dao.DuplicateKeyException;
@@ -15,14 +13,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.sql.SQLException;
 
 @ControllerAdvice
-public class GlobalExceptionHandler {
+public class AuthorizationExceptionHandler {
 //    this exception is thrown by JdbcUserDetailsManager
 //    which is the only class that will ever throw it.
 //    we know it's a 'username already exists' error, and send that back.
 
     private UserService userService;
 
-    public GlobalExceptionHandler(UserService userService) {
+    public AuthorizationExceptionHandler(UserService userService) {
         this.userService = userService;
     }
 
@@ -46,6 +44,9 @@ public class GlobalExceptionHandler {
         return "redirect:" + referer;
     }
 
+
+
+//TODO: figure out a better place to put global model attributes.
     @ModelAttribute("inviteCount")
     public int getInviteCount(Authentication authentication) {
         if (authentication == null) {
