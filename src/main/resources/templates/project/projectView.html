@@ -65,6 +65,7 @@
                                 <th>Beskrivelse</th>
                                 <th>Deadline</th>
                                 <th>Estimerede timer</th>
+                                <th>Brugte timer</th>
                                 <th>Status</th>
                             </tr>
                             </thead>
@@ -73,23 +74,24 @@
                             <tr th:each="task : ${allTasks}">
                                 <td>
                                     <a th:text="${task.resourceEntityName}"
-                                       th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/task/{taskId} (orgId=${orgId}, deptId=${deptId}, teamId=${teamId}, projectId=${task.projectId()}, taskId=${task.id})}">
+                                       th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/task/{taskId} (orgId=${orgId}, deptId=${deptId}, teamId=${teamId}, projectId=${projectId}, taskId=${task.id})}">
                                     </a>
                                 </td>
                                 <td th:text="${task.description}"></td>
                                 <td th:text="${task.deadline}"></td>
                                 <td th:text="${task.estimatedHours}"></td>
+                                <td th:text="${task.actualHours()}"></td>
                                 <td th:text="${task.status}"></td>
                                 <td>
                                     <div class="d-flex">
                                         <div class="d-inline">
-                                            <a th:href="@{{projectId}/task/{taskId}/edit (projectId=${task.projectId()}, taskId=${task.id})}">
+                                            <a th:href="@{{projectId}/task/{taskId}/edit (projectId=${projectId}, taskId=${task.id})}">
                                                 <button class="btn btn-primary fw-bold">Ændre</button>
                                             </a>
                                         </div>
 
                                         <div class="d-inline">
-                                            <form th:action="@{{projectId}/task/{taskId}/delete (projectId=${task.projectId()}, taskId=${task.id})}" method="post">
+                                            <form th:action="@{{projectId}/task/{taskId}/delete (projectId=${projectId}, taskId=${task.id})}" method="post">
                                                 <button class="btn btn-danger fw-bold">Slet</button>
                                             </form>
                                         </div>
@@ -110,13 +112,13 @@
                         <div th:if="${allTasks.isEmpty() && allSubProjects.isEmpty() && project.parentId() == 0}" class="d-flex flex-row justify-content-start">
 
                             <div class="d-inline">
-                                <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/create/subproject (orgId = ${orgId}, deptId = ${deptId}, teamId = ${project.teamId}, projectId=${project.id} )}">
+                                <a th:href="@{{projectId}/create/subproject (projectId=${project.id} )}">
                                     <button class="btn btn-success fw-bold">Opret sub-projekt</button>
                                 </a>
                             </div>
 
                             <div class="d-inline">
-                                <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/task/create (orgId = ${orgId}, deptId = ${deptId}, teamId = ${project.teamId}, projectId=${project.id} )}">
+                                <a th:href="@{{projectId}/task/create (projectId=${project.id})}">
                                     <button class="btn btn-success fw-bold">Opret opgave</button>
                                 </a>
                             </div>
@@ -131,7 +133,7 @@
 <!--                        IF THERE ARE SUBPROJECTS IN PROJECT, ONLY DISPLAY OPTION FOR CREATION OTHER SUBPROJECTS-->
                         <div th:if="${allTasks.isEmpty() && !allSubProjects.isEmpty() }">
                             <div class="d-inline">
-                                <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/create/subproject (orgId = ${orgId}, deptId = ${deptId}, teamId = ${project.teamId}, projectId=${project.id} )}">
+                                <a th:href="@{{projectId}/create/subproject (projectId=${project.id} )}">
                                     <button class="btn btn-success fw-bold">Opret sub-projekt</button>
                                 </a>
                             </div>
@@ -147,7 +149,7 @@
                         <div class="d-flex">
                             <div th:if="${!allTasks.isEmpty() && allSubProjects.isEmpty() || project.parentId() != 0}">
                                 <div class="d-inline">
-                                    <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/task/create (orgId = ${orgId}, deptId = ${deptId}, teamId = ${project.teamId}, projectId=${project.id} )}">
+                                    <a th:href="@{{projectId}/task/create (projectId=${project.id} )}">
                                         <button class="btn btn-success fw-bold">Opret opgave</button>
                                     </a>
                                 </div>
@@ -191,7 +193,7 @@
 
 <!--                    BACK BUTTON FOR SUBPROJECT THAT DIRECT TO MAIN PROJECT-->
                     <div th:if="${project.parentId() != 0}" class="d-inline">
-                        <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectParentId} (orgId=${orgId}, deptId=${deptId}, teamId=${project.teamId}, projectParentId=${project.parentId})}">
+                        <a th:href="@{{projectParentId} (projectParentId=${project.parentId})}">
                             <button class="btn btn-secondary fw-bold">Tilbage</button>
                         </a>
                     </div>
