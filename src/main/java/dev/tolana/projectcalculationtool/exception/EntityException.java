@@ -8,4 +8,7 @@ public class EntityException extends RuntimeException{
         super(message);
         this.alert = alert;
     }
+    public Alert getAlert() {
+        return alert;
+    }
 }
