@@ -325,12 +325,15 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
         for (int i = 0; i < users.size(); i++) {
             if(i+1 != users.size()){ //avoids out of bounds
                 if (users.get(i+1).username().equals(users.get(i).username())){
+                    //adds user with the deptID of the duplicate that comes after it
                     cleanedUsers.add(new UserEntityRoleDto(users.get(i).username(),
                             users.get(i).roleId(), users.get(i).taskId(), users.get(i).projectId(),
                             users.get(i).teamId(), users.get(i+1).departmentId(),
                             users.get(i).organizationId()));
                 }else if(i != 0){ //avoids out of bounds
                     if (!users.get(i-1).username().equals(users.get(i).username())){
+                        //checks that user isn't a duplicate of the previous user
+                        //without this, only users with duplicates, and the last index place will be added
                         cleanedUsers.add(users.get(i));
                     }
                 }
