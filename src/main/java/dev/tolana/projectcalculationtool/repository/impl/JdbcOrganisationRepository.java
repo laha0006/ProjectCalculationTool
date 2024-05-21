@@ -5,7 +5,6 @@ import dev.tolana.projectcalculationtool.dto.UserInformationDto;
 import dev.tolana.projectcalculationtool.enums.Alert;
 import dev.tolana.projectcalculationtool.enums.UserRole;
 import dev.tolana.projectcalculationtool.exception.EntityException;
-import dev.tolana.projectcalculationtool.exception.OrganisationException;
 import dev.tolana.projectcalculationtool.model.*;
 import dev.tolana.projectcalculationtool.repository.OrganisationRepository;
 import dev.tolana.projectcalculationtool.util.RoleAssignUtil;
