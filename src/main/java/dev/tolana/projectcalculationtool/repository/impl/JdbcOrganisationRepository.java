@@ -132,7 +132,7 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
 
 
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            throw new OrganisationException("Noget gik galt! Kunne ikke hente organisaiont(er)");
         }
 
         return organisations;
@@ -168,7 +168,7 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
                 departmentList.add(department);
             }
         } catch (SQLException sqlException) {
-            throw new RuntimeException(sqlException);
+            throw new OrganisationException("Noget gik galt! Kunne hente afdeling(er).");
         }
 
         return departmentList;
