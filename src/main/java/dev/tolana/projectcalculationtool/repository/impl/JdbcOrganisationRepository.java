@@ -2,9 +2,9 @@ package dev.tolana.projectcalculationtool.repository.impl;
 
 import dev.tolana.projectcalculationtool.dto.UserEntityRoleDto;
 import dev.tolana.projectcalculationtool.dto.UserInformationDto;
+import dev.tolana.projectcalculationtool.enums.Alert;
 import dev.tolana.projectcalculationtool.enums.UserRole;
-import dev.tolana.projectcalculationtool.exception.organisation.OrganisationDangerException;
-import dev.tolana.projectcalculationtool.exception.organisation.OrganisationWarningException;
+import dev.tolana.projectcalculationtool.exception.organisation.OrganisationException;
 import dev.tolana.projectcalculationtool.model.*;
 import dev.tolana.projectcalculationtool.repository.OrganisationRepository;
 import dev.tolana.projectcalculationtool.util.RoleAssignUtil;
@@ -49,7 +49,7 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
                 } else {
                     connection.rollback();
                     connection.setAutoCommit(true);
-                    throw new OrganisationWarningException("Organisation blev ikke lavet, noget gik galt!");
+                    throw new OrganisationException("Organisation blev ikke lavet, noget gik galt!", Alert.WARNING);
                 }
 
                 connection.commit();
@@ -59,9 +59,9 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
                 connection.rollback();
                 connection.setAutoCommit(true);
                 if (exception instanceof DataTruncation) {
-                    throw new OrganisationDangerException("Navn eller beskrivelse er for lang!");
+                    throw new OrganisationException("Navn eller beskrivelse er for lang!", Alert.DANGER);
                 }
-                throw new OrganisationDangerException("Organisation blev ikke lavet, noget gik galt!");
+                throw new OrganisationException("Organisation blev ikke lavet, noget gik galt!", Alert.DANGER);
             }
         } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
@@ -85,11 +85,11 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
                         rs.getBoolean(5)
                 );
             } else {
-                throw new OrganisationWarningException("Organisation findes ikke!");
+                throw new OrganisationException("Organisation findes ikke!",Alert.WARNING);
             }
         } catch (SQLException e) {
 //            throw new RuntimeException(e);
-            throw new OrganisationWarningException("Organisation findes ikke!");
+            throw new OrganisationException("Organisation findes ikke!",Alert.WARNING);
         }
         return organisation;
     }
@@ -133,7 +133,7 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
 
 
         } catch (SQLException sqlException) {
-            throw new OrganisationWarningException("Noget gik galt! Kunne ikke hente organisaiont(er)");
+            throw new OrganisationException("Noget gik galt! Kunne ikke hente organisaiont(er)",Alert.WARNING);
         }
 
         return organisations;
@@ -169,7 +169,7 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
                 departmentList.add(department);
             }
         } catch (SQLException sqlException) {
-            throw new OrganisationWarningException("Noget gik galt! Kunne ikke hente afdeling(er).");
+            throw new OrganisationException("Noget gik galt! Kunne ikke hente afdeling(er).",Alert.WARNING);
         }
 
         return departmentList;
@@ -205,10 +205,10 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
             } catch (SQLException sqlException) {
                 connection.rollback();
                 connection.setAutoCommit(true);
-                throw new OrganisationDangerException("Noget gik galt! Kunne ikke opdatere organisation.");
+                throw new OrganisationException("Noget gik galt! Kunne ikke opdatere organisation.", Alert.DANGER);
             }
         } catch (SQLException sqlException) {
-            throw new OrganisationDangerException("Noget gik galt! Kunne ikke opdatere organisation.");
+            throw new OrganisationException("Noget gik galt! Kunne ikke opdatere organisation.", Alert.DANGER);
         }
         return isEdited;
     }
@@ -235,10 +235,10 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
             } catch (SQLException sqlException) {
                 connection.rollback();
                 connection.setAutoCommit(true);
-                throw new OrganisationDangerException("Kunne ikke slette organisation!");
+                throw new OrganisationException("Kunne ikke slette organisation!", Alert.DANGER);
             }
         } catch (SQLException sqlException) {
-            throw new OrganisationDangerException("Kunne ikke slette organisation!");
+            throw new OrganisationException("Kunne ikke slette organisation!", Alert.DANGER);
         }
         return isDeleted;
     }
@@ -297,7 +297,7 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
 
 
         } catch (SQLException sqlException) {
-            throw new OrganisationWarningException("Kunne ikke hente organisations medlemmer.");
+            throw new OrganisationException("Kunne ikke hente organisations medlemmer.",Alert.WARNING);
         }
 
         return users;
