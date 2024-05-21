@@ -37,11 +37,10 @@
                     </form>
 
                     <div class="d-inline">
-                        <a href="/organisation" class="btn btn-warning fw-bold">Annullér</a>
+                        <a th:href="@{../{id}(id=${organisation.id})}" class="btn btn-warning fw-bold">Annullér</a>
                     </div>
-                </div>
-                </form>
 
+                </div>
             </main>
         </div>
 
