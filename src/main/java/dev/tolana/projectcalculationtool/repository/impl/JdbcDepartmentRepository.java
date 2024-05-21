@@ -313,7 +313,6 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
 
         List<UserEntityRoleDto> cleanedUsers = getCleanUserEntityRoleDtos(users);
 
-        System.out.println(cleanedUsers);
         return cleanedUsers;
     }
 
