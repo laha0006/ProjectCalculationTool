@@ -3,7 +3,7 @@ package dev.tolana.projectcalculationtool.repository.impl;
 import dev.tolana.projectcalculationtool.dto.UserEntityRoleDto;
 import dev.tolana.projectcalculationtool.dto.UserInformationDto;
 import dev.tolana.projectcalculationtool.enums.UserRole;
-import dev.tolana.projectcalculationtool.exception.organisation.OrganisationCreationFailureException;
+import dev.tolana.projectcalculationtool.exception.organisation.OrganisationException;
 import dev.tolana.projectcalculationtool.model.*;
 import dev.tolana.projectcalculationtool.repository.OrganisationRepository;
 import dev.tolana.projectcalculationtool.util.RoleAssignUtil;
@@ -48,7 +48,7 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
                 } else {
                     connection.rollback();
                     connection.setAutoCommit(true);
-                    throw new OrganisationCreationFailureException("Organisation blev ikke lavet, noget gik galt!");
+                    throw new OrganisationException("Organisation blev ikke lavet, noget gik galt!");
                 }
 
                 connection.commit();
@@ -58,9 +58,9 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
                 connection.rollback();
                 connection.setAutoCommit(true);
                 if (exception instanceof DataTruncation) {
-                    throw new OrganisationCreationFailureException("Navn eller beskrivelse er for lang!");
+                    throw new OrganisationException("Navn eller beskrivelse er for lang!");
                 }
-                throw new OrganisationCreationFailureException("Organisation blev ikke lavet, noget gik galt!");
+                throw new OrganisationException("Organisation blev ikke lavet, noget gik galt!");
             }
         } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
@@ -83,6 +83,8 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
                         rs.getTimestamp(4).toLocalDateTime(),
                         rs.getBoolean(5)
                 );
+            } else {
+                throw new OrganisationException("organisation findes ikke.");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -148,7 +150,7 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
                 WHERE organisation_id = ?;
                 """;
 
-        try (Connection connection = dataSource.getConnection()){
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement pstmt = connection.prepareStatement(getAllTeamsFromParent);
             pstmt.setLong(1, organisationId);
             ResultSet rs = pstmt.executeQuery();
@@ -164,7 +166,7 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
                 );
                 departmentList.add(department);
             }
-        }catch (SQLException sqlException) {
+        } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
         }
 
@@ -184,7 +186,7 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
                 SET name = ?, description = ?
                 WHERE id = ?;
                 """;
-        try (Connection connection = dataSource.getConnection()){
+        try (Connection connection = dataSource.getConnection()) {
             try {
                 connection.setAutoCommit(false);
 
@@ -255,7 +257,7 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
     }
 
     @Override
-    public List<UserInformationDto> getUsersFromEntityId(long entityId){
+    public List<UserInformationDto> getUsersFromEntityId(long entityId) {
         return null;
     }
 
@@ -287,8 +289,8 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
                 long deptId = rs.getLong(6);
                 long orgId = rs.getLong(7);
 
-                users.add(new UserEntityRoleDto(username,roleId,taskId,projectId,
-                        teamId,deptId,orgId));
+                users.add(new UserEntityRoleDto(username, roleId, taskId, projectId,
+                        teamId, deptId, orgId));
             }
 
 
