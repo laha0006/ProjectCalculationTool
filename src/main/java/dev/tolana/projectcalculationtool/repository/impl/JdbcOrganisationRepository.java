@@ -85,11 +85,11 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
                         rs.getBoolean(5)
                 );
             } else {
-                throw new EntityException("Organisation findes ikke!",Alert.WARNING);
+                throw new EntityException("Organisation findes ikke!", Alert.WARNING);
             }
         } catch (SQLException e) {
 //            throw new RuntimeException(e);
-            throw new EntityException("Organisation findes ikke!",Alert.WARNING);
+            throw new EntityException("Organisation findes ikke!", Alert.WARNING);
         }
         return organisation;
     }
@@ -133,7 +133,7 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
 
 
         } catch (SQLException sqlException) {
-            throw new EntityException("Noget gik galt! Kunne ikke hente organisaiont(er)",Alert.WARNING);
+            throw new EntityException("Noget gik galt! Kunne ikke hente organisaiont(er)", Alert.WARNING);
         }
 
         return organisations;
@@ -169,7 +169,7 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
                 departmentList.add(department);
             }
         } catch (SQLException sqlException) {
-            throw new EntityException("Noget gik galt! Kunne ikke hente afdeling(er).",Alert.WARNING);
+            throw new EntityException("Noget gik galt! Kunne ikke hente afdeling(er).", Alert.WARNING);
         }
 
         return departmentList;
@@ -297,7 +297,7 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
 
 
         } catch (SQLException sqlException) {
-            throw new EntityException("Kunne ikke hente organisations medlemmer.",Alert.WARNING);
+            throw new EntityException("Kunne ikke hente organisations medlemmer.", Alert.WARNING);
         }
 
         return users;
