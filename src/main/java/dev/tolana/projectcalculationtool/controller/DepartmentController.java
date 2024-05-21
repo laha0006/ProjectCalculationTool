@@ -1,6 +1,7 @@
 package dev.tolana.projectcalculationtool.controller;
 
 import dev.tolana.projectcalculationtool.dto.EntityCreationDto;
+import dev.tolana.projectcalculationtool.dto.EntityEditDto;
 import dev.tolana.projectcalculationtool.dto.EntityViewDto;
 import dev.tolana.projectcalculationtool.enums.EntityType;
 import dev.tolana.projectcalculationtool.service.DepartmentService;
@@ -53,5 +54,20 @@ public class DepartmentController {
 
         departmentService.deleteDepartment(deptId);
         return "redirect:/organisation/" + orgId;
+    }
+
+    @GetMapping("/{deptId}/edit")
+    public String editDepartment(@PathVariable("deptId") long departmentId , Model model) {
+        EntityEditDto department = departmentService.getDepartmentToEdit(departmentId);
+        model.addAttribute("department", department);
+
+        return "department/editDepartment";
+    }
+
+    @PostMapping("/{deptId}/edit")
+    public String editOrganisation(@ModelAttribute EntityEditDto editDto) {
+
+        departmentService.editDepartment(editDto);
+        return "redirect:../{deptId}";
     }
 }
