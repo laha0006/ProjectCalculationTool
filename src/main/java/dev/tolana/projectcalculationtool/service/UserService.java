@@ -3,7 +3,7 @@ package dev.tolana.projectcalculationtool.service;
 import dev.tolana.projectcalculationtool.dto.InviteFormDto;
 import dev.tolana.projectcalculationtool.dto.RegisterUserDto;
 import dev.tolana.projectcalculationtool.dto.InviteDto;
-import dev.tolana.projectcalculationtool.exception.UserAlreadyInOrganisationException;
+import dev.tolana.projectcalculationtool.exception.authorization.UserAlreadyInOrganisationException;
 import dev.tolana.projectcalculationtool.repository.AuthorizationRepository;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.User;
