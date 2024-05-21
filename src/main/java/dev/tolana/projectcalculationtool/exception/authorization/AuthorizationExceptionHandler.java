@@ -1,11 +1,12 @@
-package dev.tolana.projectcalculationtool.exception;
+package dev.tolana.projectcalculationtool.exception.authorization;
 
 
 import dev.tolana.projectcalculationtool.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -14,15 +15,25 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.sql.SQLException;
 
 @ControllerAdvice
-public class GlobalExceptionHandler {
+public class AuthorizationExceptionHandler {
 //    this exception is thrown by JdbcUserDetailsManager
 //    which is the only class that will ever throw it.
 //    we know it's a 'username already exists' error, and send that back.
 
     private UserService userService;
 
-    public GlobalExceptionHandler(UserService userService) {
+    public AuthorizationExceptionHandler(UserService userService) {
         this.userService = userService;
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public String accessDenied(HttpServletRequest req, RedirectAttributes redirectAttributes) {
+        String referer = req.getHeader("referer");
+        redirectAttributes.addFlashAttribute("alertDanger", "Du har ikke tilladelse til dette!");
+        if (referer == null) {
+            return "redirect:/dashboard";
+        }
+        return "redirect:" + referer;
     }
 
     @ExceptionHandler(DuplicateKeyException.class)
@@ -31,16 +42,10 @@ public class GlobalExceptionHandler {
         return "redirect:/user/register";
     }
 
-    @ExceptionHandler(MyCustomException.class)
-    public String myCustomException(MyCustomException ex, HttpServletRequest request, RedirectAttributes redirectAttributes) {
-        System.out.println("MyCustomException: " + ex.getMessage());
-        String referer = request.getHeader("Referer");
-        return "redirect:" + referer;
-    }
-
     @ExceptionHandler(InviteFailureException.class)
     public String inviteFailureException(InviteFailureException ex, HttpServletRequest request, RedirectAttributes redirectAttributes) {
         String referer = request.getHeader("Referer");
+
         redirectAttributes.addFlashAttribute("alertWarning", ex.getMessage());
         return "redirect:" + referer;
     }
@@ -52,6 +57,8 @@ public class GlobalExceptionHandler {
         return "redirect:" + referer;
     }
 
+
+    //TODO: figure out a better place to put global model attributes.
     @ModelAttribute("inviteCount")
     public int getInviteCount(Authentication authentication) {
         if (authentication == null) {

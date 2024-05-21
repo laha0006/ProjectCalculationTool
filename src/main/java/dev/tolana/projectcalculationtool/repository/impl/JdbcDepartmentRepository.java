@@ -2,7 +2,9 @@ package dev.tolana.projectcalculationtool.repository.impl;
 
 import dev.tolana.projectcalculationtool.dto.UserEntityRoleDto;
 import dev.tolana.projectcalculationtool.dto.UserInformationDto;
+import dev.tolana.projectcalculationtool.enums.Alert;
 import dev.tolana.projectcalculationtool.enums.UserRole;
+import dev.tolana.projectcalculationtool.exception.EntityException;
 import dev.tolana.projectcalculationtool.model.Department;
 import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.Organisation;
@@ -39,26 +41,33 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
                         Statement.RETURN_GENERATED_KEYS);
                 pstmtAdd.setString(1, entity.getName());
                 pstmtAdd.setString(2, entity.getDescription());
-                pstmtAdd.setLong(3, ((Department)entity).getOrganisationId());
+                pstmtAdd.setLong(3, ((Department) entity).getOrganisationId());
                 int affectedRows = pstmtAdd.executeUpdate();
                 isCreated = affectedRows > 0;
 
                 ResultSet rs = pstmtAdd.getGeneratedKeys();
-                if(rs.next()) {
+                if (rs.next()) {
                     long departmentId = rs.getLong(1);
                     RoleAssignUtil.assignDepartmentRole(connection, departmentId,
                             UserRole.DEPARTMENT_OWNER, username);
+                } else {
+                    connection.rollback();
+                    connection.setAutoCommit(true);
+                    throw new EntityException("Afdeling blev ikke oprettet, noget gik galt!", Alert.DANGER);
                 }
-
-                connection.commit();
-                connection.setAutoCommit(true);
 
             } catch (Exception exception) {
                 connection.rollback();
                 connection.setAutoCommit(true);
+                if (exception instanceof DataTruncation) {
+                    throw new EntityException("Afdeling blev ikke oprettet, navn eller beskrivelse er for lang!", Alert.WARNING);
+                }
+                throw new EntityException("Afdeling blev ikke oprettet, noget gik galt!", Alert.DANGER);
             }
+            connection.commit();
+            connection.setAutoCommit(true);
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            throw new EntityException("Afdeling blev ikke oprettet, noget gik galt!", Alert.DANGER);
         }
         return isCreated;
     }
@@ -79,9 +88,11 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
                         resultSet.getBoolean(6),
                         resultSet.getLong(4)
                 );
+            } else {
+                throw new EntityException("Afdeling findes ikke!", Alert.WARNING);
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new EntityException("Afdeling findes ikke!", Alert.WARNING);
         }
         return department;
     }
@@ -95,7 +106,7 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
     public List<Entity> getAllEntitiesOnId(long organisationId) {
         List<Entity> departments = new ArrayList<>();
         try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement("select * from department where organisation_id = ?");
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM department WHERE organisation_id = ?");
             preparedStatement.setLong(1, organisationId);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -110,7 +121,7 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new EntityException("Noget gik galt, kunne ikke hente afdelinger", Alert.WARNING);
         }
         return departments;
     }
@@ -123,24 +134,25 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
                 WHERE department_id = ?;
                 """;
 
-        try (Connection connection = dataSource.getConnection()){
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement pstmt = connection.prepareStatement(getAllTeamsFromParent);
             pstmt.setLong(1, departmentId);
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
-               Team team = new Team(
-                       rs.getLong(1),
-                       rs.getString(2),
-                       rs.getString(3),
-                       rs.getTimestamp(5).toLocalDateTime(),
-                       rs.getBoolean(6),
-                       rs.getLong(4)
-               );
-               teamList.add(team);
+                Team team = new Team(
+                        rs.getLong(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getTimestamp(5).toLocalDateTime(),
+                        rs.getBoolean(6),
+                        rs.getLong(4)
+                );
+                teamList.add(team);
             }
-        }catch (SQLException sqlException) {
-            throw new RuntimeException(sqlException);
+        } catch (SQLException sqlException) {
+            throw new EntityException("Kunne ikke hente teams", Alert.WARNING);
+
         }
 
         return teamList;
@@ -161,9 +173,11 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
                         rs.getTimestamp(4).toLocalDateTime(),
                         rs.getBoolean(5)
                 );
+            } else {
+                throw new EntityException("Kunne ikke finde organisation", Alert.WARNING);
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new EntityException("Kunne ikke finde organisation", Alert.WARNING);
         }
         return parent;
     }
@@ -208,7 +222,7 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
                 DELETE FROM department WHERE id = ?;
                 """;
 
-        try (Connection connection = dataSource.getConnection()){
+        try (Connection connection = dataSource.getConnection()) {
             try {
                 connection.setAutoCommit(false);
 
@@ -218,15 +232,15 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
 
                 isDeleted = affectedRows > 0;
 
-                connection.commit();
-                connection.setAutoCommit(true);
             } catch (SQLException sqlException) {
                 connection.rollback();
                 connection.setAutoCommit(true);
-                throw new RuntimeException(sqlException);
+                throw new EntityException("Afdeling blev ikke slettet! Noget gik galt.", Alert.DANGER);
             }
+            connection.commit();
+            connection.setAutoCommit(true);
         } catch (SQLException sqlException) {
-            throw new RuntimeException(sqlException);
+            throw new EntityException("Afdeling blev ikke slettet! Noget gik galt.", Alert.DANGER);
         }
         return isDeleted;
     }
@@ -257,7 +271,7 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
     }
 
     @Override
-    public List<UserEntityRoleDto> getUsersFromOrganisationId(long organisationId){
+    public List<UserEntityRoleDto> getUsersFromOrganisationId(long organisationId) {
         List<UserEntityRoleDto> users = new ArrayList<>();
 
         try (Connection connection = dataSource.getConnection()) {
@@ -284,8 +298,8 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
                 long deptId = rs.getLong(6);
                 long orgId = rs.getLong(7);
 
-                users.add(new UserEntityRoleDto(username,roleId,taskId,projectId,
-                        teamId,deptId,orgId));
+                users.add(new UserEntityRoleDto(username, roleId, taskId, projectId,
+                        teamId, deptId, orgId));
             }
 
 

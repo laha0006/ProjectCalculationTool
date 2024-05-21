@@ -55,8 +55,10 @@ public class AuthorizationService {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
         HierarchyDto hierarchy = authorizationRepository.getHierarchy(entityId, entityType);
+        if (hierarchy == null) {
+            return false;
+        }
         List<Long> userRoleIds = authorizationRepository.getRoleIdsMatchingHierarchy(username, hierarchy);
-        ;
 
         return hasPermission(userRoleIds, requiredPermission);
     }

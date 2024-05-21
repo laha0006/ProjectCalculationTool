@@ -1,8 +1,10 @@
 package dev.tolana.projectcalculationtool.repository.impl;
 
 import dev.tolana.projectcalculationtool.dto.UserInformationDto;
+import dev.tolana.projectcalculationtool.enums.Alert;
 import dev.tolana.projectcalculationtool.enums.Status;
 import dev.tolana.projectcalculationtool.enums.UserRole;
+import dev.tolana.projectcalculationtool.exception.EntityException;
 import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.ResourceEntity;
 import dev.tolana.projectcalculationtool.model.Task;
@@ -38,17 +40,20 @@ public class JdbcTaskRepository implements TaskRepository {
 
                 int affectedRows = pstmt.executeUpdate();
                 isCreated = affectedRows > 0;
-                connection.commit();
-                connection.setAutoCommit(true);
 
             } catch (SQLException sqlException) {
                 connection.rollback();
                 connection.setAutoCommit(true);
-                throw new RuntimeException(sqlException);
+                if (sqlException instanceof DataTruncation) {
+                    throw new EntityException("Opgave blev ikke oprettet, navn eller beskrivelse er for lang!", Alert.WARNING);
+                }
+                throw new EntityException("Opgave blev ikke oprettet, noget gik galt!", Alert.DANGER);
             }
+            connection.commit();
+            connection.setAutoCommit(true);
 
         } catch (SQLException sqlException) {
-            throw new RuntimeException(sqlException);
+            throw new EntityException("Opgave blev ikke oprettet, noget gik galt!", Alert.DANGER);
         }
 //TODO WHEN TASK GETS CREATED IT IS BY DEFAULT UNASSIGEN A PROJECT MEMBER, THEREFORE CREATE METHOD WHERE MEMBER GET ASSIGEND A TASK TOO AND NOT ONLY A PROJECT
         return isCreated;
@@ -116,7 +121,7 @@ public class JdbcTaskRepository implements TaskRepository {
                 WHERE t.id = ?;
                 """;
 
-        try(Connection connection = dataSource.getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement pstmt = connection.prepareStatement(getTaskOnId);
             pstmt.setLong(1, taskId);
             ResultSet rs = pstmt.executeQuery();
@@ -135,10 +140,12 @@ public class JdbcTaskRepository implements TaskRepository {
                         rs.getInt(7),
                         rs.getInt(8)
                 );
+            } else {
+                throw new EntityException("Opgave blev ikke fundet, noget gik galt!", Alert.WARNING);
             }
 
-        }catch (SQLException sqlException) {
-            throw new RuntimeException(sqlException);
+        } catch (SQLException sqlException) {
+            throw new EntityException("Opgave blev ikke fundet, noget gik galt!", Alert.WARNING);
         }
 
         return task;
@@ -193,7 +200,7 @@ public class JdbcTaskRepository implements TaskRepository {
             }
 
         } catch (SQLException sqlException) {
-            throw new RuntimeException(sqlException);
+            throw new EntityException("Opgaver blev ikke fundet, noget gik galt!", Alert.WARNING);
         }
         return taskList;
     }
@@ -217,9 +224,9 @@ public class JdbcTaskRepository implements TaskRepository {
                      LEFT JOIN status s
                                ON t.status = s.id
                 WHERE t.parent_id = ? AND t.parent_id IS NOT NULL;
-                """;
+                """; //TODO: IS THE "AND parent_id IS NOT NULL" REDUNDANT?
 
-        try (Connection connection = dataSource.getConnection()){
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement pstmt = connection.prepareStatement(getTasks);
             pstmt.setLong(1, taskId);
             ResultSet rs = pstmt.executeQuery();
@@ -240,8 +247,8 @@ public class JdbcTaskRepository implements TaskRepository {
                 );
                 taskList.add(task);
             }
-        }catch (SQLException sqlException) {
-            throw new RuntimeException(sqlException);
+        } catch (SQLException sqlException) {
+            throw new EntityException("Opgaver blev ikke fundet, noget gik galt!", Alert.WARNING);
         }
 
         return taskList;
@@ -254,30 +261,30 @@ public class JdbcTaskRepository implements TaskRepository {
                 UPDATE task SET name=?, description=?, deadline=?, estimated_hours=?, status=? WHERE id =?;
                 """;
 
-        try (Connection connection = dataSource.getConnection()){
+        try (Connection connection = dataSource.getConnection()) {
             try {
                 connection.setAutoCommit(false);
 
                 PreparedStatement pstmt = connection.prepareStatement(edit);
                 pstmt.setString(1, entity.getName());
                 pstmt.setString(2, entity.getDescription());
-                pstmt.setDate(3, Date.valueOf(((Task)entity).getDeadline().toLocalDate()));
-                pstmt.setInt(4, ((Task)entity).getEstimatedHours());
-                pstmt.setLong(5, ((Task)entity).getStatusId());
+                pstmt.setDate(3, Date.valueOf(((Task) entity).getDeadline().toLocalDate()));
+                pstmt.setInt(4, ((Task) entity).getEstimatedHours());
+                pstmt.setLong(5, ((Task) entity).getStatusId());
                 pstmt.setLong(6, entity.getId());
                 int affectedRows = pstmt.executeUpdate();
 
                 isEdited = affectedRows > 0;
 
-                connection.commit();
-                connection.setAutoCommit(true);
-            }catch (SQLException sqlException) {
+            } catch (SQLException sqlException) {
                 connection.rollback();
                 connection.setAutoCommit(true);
-                throw new RuntimeException(sqlException);
+                throw new EntityException("Opgave blev ikke opdateret, noget gik galt!", Alert.DANGER);
             }
-        }catch (SQLException sqlException) {
-            throw new RuntimeException(sqlException);
+            connection.commit();
+            connection.setAutoCommit(true);
+        } catch (SQLException sqlException) {
+            throw new EntityException("Opgave blev ikke opdateret, noget gik galt!", Alert.DANGER);
         }
 
         return isEdited;
@@ -290,7 +297,7 @@ public class JdbcTaskRepository implements TaskRepository {
                 DELETE FROM task WHERE id = ?;
                 """;
 
-        try (Connection connection = dataSource.getConnection()){
+        try (Connection connection = dataSource.getConnection()) {
             try {
                 connection.setAutoCommit(false);
 
@@ -300,15 +307,15 @@ public class JdbcTaskRepository implements TaskRepository {
 
                 isDeleted = affectedRows > 0;
 
-                connection.commit();
-                connection.setAutoCommit(true);
             } catch (SQLException sqlException) {
                 connection.rollback();
                 connection.setAutoCommit(true);
-                throw new RuntimeException(sqlException);
+                throw new EntityException("Opgave blev ikke slettet, noget gik galt!", Alert.DANGER);
             }
+            connection.commit();
+            connection.setAutoCommit(true);
         } catch (SQLException sqlException) {
-            throw new RuntimeException(sqlException);
+            throw new EntityException("Opgave blev ikke slettet, noget gik galt!", Alert.DANGER);
         }
         return isDeleted;
     }
@@ -350,14 +357,14 @@ public class JdbcTaskRepository implements TaskRepository {
                 SELECT name FROM status;
                 """;
 
-        try(Connection connection = dataSource.getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement pstmt = connection.prepareStatement(selectQuery);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 statusList.add(Status.valueOf(rs.getString(1)));
             }
 
-        }catch (SQLException sqlException) {
+        } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
         }
 
