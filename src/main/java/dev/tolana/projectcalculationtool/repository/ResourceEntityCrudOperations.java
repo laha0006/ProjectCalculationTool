@@ -6,7 +6,5 @@ import java.util.List;
 
 public interface ResourceEntityCrudOperations extends EntityCrudOperations {
 
-    boolean changeStatus(long resourceEntityId);
-
     List<Status> getStatusList();
 }
