@@ -2,6 +2,7 @@ package dev.tolana.projectcalculationtool.controller;
 
 import dev.tolana.projectcalculationtool.dto.ProjectStatsDto;
 import dev.tolana.projectcalculationtool.dto.ResourceEntityViewDto;
+import dev.tolana.projectcalculationtool.dto.TaskDto;
 import dev.tolana.projectcalculationtool.enums.Status;
 import dev.tolana.projectcalculationtool.service.ProjectService;
 import dev.tolana.projectcalculationtool.service.UserService;
@@ -16,7 +17,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -128,6 +131,47 @@ class ProjectControllerTest {
                 .thenReturn(projectToDelete);
         mockMvc.perform(post("/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/delete",1,1,1,1)
                         .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/organisation/1/department/1/team/1/project/1"));
+    }
+
+    @Test
+    @WithMockUser
+    void displayEditProjectPage() throws Exception {
+        ResourceEntityViewDto projectToEdit = new ResourceEntityViewDto("name", "description", 1, 1,1,1,LocalDateTime.now(), 1, 1,1,Status.TODO);
+        when(projectService.getProject(1))
+                .thenReturn(projectToEdit);
+
+        List<Status> statusList = new ArrayList<>();
+        statusList.add(Status.DONE);
+        when(projectService.getStatusList())
+                .thenReturn(statusList);
+
+        mockMvc.perform(get("/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/edit", 1, 1, 1, 1))
+                .andExpect(status().isOk())
+                .andExpect(view().name("project/editProject"));
+    }
+
+    @Test
+    @WithMockUser
+    void editProject() throws Exception {
+//        ResourceEntityViewDto projectToEdit = new ResourceEntityViewDto("name", "description", 1, 1,1,1,LocalDateTime.now(), 1, 1,1,Status.TODO);
+//        when(projectService.getProject(1))
+//                .thenReturn(projectToEdit);
+
+        mockMvc.perform(post("/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/edit", 1, 1, 1, 1)
+                        .with(csrf())
+                        .param("resourceEntityName", "name")
+                        .param("description", "description")
+                        .param("id", "1")
+                        .param("parentId", "1")
+                        .param("teamId", "1")
+                        .param("projectId", "1")
+                        .param("deadline", "2024-12-12T10:32")
+                        .param("estimatedHours", "1")
+                        .param("actualHours", "1")
+                        .param("allottedHours", "1")
+                        .param("status", "TODO"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/organisation/1/department/1/team/1/project/1"));
     }

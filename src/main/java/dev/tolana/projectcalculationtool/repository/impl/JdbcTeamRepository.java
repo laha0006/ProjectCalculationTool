@@ -27,7 +27,6 @@ public class JdbcTeamRepository implements TeamRepository {
     }
 
 
-
     @Override
     public List<Entity> getAllEntitiesOnUsername(String username) {
 
@@ -65,7 +64,7 @@ public class JdbcTeamRepository implements TeamRepository {
                 archived = rs.getBoolean(6);
                 department_id = rs.getLong(4);
 
-                teams.add(new Team(id, name, description,dateCreated, archived, department_id));
+                teams.add(new Team(id, name, description, dateCreated, archived, department_id));
             }
 
 
@@ -146,7 +145,7 @@ public class JdbcTeamRepository implements TeamRepository {
                 """;
 //        SELECT * FROM project
 //        WHERE team_id = ?;
-        try (Connection connection = dataSource.getConnection()){
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement pstmt = connection.prepareStatement(getAllTeamsFromParent);
             pstmt.setLong(1, teamId);
             ResultSet rs = pstmt.executeQuery();
@@ -166,11 +165,16 @@ public class JdbcTeamRepository implements TeamRepository {
                 );
                 projectList.add(project);
             }
-        }catch (SQLException sqlException) {
+        } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
         }
 
         return projectList;
+    }
+
+    @Override
+    public Entity getParent(long parentId) {
+        return null;
     }
 
     @Override
@@ -186,12 +190,12 @@ public class JdbcTeamRepository implements TeamRepository {
                         Statement.RETURN_GENERATED_KEYS);
                 pstmtAdd.setString(1, entity.getName());
                 pstmtAdd.setString(2, entity.getDescription());
-                pstmtAdd.setLong(3, ((Team)entity).getDepartmentId());
+                pstmtAdd.setLong(3, ((Team) entity).getDepartmentId());
                 int affectedRows = pstmtAdd.executeUpdate();
                 isCreated = affectedRows > 0;
 
                 ResultSet rs = pstmtAdd.getGeneratedKeys();
-                if(rs.next()) {
+                if (rs.next()) {
                     long teamId = rs.getLong(1);
                     RoleAssignUtil.assignTeamRole(connection, teamId,
                             UserRole.TEAM_OWNER, username);
@@ -211,10 +215,22 @@ public class JdbcTeamRepository implements TeamRepository {
     }
 
 
-
     @Override
     public boolean editEntity(Entity entity) {
-        return false;
+        String SQL = """
+                UPDATE team SET name = ?, description = ? WHERE id = ?
+                """;
+        try (Connection con = dataSource.getConnection()) {
+            PreparedStatement pstmt = con.prepareStatement(SQL);
+            pstmt.setString(1, entity.getName());
+            pstmt.setString(2, entity.getDescription());
+            pstmt.setLong(3, entity.getId());
+            int affectedRows = pstmt.executeUpdate();
+            return affectedRows > 0;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -224,7 +240,7 @@ public class JdbcTeamRepository implements TeamRepository {
                 DELETE FROM team WHERE id = ?;
                 """;
 
-        try (Connection connection = dataSource.getConnection()){
+        try (Connection connection = dataSource.getConnection()) {
             try {
                 connection.setAutoCommit(false);
 

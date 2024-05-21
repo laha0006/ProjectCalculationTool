@@ -47,6 +47,11 @@
                         </div>
 
                         <div class="d-inline">
+                            <a th:href="@{{deptId}/members (deptId = ${department.id})}"
+                               class="btn btn-success fw-bold">Se medlemmer</a>
+                        </div>
+
+                        <div class="d-inline">
                             <a th:href="@{/organisation/{orgId}/department/{deptId}/edit (orgId = ${department.parentId}, deptId = ${department.id})}"
                                class="btn btn-primary fw-bold">Ændr afdeling</a>
                         </div>

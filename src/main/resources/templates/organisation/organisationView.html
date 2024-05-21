@@ -48,6 +48,11 @@
                         </div>
 
                         <div class="d-inline">
+                            <a th:href="@{{id}/members (id = ${organisation.id}) }"
+                               class="btn btn-success fw-bold">Se medlemmer</a>
+                        </div>
+
+                        <div class="d-inline">
                             <a th:href="@{/organisation/{id}/edit (id = ${organisation.id}) }"
                                class="btn btn-primary fw-bold">Ændr organisation</a>
                         </div>

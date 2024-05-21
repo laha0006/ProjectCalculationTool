@@ -250,6 +250,11 @@ public class JdbcProjectRepository implements ProjectRepository {
     }
 
     @Override
+    public Entity getParent(long parentId) {
+        return null;
+    }
+
+    @Override
     public List<Project> getSubProjects(long projectId) {
         List<Project> subProjects = new ArrayList<>();
         String getTasks = """
@@ -300,7 +305,38 @@ public class JdbcProjectRepository implements ProjectRepository {
 
     @Override
     public boolean editEntity(Entity entity) {
-        return false;
+        boolean isEdited;
+        String edit = """
+                UPDATE project SET name=?, description=?, deadline=?, allotted_hours=?, status=? WHERE id =?;
+                """;
+
+        try (Connection connection = dataSource.getConnection()){
+            try {
+                connection.setAutoCommit(false);
+
+                PreparedStatement pstmt = connection.prepareStatement(edit);
+                pstmt.setString(1, entity.getName());
+                pstmt.setString(2, entity.getDescription());
+                pstmt.setDate(3, Date.valueOf(((Project)entity).getDeadline().toLocalDate()));
+                pstmt.setInt(4, ((Project)entity).getAllottedHours());
+                pstmt.setLong(5, ((Project)entity).getStatusId());
+                pstmt.setLong(6, entity.getId());
+                int affectedRows = pstmt.executeUpdate();
+
+                isEdited = affectedRows > 0;
+
+                connection.commit();
+                connection.setAutoCommit(true);
+            }catch (SQLException sqlException) {
+                connection.rollback();
+                connection.setAutoCommit(true);
+                throw new RuntimeException(sqlException);
+            }
+        }catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+
+        return isEdited;
     }
 
     @Override
@@ -394,19 +430,9 @@ public class JdbcProjectRepository implements ProjectRepository {
                 WHERE uer.team_id = ?
                     AND uer_project.username IS NULL;
                  """;
-        //TODO THIS QUERY MIGHT NOT WORK
-        //TODO OLD QUERY
-//        SELECT uer.username
-//        FROM user_entity_role AS uer
-//        WHERE uer.team_id = 1
-//        AND uer.username NOT IN (
-//                SELECT username
-//                FROM user_entity_role
-//                WHERE project_id = 1);
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement pstmt = connection.prepareStatement(getTeamMembersFromTeamId);
             pstmt.setLong(1, teamId);
-//            pstmt.setLong(2, projectId);
             ResultSet teamMembersRs = pstmt.executeQuery();
 
             while (teamMembersRs.next()) {
@@ -451,6 +477,22 @@ public class JdbcProjectRepository implements ProjectRepository {
 
     @Override
     public List<Status> getStatusList() {
-        return null;
+        List<Status> statusList = new ArrayList<>();
+        String selectQuery = """
+                SELECT name FROM status;
+                """;
+
+        try(Connection connection = dataSource.getConnection()) {
+            PreparedStatement pstmt = connection.prepareStatement(selectQuery);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                statusList.add(Status.valueOf(rs.getString(1)));
+            }
+
+        }catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+
+        return statusList;
     }
 }

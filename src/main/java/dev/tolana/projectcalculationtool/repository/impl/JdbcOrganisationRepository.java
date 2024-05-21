@@ -1,5 +1,6 @@
 package dev.tolana.projectcalculationtool.repository.impl;
 
+import dev.tolana.projectcalculationtool.dto.UserEntityRoleDto;
 import dev.tolana.projectcalculationtool.dto.UserInformationDto;
 import dev.tolana.projectcalculationtool.enums.UserRole;
 import dev.tolana.projectcalculationtool.model.*;
@@ -162,6 +163,11 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
     }
 
     @Override
+    public Entity getParent(long parentId) {
+        return null;
+    }
+
+    @Override
     public boolean editEntity(Entity entity) {
         boolean isEdited;
         String editOrganisation = """
@@ -240,8 +246,48 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
     }
 
     @Override
-    public List<UserInformationDto> getUsersFromEntityId(long entityId) {
+    public List<UserInformationDto> getUsersFromEntityId(long entityId){
         return null;
+    }
+
+    @Override
+    public List<UserEntityRoleDto> getUsersFromOrganisationId(long entityId) {
+        List<UserEntityRoleDto> users = new ArrayList<>();
+
+        try (Connection connection = dataSource.getConnection()) {
+            String getAllUsersFromOrganisation = """
+                    SELECT username, role_id, task_id, project_id, team_id, department_id, organisation_id
+                    FROM user_entity_role
+                    JOIN organisation ON user_entity_role.organisation_id = organisation.id
+                    JOIN role ON user_entity_role.role_id = role.id
+                    WHERE organisation.id = ?;
+                    """;
+
+            PreparedStatement pstmt = connection.prepareStatement(getAllUsersFromOrganisation);
+            pstmt.setLong(1, entityId);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+
+                String username = rs.getString(1);
+                long roleId = rs.getLong(2);
+                long taskId = rs.getLong(3);
+                long projectId = rs.getLong(4);
+                long teamId = rs.getLong(5);
+                long deptId = rs.getLong(6);
+                long orgId = rs.getLong(7);
+
+                users.add(new UserEntityRoleDto(username,roleId,taskId,projectId,
+                        teamId,deptId,orgId));
+            }
+
+
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
+
+        return users;
     }
 
     @Override
