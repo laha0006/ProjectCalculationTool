@@ -43,6 +43,7 @@ public class ProjectController {
         model.addAttribute("orgId", orgId);
         model.addAttribute("deptId", deptId);
         model.addAttribute("teamId", teamId);
+        model.addAttribute("projectId", projectId);
 
         return "project/projectView";
     }
