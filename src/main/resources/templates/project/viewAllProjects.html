@@ -53,6 +53,9 @@
                             <button class="btn btn-secondary fw-bold">Tilbage</button>
                         </a>
                     </div>
+                    <div sec:authorize="@auth.hasOrgansiationAccess()">
+
+                    </div>
                 </div>
             </main>
         </div>
