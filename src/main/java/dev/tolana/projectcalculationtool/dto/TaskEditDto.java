@@ -6,6 +6,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDateTime;
 
 public record TaskEditDto (
+        long id,
         String taskName,
         String description,
         long parentId,
