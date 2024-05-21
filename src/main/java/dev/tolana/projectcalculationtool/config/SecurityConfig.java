@@ -22,10 +22,14 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/style.css").permitAll()
                         .requestMatchers("/user/register").permitAll()
-                        .requestMatchers("/*.css").permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/user/login").permitAll()
+                        .requestMatchers("/user/**").authenticated()
+                        .requestMatchers("/dashboard").authenticated()
+                        .requestMatchers("/dashboard/**").authenticated()
+                        .requestMatchers("/organisation").authenticated()
+                        .requestMatchers("/organisation/**").authenticated()
+                        .anyRequest().permitAll()
                 )
                 .formLogin(form -> form
                         .loginPage("/user/login")
