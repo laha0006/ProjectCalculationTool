@@ -8,15 +8,14 @@ import dev.tolana.projectcalculationtool.exception.EntityException;
 import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.ResourceEntity;
 import dev.tolana.projectcalculationtool.model.Task;
-import dev.tolana.projectcalculationtool.repository.ResourceEntityCrudOperations;
 import dev.tolana.projectcalculationtool.repository.TaskRepository;
+import dev.tolana.projectcalculationtool.util.RoleAssignUtil;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Repository
 public class JdbcTaskRepository implements TaskRepository {
@@ -34,12 +33,26 @@ public class JdbcTaskRepository implements TaskRepository {
         try (Connection connection = dataSource.getConnection()) {
             try {//query for task creation only concerns values that are not default
                 connection.setAutoCommit(false);
-                String createTask = isParentOrChildTask((ResourceEntity) task);
-                PreparedStatement pstmt = connection.prepareStatement(createTask);
+                String createTask = determineCreationQuery((ResourceEntity) task);
+                PreparedStatement pstmt = connection.prepareStatement(createTask, Statement.RETURN_GENERATED_KEYS);
                 setTaskAttributeValues(pstmt, (Task) task);
 
                 int affectedRows = pstmt.executeUpdate();
                 isCreated = affectedRows > 0;
+
+                ResultSet generatedKey = pstmt.getGeneratedKeys();
+                if (generatedKey.next()){
+                    long taskId = generatedKey.getLong(1);
+                    RoleAssignUtil.assignTaskRole(connection, taskId, UserRole.TASK_OWNER, username);
+
+                } else {
+                    connection.rollback();
+                    connection.setAutoCommit(true);
+                    throw new EntityException("Opgaven blev ikke oprettet, noget gik galt!", Alert.DANGER);
+                }
+
+                connection.commit();
+                connection.setAutoCommit(true);
 
             } catch (SQLException sqlException) {
                 connection.rollback();
@@ -49,17 +62,14 @@ public class JdbcTaskRepository implements TaskRepository {
                 }
                 throw new EntityException("Opgave blev ikke oprettet, noget gik galt!", Alert.DANGER);
             }
-            connection.commit();
-            connection.setAutoCommit(true);
 
         } catch (SQLException sqlException) {
             throw new EntityException("Opgave blev ikke oprettet, noget gik galt!", Alert.DANGER);
         }
-//TODO WHEN TASK GETS CREATED IT IS BY DEFAULT UNASSIGEN A PROJECT MEMBER, THEREFORE CREATE METHOD WHERE MEMBER GET ASSIGEND A TASK TOO AND NOT ONLY A PROJECT
         return isCreated;
     }
 
-    private String isParentOrChildTask(ResourceEntity task) {
+    private String determineCreationQuery(ResourceEntity task) {
         String sql;
         if (task.getParentId() == 0) {
             sql = """
@@ -87,6 +97,7 @@ public class JdbcTaskRepository implements TaskRepository {
                 pstmt.setLong(3, task.getProjectId());
                 pstmt.setDate(4, Date.valueOf(task.getDeadline().toLocalDate()));
                 pstmt.setInt(5, task.getEstimatedHours());
+
             } else {
                 pstmt.setString(1, task.getName());
                 pstmt.setString(2, task.getDescription());
@@ -223,8 +234,8 @@ public class JdbcTaskRepository implements TaskRepository {
                 FROM task t
                      LEFT JOIN status s
                                ON t.status = s.id
-                WHERE t.parent_id = ? AND t.parent_id IS NOT NULL;
-                """; //TODO: IS THE "AND parent_id IS NOT NULL" REDUNDANT?
+                WHERE t.parent_id = ?;
+                """;
 
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement pstmt = connection.prepareStatement(getTasks);
@@ -258,7 +269,7 @@ public class JdbcTaskRepository implements TaskRepository {
     public boolean editEntity(Entity entity) {
         boolean isEdited;
         String edit = """
-                UPDATE task SET name=?, description=?, deadline=?, estimated_hours=?, status=? WHERE id =?;
+                UPDATE task SET name=?, description=?, deadline=?, estimated_hours=?, actual_hours=?, status=? WHERE id =?;
                 """;
 
         try (Connection connection = dataSource.getConnection()) {
@@ -270,19 +281,20 @@ public class JdbcTaskRepository implements TaskRepository {
                 pstmt.setString(2, entity.getDescription());
                 pstmt.setDate(3, Date.valueOf(((Task) entity).getDeadline().toLocalDate()));
                 pstmt.setInt(4, ((Task) entity).getEstimatedHours());
-                pstmt.setLong(5, ((Task) entity).getStatusId());
-                pstmt.setLong(6, entity.getId());
+                pstmt.setInt(5, ((Task) entity).getActualHours());
+                pstmt.setLong(6, ((Task) entity).getStatusId());
+                pstmt.setLong(7, entity.getId());
                 int affectedRows = pstmt.executeUpdate();
 
                 isEdited = affectedRows > 0;
 
+                connection.commit();
+                connection.setAutoCommit(true);
             } catch (SQLException sqlException) {
                 connection.rollback();
                 connection.setAutoCommit(true);
                 throw new EntityException("Opgave blev ikke opdateret, noget gik galt!", Alert.DANGER);
             }
-            connection.commit();
-            connection.setAutoCommit(true);
         } catch (SQLException sqlException) {
             throw new EntityException("Opgave blev ikke opdateret, noget gik galt!", Alert.DANGER);
         }
@@ -343,11 +355,6 @@ public class JdbcTaskRepository implements TaskRepository {
     @Override
     public List<UserRole> getAllUserRoles() {
         return null;
-    }
-
-    @Override
-    public boolean changeStatus(long resourceEntityId) {
-        return false;
     }
 
     @Override
