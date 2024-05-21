@@ -28,7 +28,7 @@ public class JdbcTeamRepository implements TeamRepository {
         this.dataSource = dataSource;
     }
 
-
+    //OBSOLETE!
     @Override
     public List<Entity> getAllEntitiesOnUsername(String username) {
 
@@ -96,7 +96,7 @@ public class JdbcTeamRepository implements TeamRepository {
                 );
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new EntityException("Team blev ikke fundet, noget gik galt!", Alert.WARNING);
         }
         return team;
     }
@@ -121,7 +121,7 @@ public class JdbcTeamRepository implements TeamRepository {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new EntityException("Kunne ikke hente teams, noget gik galt!", Alert.WARNING);
         }
         return teams;
     }
@@ -168,7 +168,7 @@ public class JdbcTeamRepository implements TeamRepository {
                 projectList.add(project);
             }
         } catch (SQLException sqlException) {
-            throw new RuntimeException(sqlException);
+            throw new EntityException("Kunne ikke hente projekter, noget gik galt!", Alert.WARNING);
         }
 
         return projectList;
@@ -239,7 +239,7 @@ public class JdbcTeamRepository implements TeamRepository {
             return affectedRows > 0;
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new EntityException("Team blev ikke opdateret, noget gik galt!", Alert.DANGER);
         }
     }
 
@@ -257,18 +257,17 @@ public class JdbcTeamRepository implements TeamRepository {
                 PreparedStatement pstmt = connection.prepareStatement(deleteTask);
                 pstmt.setLong(1, teamId);
                 int affectedRows = pstmt.executeUpdate();
-
                 isDeleted = affectedRows > 0;
 
-                connection.commit();
-                connection.setAutoCommit(true);
             } catch (SQLException sqlException) {
                 connection.rollback();
                 connection.setAutoCommit(true);
-                throw new RuntimeException(sqlException);
+                throw new EntityException("Team blev ikke slettet, noget gik galt!", Alert.DANGER);
             }
+            connection.commit();
+            connection.setAutoCommit(true);
         } catch (SQLException sqlException) {
-            throw new RuntimeException(sqlException);
+            throw new EntityException("Team blev ikke slettet, noget gik galt!", Alert.DANGER);
         }
         return isDeleted;
     }
