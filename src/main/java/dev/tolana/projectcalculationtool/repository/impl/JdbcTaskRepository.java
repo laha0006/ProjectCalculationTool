@@ -10,6 +10,7 @@ import dev.tolana.projectcalculationtool.model.ResourceEntity;
 import dev.tolana.projectcalculationtool.model.Task;
 import dev.tolana.projectcalculationtool.repository.ResourceEntityCrudOperations;
 import dev.tolana.projectcalculationtool.repository.TaskRepository;
+import dev.tolana.projectcalculationtool.util.RoleAssignUtil;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -22,9 +23,11 @@ import java.util.Set;
 public class JdbcTaskRepository implements TaskRepository {
 
     private final DataSource dataSource;
+    private final RoleAssignUtil roleAssignUtil;
 
-    public JdbcTaskRepository(DataSource dataSource) {
+    public JdbcTaskRepository(DataSource dataSource, RoleAssignUtil roleAssignUtil) {
         this.dataSource = dataSource;
+        this.roleAssignUtil = roleAssignUtil;
     }
 
     @Override
@@ -35,11 +38,20 @@ public class JdbcTaskRepository implements TaskRepository {
             try {//query for task creation only concerns values that are not default
                 connection.setAutoCommit(false);
                 String createTask = isParentOrChildTask((ResourceEntity) task);
-                PreparedStatement pstmt = connection.prepareStatement(createTask);
+                PreparedStatement pstmt = connection.prepareStatement(createTask,Statement.RETURN_GENERATED_KEYS);
                 setTaskAttributeValues(pstmt, (Task) task);
 
                 int affectedRows = pstmt.executeUpdate();
                 isCreated = affectedRows > 0;
+                ResultSet generatedKeys = pstmt.getGeneratedKeys();
+                if (generatedKeys.next()) {
+                    long id = generatedKeys.getLong(1);
+                    RoleAssignUtil.assignTaskRole(connection,id,UserRole.TASK_OWNER,username);
+                } else {
+                    connection.rollback();
+                    connection.setAutoCommit(true);
+                    throw new EntityException("Task blev ikke oprettet, noget gik galt!",Alert.DANGER);
+                }
 
             } catch (SQLException sqlException) {
                 connection.rollback();
