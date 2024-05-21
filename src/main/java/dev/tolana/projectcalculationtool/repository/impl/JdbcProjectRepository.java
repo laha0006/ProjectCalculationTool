@@ -482,11 +482,6 @@ public class JdbcProjectRepository implements ProjectRepository {
     }
 
     @Override
-    public boolean changeStatus(long resourceEntityId) {
-        return false;
-    }
-
-    @Override
     public List<Status> getStatusList() {
         List<Status> statusList = new ArrayList<>();
         String selectQuery = """
