@@ -2,8 +2,10 @@ package dev.tolana.projectcalculationtool.repository.impl;
 
 import dev.tolana.projectcalculationtool.dto.TaskDto;
 import dev.tolana.projectcalculationtool.dto.UserInformationDto;
+import dev.tolana.projectcalculationtool.enums.Alert;
 import dev.tolana.projectcalculationtool.enums.Status;
 import dev.tolana.projectcalculationtool.enums.UserRole;
+import dev.tolana.projectcalculationtool.exception.EntityException;
 import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.Project;
 import dev.tolana.projectcalculationtool.model.Task;
@@ -47,19 +49,26 @@ public class JdbcProjectRepository implements ProjectRepository {
                     projectId = generatedKey.getLong(1);
                     RoleAssignUtil.assignProjectRole(connection, projectId, UserRole.PROJECT_OWNER, username);
                     isCreated = true;
+                } else {
+                    connection.rollback();
+                    connection.setAutoCommit(true);
+                    throw new EntityException("Projekt blev ikke oprettet, noget gik galt!", Alert.DANGER);
                 }
 
-                connection.commit();
-                connection.setAutoCommit(true);
 
             } catch (SQLException sqlException) {
                 connection.rollback();
                 connection.setAutoCommit(true);
-                throw new RuntimeException(sqlException);
+                if (sqlException instanceof DataTruncation) {
+                    throw new EntityException("Projekt blev ikke oprettet, navn eller beskrivelse er for lang!", Alert.WARNING);
+                }
+                throw new EntityException("Projekt blev ikke oprettet, noget gik galt!", Alert.DANGER);
             }
+            connection.commit();
+            connection.setAutoCommit(true);
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new EntityException("Projekt blev ikke oprettet, noget gik galt!", Alert.DANGER);
         }
 
         return isCreated;
@@ -137,9 +146,11 @@ public class JdbcProjectRepository implements ProjectRepository {
                         rs.getLong(4),
                         rs.getInt(7)
                 );
+            } else {
+                throw new EntityException("Projekt blev ikke fundet, noget gik galt!", Alert.WARNING);
             }
         } catch (SQLException sqlException) {
-            throw new RuntimeException(sqlException);
+            throw new EntityException("Projekt blev ikke fundet, noget gik galt!", Alert.WARNING);
         }
 
         return project;
@@ -243,7 +254,7 @@ public class JdbcProjectRepository implements ProjectRepository {
                 taskList.add(task);
             }
         } catch (SQLException sqlException) {
-            throw new RuntimeException(sqlException);
+            throw new EntityException("Projekt blev hente opgaver, noget gik galt!", Alert.WARNING);
         }
 
         return taskList;
@@ -296,7 +307,7 @@ public class JdbcProjectRepository implements ProjectRepository {
                 subProjects.add(project);
             }
         } catch (SQLException sqlException) {
-            throw new RuntimeException(sqlException);
+            throw new EntityException("Sub-projekter blev ikke fundet, noget gik galt!", Alert.WARNING);
         }
 
         return subProjects;
@@ -310,30 +321,30 @@ public class JdbcProjectRepository implements ProjectRepository {
                 UPDATE project SET name=?, description=?, deadline=?, allotted_hours=?, status=? WHERE id =?;
                 """;
 
-        try (Connection connection = dataSource.getConnection()){
+        try (Connection connection = dataSource.getConnection()) {
             try {
                 connection.setAutoCommit(false);
 
                 PreparedStatement pstmt = connection.prepareStatement(edit);
                 pstmt.setString(1, entity.getName());
                 pstmt.setString(2, entity.getDescription());
-                pstmt.setDate(3, Date.valueOf(((Project)entity).getDeadline().toLocalDate()));
-                pstmt.setInt(4, ((Project)entity).getAllottedHours());
-                pstmt.setLong(5, ((Project)entity).getStatusId());
+                pstmt.setDate(3, Date.valueOf(((Project) entity).getDeadline().toLocalDate()));
+                pstmt.setInt(4, ((Project) entity).getAllottedHours());
+                pstmt.setLong(5, ((Project) entity).getStatusId());
                 pstmt.setLong(6, entity.getId());
                 int affectedRows = pstmt.executeUpdate();
 
                 isEdited = affectedRows > 0;
 
-                connection.commit();
-                connection.setAutoCommit(true);
-            }catch (SQLException sqlException) {
+            } catch (SQLException sqlException) {
                 connection.rollback();
                 connection.setAutoCommit(true);
-                throw new RuntimeException(sqlException);
+                throw new EntityException("Projekt blev ikke opdateret, noget gik galt!", Alert.DANGER);
             }
-        }catch (SQLException sqlException) {
-            throw new RuntimeException(sqlException);
+            connection.commit();
+            connection.setAutoCommit(true);
+        } catch (SQLException sqlException) {
+            throw new EntityException("Projekt blev ikke opdateret, noget gik galt!", Alert.DANGER);
         }
 
         return isEdited;
@@ -356,16 +367,16 @@ public class JdbcProjectRepository implements ProjectRepository {
 
                 isDeleted = affectedRows > 0;
 
-                connection.commit();
-                connection.setAutoCommit(true);
 
             } catch (SQLException sqlException) {
                 connection.rollback();
                 connection.setAutoCommit(true);
-                throw new RuntimeException(sqlException);
+                throw new EntityException("Projekt blev ikke slettet, noget gik galt!", Alert.DANGER);
             }
+            connection.commit();
+            connection.setAutoCommit(true);
         } catch (SQLException sqlException) {
-            throw new RuntimeException(sqlException);
+            throw new EntityException("Projekt blev ikke slettet, noget gik galt!", Alert.DANGER);
         }
 
         return isDeleted;
@@ -442,12 +453,12 @@ public class JdbcProjectRepository implements ProjectRepository {
                 userInformationDtoList.add(member);
             }
         } catch (SQLException sqlException) {
-            throw new RuntimeException(sqlException);
+            throw new EntityException("Kunne ikke finde team medlemmer.", Alert.DANGER);
         }
 
         return userInformationDtoList;
     }
-
+    //TODO COMBINE IN QUERY
     @Override
     public List<UserRole> getAllUserRoles() {
         List<UserRole> roles = new ArrayList<>(2);
@@ -482,14 +493,14 @@ public class JdbcProjectRepository implements ProjectRepository {
                 SELECT name FROM status;
                 """;
 
-        try(Connection connection = dataSource.getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement pstmt = connection.prepareStatement(selectQuery);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 statusList.add(Status.valueOf(rs.getString(1)));
             }
 
-        }catch (SQLException sqlException) {
+        } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
         }
 
