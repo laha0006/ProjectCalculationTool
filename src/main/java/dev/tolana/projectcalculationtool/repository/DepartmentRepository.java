@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface DepartmentRepository extends EntityCrudOperations{
 
-    List<UserEntityRoleDto> getUsersFromOrganisationId(long organisationId);
+    List<UserEntityRoleDto> getUsersFromOrganisationId(long organisationId, long departmentId);
 }

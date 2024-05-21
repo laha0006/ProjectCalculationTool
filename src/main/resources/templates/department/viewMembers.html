@@ -29,11 +29,11 @@
                                     -->
 
                                     <span th:if="${user.departmentId == 0}">
-                                        <button class="btn btn-success btn-sm fw-bold" type="submit">Invite</button>
+                                        <button class="btn btn-success btn-sm fw-bold" type="submit">Tildel Rolle</button>
                                     </span>
                                     <span th:if="${user.departmentId == department.id}">
                                         <button class="btn btn-success btn-sm fw-bold" type="submit">Rettigheder</button>
-                                        <button class="btn btn-danger btn-sm fw-bold" type="submit">Kick</button>
+                                        <button class="btn btn-danger btn-sm fw-bold" type="submit">Fjern</button>
                                     </span>
                                 </div>
                             </td>

@@ -44,7 +44,7 @@ public class DepartmentController {
         model.addAttribute("organisation", organisation);
 
         List<UserEntityRoleDto> users = departmentService.getUsersFromOrganisationId(
-                            organisation.id());
+                            organisation.id(),departmentId);
         model.addAttribute("orgUsers",users);
 
         return "department/viewMembers";

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Repository
@@ -271,20 +272,20 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
     }
 
     @Override
-    public List<UserEntityRoleDto> getUsersFromOrganisationId(long organisationId) {
+    public List<UserEntityRoleDto> getUsersFromOrganisationId(long organisationId, long departmentId) {
         List<UserEntityRoleDto> users = new ArrayList<>();
 
         try (Connection connection = dataSource.getConnection()) {
             String getAllUsersFromOrganisation = """
                     SELECT username, role_id, task_id, project_id, team_id, department_id, organisation_id
                     FROM user_entity_role
-                    JOIN organisation ON user_entity_role.organisation_id = organisation.id
-                    JOIN role ON user_entity_role.role_id = role.id
-                    WHERE organisation.id = ?;
+                    WHERE organisation_id = ? OR department_id = ?
+                    ORDER BY username;
                     """;
 
             PreparedStatement pstmt = connection.prepareStatement(getAllUsersFromOrganisation);
             pstmt.setLong(1, organisationId);
+            pstmt.setLong(2, departmentId);
 
             ResultSet rs = pstmt.executeQuery();
 
@@ -298,8 +299,10 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
                 long deptId = rs.getLong(6);
                 long orgId = rs.getLong(7);
 
-                users.add(new UserEntityRoleDto(username, roleId, taskId, projectId,
-                        teamId, deptId, orgId));
+                UserEntityRoleDto newUser = new UserEntityRoleDto(username, roleId, taskId, projectId,
+                        teamId, deptId, orgId);
+
+                users.add(newUser);
             }
 
 
@@ -307,6 +310,34 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
             sqlException.printStackTrace();
         }
 
-        return users;
+
+        List<UserEntityRoleDto> cleanedUsers = getCleanUserEntityRoleDtos(users);
+
+        System.out.println(cleanedUsers);
+        return cleanedUsers;
+    }
+
+    private static List<UserEntityRoleDto> getCleanUserEntityRoleDtos(List<UserEntityRoleDto> users) {
+        //takes the list of user entities sorted by Username and checks if there's a duplicate
+        //if there is a duplicate, the first one will always have 0 as deptId, and so it is set
+        //to the second one's deptId, which is then used for operations in the html page
+        List<UserEntityRoleDto> cleanedUsers = new ArrayList<>();
+        for (int i = 0; i < users.size(); i++) {
+            if(i+1 != users.size()){ //avoids out of bounds
+                if (users.get(i+1).username().equals(users.get(i).username())){
+                    cleanedUsers.add(new UserEntityRoleDto(users.get(i).username(),
+                            users.get(i).roleId(), users.get(i).taskId(), users.get(i).projectId(),
+                            users.get(i).teamId(), users.get(i+1).departmentId(),
+                            users.get(i).organizationId()));
+                }else if(i != 0){ //avoids out of bounds
+                    if (!users.get(i-1).username().equals(users.get(i).username())){
+                        cleanedUsers.add(users.get(i));
+                    }
+                }
+            }else{
+                cleanedUsers.add(users.get(i));
+            }
+        }
+        return cleanedUsers;
     }
 }

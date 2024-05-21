@@ -74,7 +74,7 @@ public class DepartmentService {
         return entityDtoMapper.toEntityViewDto(organisation);
     }
 
-    public List<UserEntityRoleDto> getUsersFromOrganisationId(long organisationId){
-        return jdbcDepartmentRepository.getUsersFromOrganisationId(organisationId);
+    public List<UserEntityRoleDto> getUsersFromOrganisationId(long organisationId,long departmentId){
+        return jdbcDepartmentRepository.getUsersFromOrganisationId(organisationId,departmentId);
     }
 }
