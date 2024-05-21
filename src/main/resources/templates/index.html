@@ -1,13 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
+<html th:fragment="" lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      data-bs-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <title>index</title>
+    <th:block th:insert="~{fragments/head :: headFiles}"></th:block>
+    <title>Title</title>
 </head>
 <body>
+<div class="container">
+    <div class="d-flex flex-column justify-content-between min-vh-100">
+        <div>
+            <!--      IMAGE SOURCE: https://pixabay.com/illustrations/industry-4-web-network-points-2741774/-->
+            <header th:replace="~{fragments/header :: header}"></header>
+            <main class="d-flex justify-content-center text-center py-3 px-5">
+                <div>
+                    <div class="mb-5">
+                        <h1 class="display-1 fw-bold">
+                            Projekt styring som aldrig set før!
+                        </h1>
+                    </div>
 
-<!--TODO add redirect-->
-
-
+                    <div class="row row-cols-1 row-cols-sm-3 g-5 mt-5" style="">
+                        <div class="col">
+                            <div class="card bg-secondary-subtle" style="width: 300px">
+                                <img src="/images/projektOverblik.png" class="card-img-top" alt="...">
+                                <div class="card-body">
+                                    <h5 class="card-title">Projekt overblik</h5>
+                                    <p class="card-text">Hold styr på dine projekter!</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card bg-secondary-subtle" style="width: 300px">
+                                <img src="/images/stats.png" class="card-img-top" alt="...">
+                                <div class="card-body">
+                                    <h5 class="card-title">Stats</h5>
+                                    <p class="card-text">Skab dig en dybere forståelse for dit projekts tilstand med stats!</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card bg-secondary-subtle" style="width: 300px">
+                                <img src="/images/ivnitationer.png" class="card-img-top" alt="...">
+                                <div class="card-body">
+                                    <h5 class="card-title">Invitér dine medarbejdere</h5>
+                                    <p class="card-text">Et projekt er bedre når der er flere om det!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+        <footer th:replace="~{fragments/footer :: footer}"></footer>
+    </div>
+</div>
 </body>
 </html>
