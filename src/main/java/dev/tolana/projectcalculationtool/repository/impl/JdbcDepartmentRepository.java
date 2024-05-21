@@ -41,12 +41,12 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
                         Statement.RETURN_GENERATED_KEYS);
                 pstmtAdd.setString(1, entity.getName());
                 pstmtAdd.setString(2, entity.getDescription());
-                pstmtAdd.setLong(3, ((Department)entity).getOrganisationId());
+                pstmtAdd.setLong(3, ((Department) entity).getOrganisationId());
                 int affectedRows = pstmtAdd.executeUpdate();
                 isCreated = affectedRows > 0;
 
                 ResultSet rs = pstmtAdd.getGeneratedKeys();
-                if(rs.next()) {
+                if (rs.next()) {
                     long departmentId = rs.getLong(1);
                     RoleAssignUtil.assignDepartmentRole(connection, departmentId,
                             UserRole.DEPARTMENT_OWNER, username);
@@ -59,7 +59,7 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
             } catch (Exception exception) {
                 connection.rollback();
                 connection.setAutoCommit(true);
-                if(exception instanceof DataTruncation) {
+                if (exception instanceof DataTruncation) {
                     throw new EntityException("Afdeling blev ikke oprettet, navn eller beskrivelse er for lang!", Alert.WARNING);
                 }
                 throw new EntityException("Afdeling blev ikke oprettet, noget gik galt!", Alert.DANGER);
@@ -88,9 +88,11 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
                         resultSet.getBoolean(6),
                         resultSet.getLong(4)
                 );
+            } else {
+                throw new EntityException("Afdeling findes ikke!", Alert.WARNING);
             }
         } catch (SQLException e) {
-            throw new EntityException("Kunne ikke finde afdeling", Alert.WARNING);
+            throw new EntityException("Afdeling findes ikke!", Alert.WARNING);
         }
         return department;
     }
@@ -104,7 +106,7 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
     public List<Entity> getAllEntitiesOnId(long organisationId) {
         List<Entity> departments = new ArrayList<>();
         try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement("select * from department where organisation_id = ?");
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM department WHERE organisation_id = ?");
             preparedStatement.setLong(1, organisationId);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -132,23 +134,23 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
                 WHERE department_id = ?;
                 """;
 
-        try (Connection connection = dataSource.getConnection()){
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement pstmt = connection.prepareStatement(getAllTeamsFromParent);
             pstmt.setLong(1, departmentId);
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
-               Team team = new Team(
-                       rs.getLong(1),
-                       rs.getString(2),
-                       rs.getString(3),
-                       rs.getTimestamp(5).toLocalDateTime(),
-                       rs.getBoolean(6),
-                       rs.getLong(4)
-               );
-               teamList.add(team);
+                Team team = new Team(
+                        rs.getLong(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getTimestamp(5).toLocalDateTime(),
+                        rs.getBoolean(6),
+                        rs.getLong(4)
+                );
+                teamList.add(team);
             }
-        }catch (SQLException sqlException) {
+        } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
         }
 
@@ -189,7 +191,7 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
                 DELETE FROM department WHERE id = ?;
                 """;
 
-        try (Connection connection = dataSource.getConnection()){
+        try (Connection connection = dataSource.getConnection()) {
             try {
                 connection.setAutoCommit(false);
 
@@ -238,7 +240,7 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
     }
 
     @Override
-    public List<UserEntityRoleDto> getUsersFromOrganisationId(long organisationId){
+    public List<UserEntityRoleDto> getUsersFromOrganisationId(long organisationId) {
         List<UserEntityRoleDto> users = new ArrayList<>();
 
         try (Connection connection = dataSource.getConnection()) {
@@ -265,8 +267,8 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
                 long deptId = rs.getLong(6);
                 long orgId = rs.getLong(7);
 
-                users.add(new UserEntityRoleDto(username,roleId,taskId,projectId,
-                        teamId,deptId,orgId));
+                users.add(new UserEntityRoleDto(username, roleId, taskId, projectId,
+                        teamId, deptId, orgId));
             }
 
 
