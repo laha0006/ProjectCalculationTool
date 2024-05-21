@@ -84,10 +84,11 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
                         rs.getBoolean(5)
                 );
             } else {
-                throw new OrganisationException("organisation findes ikke.");
+                throw new OrganisationException("organisation findes ikke!");
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+//            throw new RuntimeException(e);
+            throw new OrganisationException("organisation findes ikke!");
         }
         return organisation;
     }
