@@ -7,6 +7,7 @@ import dev.tolana.projectcalculationtool.dto.UserEntityRoleDto;
 import dev.tolana.projectcalculationtool.dto.UserInformationDto;
 import dev.tolana.projectcalculationtool.enums.EntityType;
 import dev.tolana.projectcalculationtool.service.OrganisationService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -64,6 +65,7 @@ public class OrganisationController {
 
         return "organisation/createOrganisation";
     }
+
 
     @PostMapping("/create")
     public String createOrganisation(@ModelAttribute EntityCreationDto creationInfo, Authentication authentication) {
