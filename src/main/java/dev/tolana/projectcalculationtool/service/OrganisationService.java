@@ -5,6 +5,7 @@ import dev.tolana.projectcalculationtool.mapper.EntityDtoMapper;
 import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.Invitation;
 import dev.tolana.projectcalculationtool.repository.OrganisationRepository;
+import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +36,7 @@ public class OrganisationService {
         }
         return notArchivedOrganisations;
     }
+
 
     public void createOrganisation(String username, EntityCreationDto creationInfo) {
         Entity organisation = entityDtoMapper.toEntity(creationInfo);
@@ -78,6 +80,10 @@ public class OrganisationService {
         organisationRepository.deleteEntity(organisationId);
     }
 
+    @PreAuthorize("@auth.hasOrgansiationAccess(#organisationId, " +
+                  "T(dev.tolana.projectcalculationtool.enums.Permission).ORGANISATION_READ)")
+    @PostFilter("@auth.hasDepartmentAccess(filterObject.id," +
+                "T(dev.tolana.projectcalculationtool.enums.Permission).DEPARTMENT_READ)")
     public List<EntityViewDto> getChildren(long organisationId) {
         List<Entity> departments = organisationRepository.getChildren(organisationId);
         return entityDtoMapper.toEntityViewDtoList(departments);
