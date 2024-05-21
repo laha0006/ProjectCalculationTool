@@ -3,7 +3,9 @@ package dev.tolana.projectcalculationtool.exception.authorization;
 
 import dev.tolana.projectcalculationtool.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -24,6 +26,16 @@ public class AuthorizationExceptionHandler {
         this.userService = userService;
     }
 
+    @ExceptionHandler(AccessDeniedException.class)
+    public String accessDenied(HttpServletRequest req, RedirectAttributes redirectAttributes) {
+        String referer = req.getHeader("referer");
+        redirectAttributes.addFlashAttribute("alertDanger", "Du har ikke tilladelse til dette!");
+        if (referer == null) {
+            return "redirect:/dashboard";
+        }
+        return "redirect:" + referer;
+    }
+
     @ExceptionHandler(DuplicateKeyException.class)
     public String sqlException(SQLException ex, HttpServletRequest request, RedirectAttributes redirectAttributes) {
         redirectAttributes.addFlashAttribute("alertWarning", "username already exists!");
@@ -33,6 +45,7 @@ public class AuthorizationExceptionHandler {
     @ExceptionHandler(InviteFailureException.class)
     public String inviteFailureException(InviteFailureException ex, HttpServletRequest request, RedirectAttributes redirectAttributes) {
         String referer = request.getHeader("Referer");
+
         redirectAttributes.addFlashAttribute("alertWarning", ex.getMessage());
         return "redirect:" + referer;
     }
@@ -45,8 +58,7 @@ public class AuthorizationExceptionHandler {
     }
 
 
-
-//TODO: figure out a better place to put global model attributes.
+    //TODO: figure out a better place to put global model attributes.
     @ModelAttribute("inviteCount")
     public int getInviteCount(Authentication authentication) {
         if (authentication == null) {
