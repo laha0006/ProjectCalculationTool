@@ -35,6 +35,9 @@ class JdbcTaskRepositoryTest {
 
     @Test
     void editEntity() {
+        //arrange
+        //act
+        //assert
     }
 
     @Test
