@@ -4,6 +4,5 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 public interface EntityExceptionHandler {
-    String warningException(EntityException e, HttpServletRequest request, RedirectAttributes redirectAttributes);
-    String dangerException(EntityException e, HttpServletRequest request, RedirectAttributes redirectAttributes);
+    String handleException(EntityException e, HttpServletRequest request, RedirectAttributes redirectAttributes);
 }
