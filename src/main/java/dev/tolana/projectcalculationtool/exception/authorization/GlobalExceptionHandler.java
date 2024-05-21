@@ -1,11 +1,12 @@
-package dev.tolana.projectcalculationtool.exception;
+package dev.tolana.projectcalculationtool.exception.authorization;
 
 
+import dev.tolana.projectcalculationtool.exception.InviteFailureException;
+import dev.tolana.projectcalculationtool.exception.UserAlreadyInOrganisationException;
 import dev.tolana.projectcalculationtool.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.core.Authentication;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
