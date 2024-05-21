@@ -9,6 +9,7 @@ import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.ResourceEntity;
 import dev.tolana.projectcalculationtool.repository.TeamRepository;
 import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -30,22 +31,26 @@ public class TeamService {
         return teamRepository.getTeamsByUser(username);
     }
  */
-
+    @PreAuthorize("@auth.hasTeamAccess(#teamId," +
+                  "T(dev.tolana.projectcalculationtool.enums.Permission).TEAM_READ)")
     public EntityViewDto getTeam(long teamId){
         Entity team = teamRepository.getEntityOnId(teamId);
         return entityDtoMapper.toEntityViewDto(team);
     }
-
+    @PreAuthorize("@auth.hasTeamAccess(#teamId," +
+                  "T(dev.tolana.projectcalculationtool.enums.Permission).TEAM_EDIT)")
     public EntityEditDto getTeamToEdit(long teamId){
         Entity team = teamRepository.getEntityOnId(teamId);
         return entityDtoMapper.toEntityEditDto(team);
     }
-
+    @PreAuthorize("@auth.hasTeamAccess(#editDto.id()," +
+                  "T(dev.tolana.projectcalculationtool.enums.Permission).TEAM_READ)")
     public void editTeam(EntityEditDto editDto) {
         Entity teamToEdit = entityDtoMapper.toEntity(editDto);
         teamRepository.editEntity(teamToEdit);
     }
-
+    @PreAuthorize("@auth.hasDepartmentAccess(#teamCreationInfo.parentId()," +
+                  "T(dev.tolana.projectcalculationtool.enums.Permission).TEAM_CREATE)")
     public void createTeam(EntityCreationDto teamCreationInfo, String username) {
         Entity teamToCreate = entityDtoMapper.toEntity(teamCreationInfo);
         teamRepository.createEntity(username, teamToCreate);
