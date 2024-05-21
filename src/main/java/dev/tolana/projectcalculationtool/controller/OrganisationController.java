@@ -78,7 +78,7 @@ public class OrganisationController {
     public String editOrganisation(@ModelAttribute EntityEditDto editDto) {
 
         organisationService.editOrganisation(editDto);
-        return "redirect:/organisation/{organisationId}";
+        return "redirect:../{organisationId}";
     }
 
 }
