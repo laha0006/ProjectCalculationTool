@@ -1,6 +1,7 @@
 package dev.tolana.projectcalculationtool.exception.authorization;
 
 
+import dev.tolana.projectcalculationtool.enums.UserRole;
 import dev.tolana.projectcalculationtool.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -67,4 +68,5 @@ public class AuthorizationExceptionHandler {
         String username = authentication.getName();
         return userService.getInvitationsCount(username);
     }
+
 }
