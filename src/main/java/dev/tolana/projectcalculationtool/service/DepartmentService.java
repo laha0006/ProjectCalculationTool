@@ -68,7 +68,8 @@ public class DepartmentService {
     }
 
 
-    //TODO add authorisation check
+    @PreAuthorize("@auth.hasOrgansiationAccess(#parentId, " +
+                  "T(dev.tolana.projectcalculationtool.enums.Permission).DEPARTMENT_EDIT)")
     public EntityViewDto getParent(long parentId) {
         Entity organisation = jdbcDepartmentRepository.getParent(parentId);
         return entityDtoMapper.toEntityViewDto(organisation);
