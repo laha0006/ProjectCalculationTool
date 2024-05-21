@@ -121,7 +121,7 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new EntityException("Noget gik galt, kunne ikke hente afdelinger", Alert.WARNING);
         }
         return departments;
     }
@@ -151,7 +151,8 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
                 teamList.add(team);
             }
         } catch (SQLException sqlException) {
-            throw new RuntimeException(sqlException);
+            throw new EntityException("Kunne ikke hente teams", Alert.WARNING);
+
         }
 
         return teamList;
@@ -172,9 +173,11 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
                         rs.getTimestamp(4).toLocalDateTime(),
                         rs.getBoolean(5)
                 );
+            } else {
+                throw new EntityException("Kunne ikke finde organisation", Alert.WARNING);
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new EntityException("Kunne ikke finde organisation", Alert.WARNING);
         }
         return parent;
     }
@@ -201,15 +204,15 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
 
                 isDeleted = affectedRows > 0;
 
-                connection.commit();
-                connection.setAutoCommit(true);
             } catch (SQLException sqlException) {
                 connection.rollback();
                 connection.setAutoCommit(true);
-                throw new RuntimeException(sqlException);
+                throw new EntityException("Afdeling blev ikke slettet! Noget gik galt.", Alert.DANGER);
             }
+            connection.commit();
+            connection.setAutoCommit(true);
         } catch (SQLException sqlException) {
-            throw new RuntimeException(sqlException);
+            throw new EntityException("Afdeling blev ikke slettet! Noget gik galt.", Alert.DANGER);
         }
         return isDeleted;
     }
