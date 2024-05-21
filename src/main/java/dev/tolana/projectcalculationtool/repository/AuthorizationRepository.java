@@ -5,7 +5,7 @@ import dev.tolana.projectcalculationtool.enums.EntityType;
 import dev.tolana.projectcalculationtool.enums.Permission;
 import dev.tolana.projectcalculationtool.dto.HierarchyDto;
 import dev.tolana.projectcalculationtool.enums.UserRole;
-import dev.tolana.projectcalculationtool.exception.InviteFailureException;
+import dev.tolana.projectcalculationtool.exception.authorization.InviteFailureException;
 import dev.tolana.projectcalculationtool.model.Role;
 import dev.tolana.projectcalculationtool.util.RoleAssignUtil;
 import org.springframework.stereotype.Repository;
