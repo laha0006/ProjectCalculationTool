@@ -1,8 +1,10 @@
 package dev.tolana.projectcalculationtool.repository.impl;
 
 import dev.tolana.projectcalculationtool.dto.UserInformationDto;
+import dev.tolana.projectcalculationtool.enums.Alert;
 import dev.tolana.projectcalculationtool.enums.Status;
 import dev.tolana.projectcalculationtool.enums.UserRole;
+import dev.tolana.projectcalculationtool.exception.EntityException;
 import dev.tolana.projectcalculationtool.model.Department;
 import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.Project;
@@ -199,17 +201,25 @@ public class JdbcTeamRepository implements TeamRepository {
                     long teamId = rs.getLong(1);
                     RoleAssignUtil.assignTeamRole(connection, teamId,
                             UserRole.TEAM_OWNER, username);
+                } else {
+                    connection.rollback();
+                    connection.setAutoCommit(true);
+                    throw new EntityException("Team blev ikke oprettet, noget gik galt!", Alert.DANGER);
                 }
 
-                connection.commit();
-                connection.setAutoCommit(true);
 
             } catch (Exception exception) {
                 connection.rollback();
                 connection.setAutoCommit(true);
+                if (exception instanceof DataTruncation) {
+                    throw new EntityException("Team blev ikke oprettet, navn eller beskrivelse for lang!", Alert.WARNING);
+                }
+                throw new EntityException("Team blev ikke oprettet, noget gik galt!", Alert.DANGER);
             }
+            connection.commit();
+            connection.setAutoCommit(true);
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            throw new EntityException("Team blev ikke oprettet, noget gik galt!", Alert.DANGER);
         }
         return isCreated;
     }
