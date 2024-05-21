@@ -1,7 +1,5 @@
-package dev.tolana.projectcalculationtool.exception.organisation;
+package dev.tolana.projectcalculationtool.exception;
 
-import dev.tolana.projectcalculationtool.exception.EntityException;
-import dev.tolana.projectcalculationtool.exception.EntityExceptionHandler;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
