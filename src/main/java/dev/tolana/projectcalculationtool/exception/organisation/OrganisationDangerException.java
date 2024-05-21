@@ -1,6 +1,8 @@
 package dev.tolana.projectcalculationtool.exception.organisation;
 
-public class OrganisationDangerException extends RuntimeException {
+import dev.tolana.projectcalculationtool.exception.EntityException;
+
+public class OrganisationDangerException extends EntityException {
     public OrganisationDangerException(String message) {
         super(message);
     }
