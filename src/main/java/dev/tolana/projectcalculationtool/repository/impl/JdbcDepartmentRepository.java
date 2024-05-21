@@ -30,7 +30,7 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
 
     @Override
     public boolean createEntity(String username, Entity entity) {
-        boolean isCreated = false;
+        boolean isCreated;
 
         try (Connection connection = dataSource.getConnection()) {
             try {
