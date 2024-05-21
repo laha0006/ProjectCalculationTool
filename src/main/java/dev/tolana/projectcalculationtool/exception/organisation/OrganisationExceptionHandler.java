@@ -9,9 +9,16 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class OrganisationExceptionHandler {
 
     @ExceptionHandler(OrganisationWarningException.class)
-    public String organisationCreationFailureException(OrganisationWarningException ex, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+    public String organisationWarningException(OrganisationWarningException ex, HttpServletRequest request, RedirectAttributes redirectAttributes) {
         String referer = request.getHeader("referer");
         redirectAttributes.addFlashAttribute("alertWarning",ex.getMessage());
+        return "redirect:" + referer;
+    }
+
+    @ExceptionHandler(OrganisationDangerException.class)
+    public String organisationDangerException(OrganisationWarningException ex, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+        String referer = request.getHeader("referer");
+        redirectAttributes.addFlashAttribute("alertDanger",ex.getMessage());
         return "redirect:" + referer;
     }
 }
