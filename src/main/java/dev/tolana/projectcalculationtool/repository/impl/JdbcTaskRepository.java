@@ -113,7 +113,7 @@ public class JdbcTaskRepository implements TaskRepository {
 
     @Override
     public Entity getEntityOnId(long taskId) {
-        Task task = null;
+        Task task;
         String getTaskOnId = """
                 SELECT t.id,
                        t.name,

@@ -4,11 +4,8 @@ import dev.tolana.projectcalculationtool.dto.TaskCreationDto;
 import dev.tolana.projectcalculationtool.dto.TaskEditDto;
 import dev.tolana.projectcalculationtool.dto.TaskViewDto;
 import dev.tolana.projectcalculationtool.enums.Status;
-import dev.tolana.projectcalculationtool.mapper.EntityDtoMapper;
-import dev.tolana.projectcalculationtool.dto.TaskDto;
 import dev.tolana.projectcalculationtool.mapper.TaskDtoMapper;
 import dev.tolana.projectcalculationtool.model.Entity;
-import dev.tolana.projectcalculationtool.model.Task;
 import dev.tolana.projectcalculationtool.repository.TaskRepository;
 import org.springframework.stereotype.Service;
 
