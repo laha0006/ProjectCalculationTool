@@ -60,6 +60,7 @@ public class RoleAssignUtil {
         PreparedStatement ps = con.prepareStatement(SQL);
         ps.setString(1, username);
         ps.setLong(2, id);
+        ps.setLong(3,userRole.getRoleId());
         return ps.executeUpdate();
     }
 
