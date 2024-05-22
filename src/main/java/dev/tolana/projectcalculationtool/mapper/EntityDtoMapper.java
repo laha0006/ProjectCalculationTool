@@ -49,6 +49,14 @@ public class EntityDtoMapper {
         }
     }
 
+    public Entity toEntity(EntityEditDto editDto) {
+        return new Entity(
+                editDto.id(),
+                editDto.name(),
+                editDto.description()
+        );
+    }
+
 
     public EntityViewDto toEntityViewDto(Entity entity) {
 
