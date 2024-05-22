@@ -15,12 +15,12 @@
             <main class="d-flex justify-content-center text-center bg-secondary-subtle py-3 px-5 rounded shadow">
 
                 <div>
-                    <h1 th:text="'Ændre: ' + ${projectToEdit.resourceEntityName()}"></h1>
+                    <h1 th:text="'Ændre: ' + ${projectToEdit.projectName}"></h1>
 
                     <form th:action="@{edit}" method="post" th:object="${projectToEdit}">
                         <p>
                             <label>Navn:
-                                <input type="text" th:field="*{resourceEntityName}" required>
+                                <input type="text" th:field="*{projectName}" required>
                             </label>
                         </p>
 
@@ -30,32 +30,10 @@
                             </label>
                         </p>
 
-                        <label>
-                            <input type="number" th:field="*{id}" hidden="hidden">
-                        </label>
-
-                        <label>
-                            <input type="number" th:field="*{parentId}" hidden="hidden">
-                        </label>
-
-                        <label>
-                            <input type="number" th:field="*{teamId}" hidden="hidden">
-                        </label>
-
-                        <label>
-                            <input type="number" th:field="*{projectId}" hidden="hidden">
-                        </label>
 
                         <p>
                             <label>Deadline:
                                 <input type="datetime-local" th:field="*{deadline}" required>
-                            </label>
-                        </p>
-
-
-                        <p>
-                            <label>Antal anvendt timer for færdiggørelse:
-                                <input type="number" th:field="*{actualHours}" required>
                             </label>
                         </p>
 
@@ -73,7 +51,7 @@
                         </label>
 
                         <label>
-                            <input type="number" th:field="*{estimatedHours}" hidden="hidden">
+                            <input type="number" th:field="*{id}" hidden="hidden">
                         </label>
 
                         <button type="submit" class="btn btn-success fw-bold in-line">Bekræft</button>

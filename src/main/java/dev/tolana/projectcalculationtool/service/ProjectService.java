@@ -3,7 +3,8 @@ package dev.tolana.projectcalculationtool.service;
 import dev.tolana.projectcalculationtool.dto.*;
 import dev.tolana.projectcalculationtool.enums.Status;
 import dev.tolana.projectcalculationtool.enums.UserRole;
-import dev.tolana.projectcalculationtool.mapper.EntityDtoMapper;
+import dev.tolana.projectcalculationtool.mapper.ProjectDtoMapper;
+import dev.tolana.projectcalculationtool.mapper.TaskDtoMapper;
 import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.Project;
 import dev.tolana.projectcalculationtool.model.ResourceEntity;
@@ -18,40 +19,39 @@ public class ProjectService {
 
     private final ProjectRepository projectRepository;
     private final CalculationService calculationService;
-    private final EntityDtoMapper entityDtoMapper;
+    private final ProjectDtoMapper projectDtoMapper;
+    private final TaskDtoMapper taskDtoMapper;
 
-    public ProjectService(ProjectRepository projectRepository,CalculationService calculationService, EntityDtoMapper entityDtoMapper) {
+    public ProjectService(ProjectRepository projectRepository,CalculationService calculationService, ProjectDtoMapper projectDtoMapper, TaskDtoMapper taskDtoMapper) {
         this.projectRepository = projectRepository;
         this.calculationService = calculationService;
-        this.entityDtoMapper = entityDtoMapper;
+        this.projectDtoMapper = projectDtoMapper;
+        this.taskDtoMapper = taskDtoMapper;
     }
 
     public void createProject(String username, ProjectCreationDto project) {
-        Entity newProject = entityDtoMapper.toEntity(project);
+        Entity newProject = projectDtoMapper.toEntity(project);
         projectRepository.createEntity(username, newProject);
     }
 
-    public ResourceEntityViewDto getProject(long projectId) {
+    public ProjectViewDto getProjectToView(long projectId) {
         Entity project = projectRepository.getEntityOnId(projectId);
-        return entityDtoMapper.toResourceEntityViewDto(project);
+        return projectDtoMapper.toProjectViewDto(project);
     }
 
-    public List<ResourceEntityViewDto> getSubProjects(long projectId) {
+    public List<ProjectViewDto> getSubProjects(long projectId) {
         List<Project> subProjects = projectRepository.getSubProjects(projectId);
-        List<ResourceEntity> upCastedSubProjects = fromProjectoResourceEntityList(subProjects);
-
-        return entityDtoMapper.toResourceEntityViewDtoList(upCastedSubProjects);
+        List<Entity> upCastedSubProjects = fromProjecToEntityList(subProjects);
+        return projectDtoMapper.toProjectViewDtoList(upCastedSubProjects);
     }
 
     public ProjectStatsDto getProjectStats(long projectId) {
         return calculationService.getProjectStats(projectId);
     }
 
-    public List<ResourceEntityViewDto> getTasks(long projectId) {
+    public List<TaskViewDto> getTasks(long projectId) {
         List<Entity> taskList = projectRepository.getChildren(projectId);
-        List<ResourceEntity> downCastedTaskList = toResourceEntityList(taskList);
-
-        return entityDtoMapper.toResourceEntityViewDtoList(downCastedTaskList);
+        return taskDtoMapper.toTaskDtoViewList(taskList);
     }
 
     public List<UserInformationDto> getAllTeamMembersFromTeamId(long teamId) {
@@ -70,17 +70,7 @@ public class ProjectService {
         projectRepository.deleteEntity(projectId);
     }
 
-    private List<ResourceEntity> toResourceEntityList(List<Entity> entityList){
-        List<ResourceEntity> resourceEntityList = new ArrayList<>();
-
-        for (Entity entity:entityList) {
-            resourceEntityList.add((ResourceEntity) entity);
-        }
-
-        return resourceEntityList;
-    }
-
-    private List<ResourceEntity> fromProjectoResourceEntityList(List<Project> entityList){
+    private List<Entity> fromProjecToEntityList(List<Project> entityList){
         return new ArrayList<>(entityList);
     }
 
@@ -88,8 +78,13 @@ public class ProjectService {
         return projectRepository.getStatusList();
     }
 
-    public void editProject(ResourceEntityViewDto projectToEdit) {
-        Entity project = entityDtoMapper.toEntity(projectToEdit);
+    public void editProject(ProjectEditDto projectToEdit) {
+        Entity project = projectDtoMapper.toEntity(projectToEdit);
         projectRepository.editEntity(project);
+    }
+
+    public ProjectEditDto getProjectToEdit(long projectId) {
+        Entity projectToEdit = projectRepository.getEntityOnId(projectId);
+        return projectDtoMapper.toProjectEditDto(projectToEdit);
     }
 }

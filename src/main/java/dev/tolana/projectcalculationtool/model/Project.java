@@ -26,6 +26,18 @@ public class Project extends ResourceEntity{
         this.allottedHours = allottedHours;
     }
 
+    //constructor for mapping ProjectCreationDto to Entity
+    public Project(String projectName, String description, long parentId, long teamId, LocalDateTime deadline, int allottedHours) {
+        super(projectName, description, parentId, deadline);
+        this.teamId = teamId;
+        this.allottedHours = allottedHours;
+    }
+
+    public Project(long id, String projectName, String description, LocalDateTime deadline, int allottedHours, Status status) {
+        super(id, projectName, description, deadline, status);
+        this.allottedHours = allottedHours;
+    }
+
     public long getTeamId() {
         return teamId;
     }

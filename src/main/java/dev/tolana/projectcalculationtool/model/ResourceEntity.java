@@ -52,6 +52,13 @@ public class ResourceEntity extends Entity{
         this.deadline = deadline;
     }
 
+    //used for mapping ProjectCreationDto to Entity
+    public ResourceEntity(long id, String projectName, String description, LocalDateTime deadline, Status status) {
+        super(id, projectName, description);
+        this.deadline = deadline;
+        this.status = status;
+    }
+
     public LocalDateTime getDeadline() {
         return deadline;
     }

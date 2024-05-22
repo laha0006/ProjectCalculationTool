@@ -1,9 +1,6 @@
 package dev.tolana.projectcalculationtool.controller;
 
-import dev.tolana.projectcalculationtool.dto.EntityCreationDto;
-import dev.tolana.projectcalculationtool.dto.EntityEditDto;
-import dev.tolana.projectcalculationtool.dto.EntityViewDto;
-import dev.tolana.projectcalculationtool.dto.ResourceEntityViewDto;
+import dev.tolana.projectcalculationtool.dto.*;
 import dev.tolana.projectcalculationtool.enums.EntityType;
 import dev.tolana.projectcalculationtool.service.TeamService;
 import org.springframework.security.core.Authentication;
@@ -29,7 +26,7 @@ public class TeamController {
         EntityViewDto team = teamService.getTeam(teamId);
         model.addAttribute("team", team);
 
-        List<ResourceEntityViewDto> projects = teamService.getAllChildren(teamId);
+        List<ProjectViewDto> projects = teamService.getChildren(teamId);
         model.addAttribute("allProjects", projects);
         model.addAttribute("orgId", orgId);
 

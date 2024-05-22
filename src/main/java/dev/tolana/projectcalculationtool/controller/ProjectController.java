@@ -24,13 +24,13 @@ public class ProjectController {
 
     @GetMapping("/{projectId}")
     public String viewProject(Model model, @PathVariable long orgId, @PathVariable long deptId, @PathVariable long teamId, @PathVariable long projectId) {
-        ResourceEntityViewDto project = projectService.getProject(projectId);
+        ProjectViewDto project = projectService.getProjectToView(projectId);
         model.addAttribute("project", project);
 
-        List<ResourceEntityViewDto> tasks = projectService.getTasks(projectId);
+        List<TaskViewDto> tasks = projectService.getTasks(projectId);
         model.addAttribute("allTasks", tasks);
 
-        List<ResourceEntityViewDto> allSubProjects = projectService.getSubProjects(projectId);
+        List<ProjectViewDto> allSubProjects = projectService.getSubProjects(projectId);
         model.addAttribute("allSubProjects", allSubProjects);
 
         ProjectStatsDto stats = projectService.getProjectStats(projectId);
@@ -49,10 +49,11 @@ public class ProjectController {
                                              @PathVariable long orgId,
                                              @PathVariable long deptId,
                                              @PathVariable long teamId) {
-        model.addAttribute("newProject", new ProjectCreationDto("", "", 0, teamId, LocalDateTime.now(), 0));
+        ProjectCreationDto projectToCreate = new ProjectCreationDto("", "", 0, teamId, LocalDateTime.now(), 0);
+
+        model.addAttribute("projectToCreate", projectToCreate);
         model.addAttribute("orgId", orgId);
         model.addAttribute("deptId", deptId);
-        //TODO add something that makes it possible to display Team/Department/Organization/whatever
 
         return "project/createProject";
     }
@@ -63,7 +64,9 @@ public class ProjectController {
                                              @PathVariable long deptId,
                                              @PathVariable long teamId,
                                              @PathVariable long projectId) {
-        model.addAttribute("newProject", new ProjectCreationDto("", "", projectId, teamId, LocalDateTime.now(), 0));
+
+        ProjectCreationDto subProjectToCreate = new ProjectCreationDto("", "", projectId, teamId, LocalDateTime.now(), 0);
+        model.addAttribute("subProjectToCreate", subProjectToCreate);
         model.addAttribute("orgId", orgId);
         model.addAttribute("deptId", deptId);
 
@@ -86,12 +89,12 @@ public class ProjectController {
 
     @GetMapping("/{projectId}/assign/members")
     public String getAllMembersFromTeamId(@PathVariable long teamId, @PathVariable long projectId, Model model, @PathVariable String deptId, @PathVariable String orgId) {
-        ResourceEntityViewDto project = projectService.getProject(projectId);
+        ProjectViewDto project = projectService.getProjectToView(projectId);
 
         List<UserInformationDto> memberList = projectService.getAllTeamMembersFromTeamId(teamId);
         List<UserRole> userRoles = projectService.getAllUserRoles();
 
-        model.addAttribute("projectName", project.resourceEntityName());
+        model.addAttribute("projectName", project.projectName());
         model.addAttribute("teamMembers", memberList);
         model.addAttribute("userRoles", userRoles);
         model.addAttribute("roleMember", UserRole.PROJECT_MEMBER);
@@ -122,10 +125,10 @@ public class ProjectController {
                                 @PathVariable long teamId,
                                 @PathVariable long projectId) {
 
-        ResourceEntityViewDto projectToDelete = projectService.getProject(projectId);
+        ProjectViewDto projectToDelete = projectService.getProjectToView(projectId);
         long projectParentId = projectToDelete.parentId();
         projectService.deleteProject(projectId);
-
+        System.out.println("Efter delete");
         return determineRedirection(orgId, deptId, teamId, projectParentId);
     }
 
@@ -139,7 +142,7 @@ public class ProjectController {
         List<Status> statusList = projectService.getStatusList();
         model.addAttribute("statusList", statusList);
 
-        ResourceEntityViewDto projectToEdit = projectService.getProject(projectId);
+        ProjectEditDto projectToEdit = projectService.getProjectToEdit(projectId);
         model.addAttribute("projectToEdit", projectToEdit);
 
         model.addAttribute("projectId", projectId);
@@ -154,7 +157,7 @@ public class ProjectController {
     public String editProject(@PathVariable long orgId,
                               @PathVariable long deptId,
                               @PathVariable long teamId,
-                              @ModelAttribute ResourceEntityViewDto projectToEdit) {
+                              @ModelAttribute ProjectEditDto projectToEdit) {
 
         long projectId = projectToEdit.id();
         projectService.editProject(projectToEdit);
@@ -164,9 +167,11 @@ public class ProjectController {
 
     private String determineRedirection(long orgId, long deptId, long teamId, long projectParentId) {
         if (projectParentId == 0) {
+            System.out.println("inde i redirection");
             return "redirect:/" + "organisation/" + orgId + "/department/" + deptId + "/team/" + teamId;
 
         } else {
+            System.out.println("inde i redirection af subproject");
             return "redirect:/" + "organisation/" + orgId + "/department/" + deptId + "/team/" + teamId + "/project/" + projectParentId;
         }
     }
