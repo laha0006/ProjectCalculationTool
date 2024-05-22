@@ -4,12 +4,9 @@ import dev.tolana.projectcalculationtool.dto.*;
 import dev.tolana.projectcalculationtool.mapper.EntityDtoMapper;
 import dev.tolana.projectcalculationtool.mapper.ProjectDtoMapper;
 import dev.tolana.projectcalculationtool.model.Entity;
-import dev.tolana.projectcalculationtool.model.ResourceEntity;
 import dev.tolana.projectcalculationtool.repository.TeamRepository;
-import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
