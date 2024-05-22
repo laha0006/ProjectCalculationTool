@@ -128,7 +128,6 @@ public class ProjectController {
         ProjectViewDto projectToDelete = projectService.getProjectToView(projectId);
         long projectParentId = projectToDelete.parentId();
         projectService.deleteProject(projectId);
-        System.out.println("Efter delete");
         return determineRedirection(orgId, deptId, teamId, projectParentId);
     }
 
@@ -167,11 +166,9 @@ public class ProjectController {
 
     private String determineRedirection(long orgId, long deptId, long teamId, long projectParentId) {
         if (projectParentId == 0) {
-            System.out.println("inde i redirection");
             return "redirect:/" + "organisation/" + orgId + "/department/" + deptId + "/team/" + teamId;
 
         } else {
-            System.out.println("inde i redirection af subproject");
             return "redirect:/" + "organisation/" + orgId + "/department/" + deptId + "/team/" + teamId + "/project/" + projectParentId;
         }
     }
