@@ -1,7 +1,6 @@
 package dev.tolana.projectcalculationtool.mapper;
 
 import dev.tolana.projectcalculationtool.dto.*;
-import dev.tolana.projectcalculationtool.enums.Status;
 import dev.tolana.projectcalculationtool.model.*;
 import org.springframework.stereotype.Component;
 
