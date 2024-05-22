@@ -2,8 +2,6 @@ package dev.tolana.projectcalculationtool.model;
 
 import dev.tolana.projectcalculationtool.enums.Status;
 
-import java.sql.Time;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 public class Project extends ResourceEntity{

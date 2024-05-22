@@ -3,7 +3,6 @@ package dev.tolana.projectcalculationtool.mapper;
 import dev.tolana.projectcalculationtool.dto.*;
 import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.Project;
-import dev.tolana.projectcalculationtool.model.Task;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

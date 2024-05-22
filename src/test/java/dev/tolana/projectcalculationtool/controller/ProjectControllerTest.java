@@ -3,7 +3,6 @@ package dev.tolana.projectcalculationtool.controller;
 import dev.tolana.projectcalculationtool.dto.ProjectEditDto;
 import dev.tolana.projectcalculationtool.dto.ProjectStatsDto;
 import dev.tolana.projectcalculationtool.dto.ProjectViewDto;
-import dev.tolana.projectcalculationtool.dto.ResourceEntityViewDto;
 import dev.tolana.projectcalculationtool.enums.Status;
 import dev.tolana.projectcalculationtool.service.ProjectService;
 import dev.tolana.projectcalculationtool.service.UserService;

@@ -45,25 +45,9 @@ public class TeamService {
         teamRepository.createEntity(username, teamToCreate);
     }
 
-    @PostFilter("@auth.hasDepartmentAccess(filterObject.id, T(dev.tolana.projectcalculationtool.enums.Permission).DEPARTMENT_READ)")
-    public List<EntityViewDto> getAll(long departmentId) {
-        List<Entity> teamList = teamRepository.getAllEntitiesOnId(departmentId);
-        return entityDtoMapper.toEntityViewDtoList(teamList);
-    }
-
     public List<ProjectViewDto> getChildren(long teamId) {
         List<Entity> projectList = teamRepository.getChildren(teamId);
         return projectDtoMapper.toProjectViewDtoList(projectList);
-    }
-
-    private List<ResourceEntity> toResourceEntityList(List<Entity> entityList){
-        List<ResourceEntity> resourceEntityList = new ArrayList<>();
-
-        for (Entity entity:entityList) {
-            resourceEntityList.add((ResourceEntity) entity);
-        }
-
-        return resourceEntityList;
     }
 
     public void deleteTeam(long teamId) {

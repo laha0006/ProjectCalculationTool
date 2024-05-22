@@ -7,7 +7,6 @@ import dev.tolana.projectcalculationtool.mapper.ProjectDtoMapper;
 import dev.tolana.projectcalculationtool.mapper.TaskDtoMapper;
 import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.Project;
-import dev.tolana.projectcalculationtool.model.ResourceEntity;
 import dev.tolana.projectcalculationtool.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
 
