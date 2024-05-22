@@ -79,14 +79,17 @@ public class DepartmentService {
         return jdbcDepartmentRepository.getUserFromOrganisationId(username,orgId);
     }
 
+    //add authorisation
     public void assignMemberToDepartment(long deptId, String username){
         jdbcDepartmentRepository.assignMemberToDepartment(deptId,username);
     }
 
+    //add authorisation
     public void promoteMemberToAdmin(long deptId, String username){
         jdbcDepartmentRepository.promoteMemberToAdmin(deptId,username);
     }
 
+    //add authorisation
     public void kickMemberFromDepartment(long deptId, String username){
         jdbcDepartmentRepository.kickMemberFromDepartment(deptId,username);
     }
