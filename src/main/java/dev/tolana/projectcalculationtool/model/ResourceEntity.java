@@ -37,6 +37,21 @@ public class ResourceEntity extends Entity{
         this.parentId = parentId;
     }
 
+    //Constructor used for mapping TaskEditDto to Entity
+    public ResourceEntity(long id, String taskName, String description, LocalDateTime deadline, long parentId, Status status) {
+        super(id, taskName, description);
+        this.parentId = parentId;
+        this.status = status;
+        this.deadline = deadline;
+    }
+
+    //Constructor used for mapping of TaskCreationDto to Entity
+    public ResourceEntity(String taskName, String description, long parentId, LocalDateTime deadline) {
+        super(taskName, description);
+        this.parentId = parentId;
+        this.deadline = deadline;
+    }
+
     public LocalDateTime getDeadline() {
         return deadline;
     }

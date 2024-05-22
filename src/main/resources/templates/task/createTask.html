@@ -13,9 +13,9 @@
             <header th:replace="~{fragments/header :: header}"></header>
             <div th:replace="~{fragments/alerts :: alerts}"></div>
             <main class="d-flex justify-content-center text-center bg-secondary-subtle py-3 px-5 rounded shadow">
-                <div th:if="${taskDto.parentId == 0}">
+                <div th:if="${taskToCreate != null}">
                     <h1>Opret opgave</h1>
-                    <form th:action="@{create}" method="post" th:object="${taskDto}">
+                    <form th:action="@{create}" method="post" th:object="${taskToCreate}">
                         <p>
                             <label>Navn:
                                 <input type="text" th:field="*{taskName}" required>
@@ -24,13 +24,9 @@
 
                         <p>
                             <label>Beskrivelse:
-                                <input type="text" th:field="*{taskDescription}" required>
+                                <input type="text" th:field="*{description}" required>
                             </label>
                         </p>
-
-                        <label>
-                            <input type="number" th:field="*{projectId}" hidden="hidden">
-                        </label>
 
                         <p>
                             <label>Deadline:
@@ -45,15 +41,11 @@
                         </p>
 
                         <label>
-                            <input type="number" th:field="*{status}" hidden="hidden">
+                            <input type="number" th:field="*{projectId}" hidden="hidden">
                         </label>
 
                         <label>
                             <input type="number" th:field="*{parentId}" hidden="hidden">
-                        </label>
-
-                        <label>
-                            <input type="number" th:field="*{taskId}" hidden="hidden">
                         </label>
 
                         <button type="submit" class="btn btn-success fw-bold in-line">Opret</button>
@@ -65,10 +57,10 @@
 
                 </div>
 
-                <div th:unless="${taskDto.parentId == 0}">
+                <div th:if="${subTaskToCreate != null}">
                     <h1 th:text="'Opret underopgave for: ' + ${parentTaskName}"></h1>
-                    <form th:action="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/task/create (orgId=${orgId}, deptId=${deptId}, teamId=${teamId}, projectId=${projectId}, taskId=${taskDto.parentId()})}"
-                          method="post" th:object="${taskDto}">
+                    <form th:action="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/task/create (orgId=${orgId}, deptId=${deptId}, teamId=${teamId}, projectId=${projectId})}"
+                          method="post" th:object="${subTaskToCreate}">
                         <p>
                             <label>Navn:
                                 <input type="text" th:field="*{taskName}" required>
@@ -77,17 +69,7 @@
 
                         <p>
                             <label>Beskrivelse:
-                                <input type="text" th:field="*{taskDescription}" required>
-                            </label>
-                        </p>
-
-                        <label>
-                            <input type="number" th:field="*{projectId}" hidden="hidden">
-                        </label>
-
-                        <p>
-                            <label>Deadline:
-                                <input type="datetime-local" th:field="*{deadline}" required>
+                                <input type="text" th:field="*{description}" required>
                             </label>
                         </p>
 
@@ -97,22 +79,24 @@
                             </label>
                         </p>
 
+                        <p>
+                            <label>Deadline:
+                                <input type="datetime-local" th:field="*{deadline}" required>
+                            </label>
+                        </p>
+
                         <label>
-                            <input type="number" th:field="*{status}" hidden="hidden">
+                            <input type="number" th:field="*{projectId}" hidden="hidden">
                         </label>
 
                         <label>
                             <input type="number" th:field="*{parentId}" hidden="hidden">
                         </label>
 
-                        <label>
-                            <input type="number" th:field="*{taskId}" hidden="hidden">
-                        </label>
-
                         <button class="btn btn-success fw-bold in-line" type="submit">Opret</button>
                     </form>
 
-                    <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId} (orgId=${orgId}, deptId=${deptId}, teamId=${teamId}, projectId=${taskDto.projectId})}">
+                    <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/task/{taskId} (orgId=${orgId}, deptId=${deptId}, teamId=${teamId}, projectId=${projectId}, taskId=${subTaskToCreate.parentId()})}">
                         <button class="btn btn-secondary fw-bold in-line">Tilbage</button>
                     </a>
                 </div>

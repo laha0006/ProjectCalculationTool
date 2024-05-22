@@ -10,7 +10,6 @@ import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.Organisation;
 import dev.tolana.projectcalculationtool.model.Team;
 import dev.tolana.projectcalculationtool.repository.DepartmentRepository;
-import dev.tolana.projectcalculationtool.repository.EntityCrudOperations;
 import dev.tolana.projectcalculationtool.util.RoleAssignUtil;
 import org.springframework.stereotype.Repository;
 
@@ -31,7 +30,7 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
 
     @Override
     public boolean createEntity(String username, Entity entity) {
-        boolean isCreated = false;
+        boolean isCreated;
 
         try (Connection connection = dataSource.getConnection()) {
             try {
@@ -75,7 +74,7 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
 
     @Override
     public Entity getEntityOnId(long deptId) {
-        Entity department = null;
+        Entity department;
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM department WHERE id = ?");
             preparedStatement.setLong(1, deptId);
@@ -161,7 +160,7 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
 
     @Override
     public Entity getParent(long parentId) {
-        Entity parent = null;
+        Entity parent;
         try (Connection con = dataSource.getConnection()) {
             PreparedStatement pstmt = con.prepareStatement("SELECT * FROM organisation WHERE id = ?");
             pstmt.setLong(1, parentId);
