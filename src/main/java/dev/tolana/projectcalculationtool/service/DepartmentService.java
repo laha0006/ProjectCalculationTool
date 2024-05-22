@@ -86,4 +86,8 @@ public class DepartmentService {
     public void promoteMemberToAdmin(long deptId, String username){
         jdbcDepartmentRepository.promoteMemberToAdmin(deptId,username);
     }
+
+    public void kickMemberFromDepartment(long deptId, String username){
+        jdbcDepartmentRepository.kickMemberFromDepartment(deptId,username);
+    }
 }

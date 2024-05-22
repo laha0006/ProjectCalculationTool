@@ -27,16 +27,18 @@
                                         make buttons dynamic, so that only "invite" shows up if not invited,
                                         and only "kick" if they are already members
                                     -->
-                                    <div class="d-inline" th:if="${user.departmentId == 0}">
+                                    <div class="d-flex d-inline" th:if="${user.departmentId == 0}">
                                         <form th:action="@{members/assign/{username} (username = ${user.username})}" method="post">
                                             <button class="btn btn-success fw-bold">Invitér</button>
                                         </form>
                                     </div>
-                                    <div th:if="${user.departmentId == department.id}">
+                                    <div class="d-flex d-inline" th:if="${user.departmentId == department.id}">
                                         <form th:action="@{members/promote/{username} (username = ${user.username})}" method="post">
                                             <button class="btn btn-warning btn-sm fw-bold" type="submit">Tildel Admin</button>
                                         </form>
-                                        <button class="btn btn-danger btn-sm fw-bold" type="submit">Fjern</button>
+                                        <form th:action="@{members/kick/{username} (username = ${user.username})}" method="post">
+                                            <button class="btn btn-danger btn-sm fw-bold" type="submit">Fjern</button>
+                                        </form>
                                     </div>
                                 </div>
                             </td>

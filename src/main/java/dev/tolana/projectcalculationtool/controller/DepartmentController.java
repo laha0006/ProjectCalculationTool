@@ -121,7 +121,7 @@ public class DepartmentController {
         UserEntityRoleDto user = departmentService.getUserFromOrganisationId(username,
                 department.parentId());
 
-        departmentService.assignMemberToDepartment(departmentId,user.username());
+        departmentService.kickMemberFromDepartment(departmentId,user.username());
 
 
         return "redirect:/organisation/" + department.parentId() + "/department/"+ departmentId +"/members";

@@ -336,6 +336,8 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
                         cleanedUsers.add(users.get(i));
                     }
                 }
+            } else if (!users.get(i-1).username().equals(users.get(i).username())) {
+                cleanedUsers.add(users.get(i));
             }
         }
         return cleanedUsers;
@@ -397,6 +399,20 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
                     UserRole.DEPARTMENT_MEMBER,username);
             RoleAssignUtil.assignDepartmentRole(connection,deptId,
                     UserRole.DEPARTMENT_ADMIN,username);
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
+    }
+
+    @Override
+    public void kickMemberFromDepartment(long deptId, String username){
+        try (Connection connection = dataSource.getConnection()) {
+            RoleAssignUtil.removeDepartmentRole(connection,deptId,
+                    UserRole.DEPARTMENT_ADMIN,username);
+            RoleAssignUtil.removeDepartmentRole(connection,deptId,
+                    UserRole.DEPARTMENT_MEMBER,username);
+            RoleAssignUtil.removeDepartmentRole(connection,deptId,
+                    UserRole.DEPARTMENT_USER,username);
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
         }
