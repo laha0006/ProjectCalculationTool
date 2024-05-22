@@ -96,6 +96,6 @@ public class DepartmentController {
         departmentService.assignMemberToDepartment(departmentId,user.username());
 
 
-        return "department/viewMembers";
+        return "redirect:/organisation/" + department.parentId() + "/members";
     }
 }
