@@ -27,6 +27,15 @@ public class Entity {
         this.archived = false;
     }
 
+    //Used for mapping TaskCreationDto to Task
+    public Entity(String taskName, String description) {
+        this.id = 0;
+        this.name = taskName;
+        this.description =description;
+        this.dateCreated = LocalDateTime.now();
+        this.archived = false;
+    }
+
     public long getId() {
         return id;
     }

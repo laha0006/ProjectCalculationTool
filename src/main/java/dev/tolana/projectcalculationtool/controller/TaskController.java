@@ -1,6 +1,8 @@
 package dev.tolana.projectcalculationtool.controller;
 
-import dev.tolana.projectcalculationtool.dto.TaskDto;
+import dev.tolana.projectcalculationtool.dto.TaskCreationDto;
+import dev.tolana.projectcalculationtool.dto.TaskEditDto;
+import dev.tolana.projectcalculationtool.dto.TaskViewDto;
 import dev.tolana.projectcalculationtool.enums.Status;
 import dev.tolana.projectcalculationtool.service.TaskService;
 import org.springframework.security.core.Authentication;
@@ -25,16 +27,18 @@ public class TaskController {
     public String viewTask(@PathVariable long orgId,
                            @PathVariable long deptId,
                            @PathVariable long teamId,
+                           @PathVariable long projectId,
                            @PathVariable long taskId, Model model) {
-        TaskDto task = taskService.getTask(taskId);
+        TaskViewDto task = taskService.getTaskToView(taskId);
         model.addAttribute("parentTask", task);
 
-        List<TaskDto> taskDtoList = taskService.getChildren(taskId);
-        model.addAttribute("allTasks", taskDtoList);
+        List<TaskViewDto> taskList = taskService.getChildren(taskId);
+        model.addAttribute("allTasks", taskList);
 
         model.addAttribute("orgId", orgId);
         model.addAttribute("deptId", deptId);
         model.addAttribute("teamId", teamId);
+        model.addAttribute("projectId", projectId);
 
         return "task/taskView";
     }
@@ -45,7 +49,7 @@ public class TaskController {
                                  @PathVariable long teamId,
                                  @PathVariable long projectId,
                                  Model model) {
-        model.addAttribute("taskDto", new TaskDto("", "", projectId, LocalDateTime.now(), 0, Status.TODO, 0, -1));
+        model.addAttribute("taskToCreate", new TaskCreationDto("", "", projectId, 0, LocalDateTime.now(), 0));
         model.addAttribute("orgId", orgId);
         model.addAttribute("deptId", deptId);
         model.addAttribute("teamId", teamId);
@@ -62,10 +66,10 @@ public class TaskController {
                                         @PathVariable long taskId,
                                         Model model) {
 
-        TaskDto parentTask = taskService.getTask(taskId);
+        TaskViewDto parentTask = taskService.getTaskToView(taskId);
         String parentTaskName = parentTask.taskName();
         model.addAttribute("parentTaskName", parentTaskName);
-        model.addAttribute("taskDto", new TaskDto("", "", projectId, LocalDateTime.now(), 0, Status.TODO, taskId, -1));
+        model.addAttribute("subTaskToCreate", new TaskCreationDto("", "", projectId, taskId, LocalDateTime.now(), 0));
         model.addAttribute("orgId", orgId);
         model.addAttribute("deptId", deptId);
         model.addAttribute("teamId", teamId);
@@ -78,12 +82,12 @@ public class TaskController {
                              @PathVariable long deptId,
                              @PathVariable long teamId,
                              @PathVariable long projectId,
-                             @ModelAttribute TaskDto newTask,
+                             @ModelAttribute TaskCreationDto taskToCreate,
                              Authentication authentication) {
 
         String username = authentication.getName();
-        taskService.createTask(username, newTask);
-        long parentTaskId = newTask.parentId();
+        taskService.createTask(username, taskToCreate);
+        long parentTaskId = taskToCreate.parentId();
 
         return determineRedirection(orgId, deptId, teamId, projectId, parentTaskId);
     }
@@ -95,7 +99,7 @@ public class TaskController {
                              @PathVariable long projectId,
                              @PathVariable long taskId) {
 
-        TaskDto taskToDelete = taskService.getTask(taskId);
+        TaskEditDto taskToDelete = taskService.getTaskToEdit(taskId);
         long parentTaskId = taskToDelete.parentId();
         taskService.deleteTask(taskId);
 
@@ -110,7 +114,7 @@ public class TaskController {
                            @PathVariable long taskId,
                            Model model) {
 
-        TaskDto taskToEdit = taskService.getTask(taskId);
+        TaskEditDto taskToEdit = taskService.getTaskToEdit(taskId);
         model.addAttribute("taskToEdit", taskToEdit);
 
         List<Status> statusList = taskService.getStatusList();
@@ -125,12 +129,11 @@ public class TaskController {
     }
 
     @PostMapping("{taskId}/edit")
-    public String editTask(Model model,
-                           @PathVariable long orgId,
+    public String editTask(@PathVariable long orgId,
                            @PathVariable long deptId,
                            @PathVariable long teamId,
                            @PathVariable long projectId,
-                           @ModelAttribute TaskDto taskToEdit) {
+                           @ModelAttribute TaskEditDto taskToEdit) {
 
         long parentTaskId = taskToEdit.parentId();
         taskService.editTask(taskToEdit);

@@ -1,6 +1,5 @@
 package dev.tolana.projectcalculationtool.repository.impl;
 
-import dev.tolana.projectcalculationtool.dto.TaskDto;
 import dev.tolana.projectcalculationtool.dto.UserInformationDto;
 import dev.tolana.projectcalculationtool.enums.Alert;
 import dev.tolana.projectcalculationtool.enums.Status;
@@ -9,8 +8,6 @@ import dev.tolana.projectcalculationtool.exception.EntityException;
 import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.Project;
 import dev.tolana.projectcalculationtool.model.Task;
-import dev.tolana.projectcalculationtool.model.Team;
-import dev.tolana.projectcalculationtool.repository.EntityCrudOperations;
 import dev.tolana.projectcalculationtool.repository.ProjectRepository;
 import dev.tolana.projectcalculationtool.util.RoleAssignUtil;
 import org.springframework.stereotype.Repository;
@@ -18,9 +15,7 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Repository
 public class JdbcProjectRepository implements ProjectRepository {
@@ -33,7 +28,7 @@ public class JdbcProjectRepository implements ProjectRepository {
 
     @Override
     public boolean createEntity(String username, Entity project) {
-        boolean isCreated = false;
+        boolean isCreated;
 
         try (Connection connection = dataSource.getConnection()) {
             try {
@@ -110,7 +105,7 @@ public class JdbcProjectRepository implements ProjectRepository {
 
     @Override
     public Entity getEntityOnId(long projectId) {
-        Entity project = null;
+        Entity project;
         String selectProjectOnId = """
                 SELECT p.id,
                        p.name,
@@ -479,11 +474,6 @@ public class JdbcProjectRepository implements ProjectRepository {
             throw new RuntimeException(sqlException);
         }
         return roles;
-    }
-
-    @Override
-    public boolean changeStatus(long resourceEntityId) {
-        return false;
     }
 
     @Override

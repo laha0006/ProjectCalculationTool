@@ -1,6 +1,7 @@
 package dev.tolana.projectcalculationtool.controller;
 
-import dev.tolana.projectcalculationtool.dto.TaskDto;
+import dev.tolana.projectcalculationtool.dto.TaskEditDto;
+import dev.tolana.projectcalculationtool.dto.TaskViewDto;
 import dev.tolana.projectcalculationtool.enums.Status;
 import dev.tolana.projectcalculationtool.service.TaskService;
 import dev.tolana.projectcalculationtool.service.UserService;
@@ -38,8 +39,10 @@ class TaskControllerTest {
     @Test
     @WithMockUser()
     void viewTask() throws Exception {
-        when(taskService.getTask(1))
-                .thenReturn(new TaskDto("taskName","testDescription", 1, LocalDateTime.now(), 1, Status.TODO, 1, 1));
+        TaskViewDto viewTask = new TaskViewDto("name", "description", 1, LocalDateTime.now(), 1, 1, Status.TODO);
+        when(taskService.getTaskToView(1))
+                .thenReturn(viewTask);
+
         mockMvc.perform(get("/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/task/{taskId}", 1, 1, 1, 1, 1))
                 .andExpect(status().isOk())
                 .andExpect(view().name("task/taskView"));
@@ -56,10 +59,10 @@ class TaskControllerTest {
     @Test
     @WithMockUser
     void sendCreateSubTaskForm() throws Exception {
-        TaskDto taskDto = new TaskDto("name", "description", 1, LocalDateTime.now(), 1, Status.TODO, 1, 1);
+        TaskViewDto subTaskToCreate = new TaskViewDto("name", "description", 1, LocalDateTime.now(), 1, 1, Status.TODO);
 
-        when(taskService.getTask(1))
-                .thenReturn(taskDto);
+        when(taskService.getTaskToView(1))
+                .thenReturn(subTaskToCreate);
         mockMvc.perform(get("/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/task/{taskId}/create/subtask", 1, 1, 1, 1, 1))
                 .andExpect(status().isOk())
                 .andExpect(view().name("task/createTask"));
@@ -85,8 +88,8 @@ class TaskControllerTest {
     @Test
     @WithMockUser
     void deleteTask() throws Exception {
-        TaskDto taskToDelete = new TaskDto("name", "description", 1, LocalDateTime.now(), 1, Status.TODO, 0, 1);
-        when(taskService.getTask(1))
+        TaskEditDto taskToDelete = new TaskEditDto(1, "name","description", 0, LocalDateTime.now(), 1, 1, Status.TODO);
+        when(taskService.getTaskToEdit(1))
                 .thenReturn(taskToDelete);
         mockMvc.perform(post("/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/task/{taskId}/delete", 1, 1, 1, 1, 1)
                 .with(csrf()))
@@ -97,8 +100,8 @@ class TaskControllerTest {
     @Test
     @WithMockUser
     void deleteSubTask() throws Exception {
-        TaskDto subTaskToDelete = new TaskDto("name", "description", 1, LocalDateTime.now(), 1, Status.TODO, 1, 1);
-        when(taskService.getTask(1))
+        TaskEditDto subTaskToDelete = new TaskEditDto(1, "name","description", 1, LocalDateTime.now(), 1, 1, Status.TODO);
+        when(taskService.getTaskToEdit(1))
                 .thenReturn(subTaskToDelete);
         mockMvc.perform(post("/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/task/{taskId}/delete", 1, 1, 1, 1, 1)
                         .with(csrf()))
@@ -109,8 +112,8 @@ class TaskControllerTest {
     @Test
     @WithMockUser
     void displayEditTaskPage() throws Exception {
-        TaskDto taskToEdit = new TaskDto("name", "description", 1, LocalDateTime.now(), 1, Status.TODO, 0, 1);
-        when(taskService.getTask(1))
+        TaskEditDto taskToEdit = new TaskEditDto(1, "name","description", 0, LocalDateTime.now(), 1, 1, Status.TODO);
+        when(taskService.getTaskToEdit(1))
                 .thenReturn(taskToEdit);
 
         List<Status> statusList = new ArrayList<>();
@@ -126,8 +129,8 @@ class TaskControllerTest {
     @Test
     @WithMockUser
     void editTask() throws Exception {
-        TaskDto taskToEdit = new TaskDto("name", "description", 1, LocalDateTime.now(), 1, Status.TODO, 0, 1);
-        when(taskService.getTask(1))
+        TaskEditDto taskToEdit = new TaskEditDto(1, "name","description", 0, LocalDateTime.now(), 1, 1, Status.TODO);
+        when(taskService.getTaskToEdit(1))
                 .thenReturn(taskToEdit);
 
         mockMvc.perform(post("/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/task/{taskId}/delete", 1, 1, 1, 1, 1)
@@ -139,8 +142,8 @@ class TaskControllerTest {
     @Test
     @WithMockUser
     void editSubTask() throws Exception {
-        TaskDto taskToEdit = new TaskDto("name", "description", 1, LocalDateTime.now(), 1, Status.TODO, 1, 1);
-        when(taskService.getTask(1))
+        TaskEditDto taskToEdit = new TaskEditDto(1, "name","description", 1, LocalDateTime.now(), 1, 1, Status.TODO);
+        when(taskService.getTaskToEdit(1))
                 .thenReturn(taskToEdit);
 
         mockMvc.perform(post("/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/task/{taskId}/delete", 1, 1, 1, 1, 1)

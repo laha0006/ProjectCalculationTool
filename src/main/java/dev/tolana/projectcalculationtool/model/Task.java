@@ -41,6 +41,20 @@ public class Task extends ResourceEntity {
         this.estimatedHours = estimatedHours;
     }
 
+    //used for mapping TaskEditDto To Task
+    public Task(long id, String taskName, String description, long parentId, LocalDateTime deadline, int estimatedHours, int actualHours, Status status) {
+        super(id, taskName, description, deadline, parentId, status);
+        this.estimatedHours = estimatedHours;
+        this.actualHours = actualHours;
+
+    }
+
+    public Task(String taskName, String description, long projectId, long parentId, LocalDateTime deadline, int estimatedHours) {
+        super(taskName, description, parentId, deadline);
+        this.projectId = projectId;
+        this.estimatedHours = estimatedHours;
+    }
+
     public long getProjectId() {
         return projectId;
     }

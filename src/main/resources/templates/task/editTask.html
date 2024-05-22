@@ -26,13 +26,9 @@
 
                         <p>
                             <label>Beskrivelse:
-                                <input type="text" th:field="*{taskDescription}" required>
+                                <input type="text" th:field="*{description}" required>
                             </label>
                         </p>
-
-                        <label>
-                            <input type="number" th:field="*{projectId}" hidden="hidden">
-                        </label>
 
                         <p>
                             <label>Deadline:
@@ -43,6 +39,12 @@
                         <p>
                             <label>Estimeret antal timer for færdiggørelse:
                                 <input type="number" th:field="*{estimatedHours}" required>
+                            </label>
+                        </p>
+
+                        <p>
+                            <label>Brugte antal timer for færdiggørelse:
+                                <input type="number" th:field="*{actualHours}" required>
                             </label>
                         </p>
 
@@ -58,20 +60,20 @@
                         </label>
 
                         <label>
-                            <input type="number" th:field="*{taskId}" hidden="hidden">
+                            <input type="number" th:field="*{id}" hidden="hidden">
                         </label>
 
                         <button type="submit" class="btn btn-success fw-bold in-line">Bekræft</button>
                     </form>
 
                     <div th:if="${taskToEdit.parentId == 0}">
-                        <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId} (orgId=${orgId}, deptId=${deptId}, teamId=${teamId}, projectId=${taskToEdit.projectId()})}">
+                        <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId} (orgId=${orgId}, deptId=${deptId}, teamId=${teamId}, projectId=${projectId})}">
                             <button class="btn btn-secondary fw-bold in-line">Annullér</button>
                         </a>
                     </div>
 
                     <div th:if="${taskToEdit.parentId != 0}">
-                        <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/task/{taskId} (orgId=${orgId}, deptId=${deptId}, teamId=${teamId}, projectId=${taskToEdit.projectId}, taskId=${taskToEdit.parentId()})}">
+                        <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/task/{taskId} (orgId=${orgId}, deptId=${deptId}, teamId=${teamId}, projectId=${projectId}, taskId=${taskToEdit.parentId()})}">
                             <button class="btn btn-secondary fw-bold in-line">Annullér</button>
                         </a>
                     </div>

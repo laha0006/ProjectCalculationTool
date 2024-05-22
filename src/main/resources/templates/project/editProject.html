@@ -52,11 +52,6 @@
                             </label>
                         </p>
 
-                        <p>
-                            <label>Estimeret antal timer for færdiggørelse:
-                                <input type="number" th:field="*{estimatedHours}" required>
-                            </label>
-                        </p>
 
                         <p>
                             <label>Antal anvendt timer for færdiggørelse:
@@ -75,6 +70,10 @@
                                 <option th:each="status : ${statusList}" th:value="${status}"
                                         th:text="${status}"></option>
                             </select>
+                        </label>
+
+                        <label>
+                            <input type="number" th:field="*{estimatedHours}" hidden="hidden">
                         </label>
 
                         <button type="submit" class="btn btn-success fw-bold in-line">Bekræft</button>
