@@ -31,6 +31,7 @@ public class Project extends ResourceEntity{
         this.allottedHours = allottedHours;
     }
 
+    //used for mapping ProjectEditDto to Entity
     public Project(long id, String projectName, String description, LocalDateTime deadline, int allottedHours, Status status) {
         super(id, projectName, description, deadline, status);
         this.allottedHours = allottedHours;
