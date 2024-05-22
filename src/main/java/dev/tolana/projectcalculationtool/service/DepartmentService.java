@@ -82,4 +82,8 @@ public class DepartmentService {
     public void assignMemberToDepartment(long deptId, String username){
         jdbcDepartmentRepository.assignMemberToDepartment(deptId,username);
     }
+
+    public void promoteMemberToAdmin(long deptId, String username){
+        jdbcDepartmentRepository.promoteMemberToAdmin(deptId,username);
+    }
 }

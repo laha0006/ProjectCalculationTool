@@ -96,6 +96,34 @@ public class DepartmentController {
         departmentService.assignMemberToDepartment(departmentId,user.username());
 
 
-        return "redirect:/organisation/" + department.parentId() + "/members";
+        return "redirect:/organisation/" + department.parentId() + "/department/"+ departmentId +"/members";
+    }
+
+    @PostMapping("/{deptId}/members/promote/{username}")
+    public String promoteMemberToAdmin(@PathVariable("deptId") long departmentId,
+                                       @PathVariable("username") String username){
+
+        EntityViewDto department = departmentService.getDepartment(departmentId);
+        UserEntityRoleDto user = departmentService.getUserFromOrganisationId(username,
+                department.parentId());
+
+        departmentService.promoteMemberToAdmin(departmentId,user.username());
+
+
+        return "redirect:/organisation/" + department.parentId() + "/department/"+ departmentId +"/members";
+    }
+
+    @PostMapping("/{deptId}/members/kick/{username}")
+    public String kickMemberFromDepartment(@PathVariable("deptId") long departmentId,
+                                       @PathVariable("username") String username){
+
+        EntityViewDto department = departmentService.getDepartment(departmentId);
+        UserEntityRoleDto user = departmentService.getUserFromOrganisationId(username,
+                department.parentId());
+
+        departmentService.assignMemberToDepartment(departmentId,user.username());
+
+
+        return "redirect:/organisation/" + department.parentId() + "/department/"+ departmentId +"/members";
     }
 }

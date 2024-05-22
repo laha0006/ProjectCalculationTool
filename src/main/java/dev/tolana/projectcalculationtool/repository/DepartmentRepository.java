@@ -11,4 +11,6 @@ public interface DepartmentRepository extends EntityCrudOperations{
     UserEntityRoleDto getUserFromOrganisationId(String username, long organisationId);
 
     void assignMemberToDepartment(long deptId, String username);
+
+    void promoteMemberToAdmin(long deptId, String username);
 }

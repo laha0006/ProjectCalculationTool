@@ -343,6 +343,7 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
         return cleanedUsers;
     }
 
+    @Override
     public UserEntityRoleDto getUserFromOrganisationId(String username, long organisationId) {
         UserEntityRoleDto user = null;
 
@@ -381,12 +382,23 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
         return user;
     }
 
+    @Override
     public void assignMemberToDepartment(long deptId, String username){
         try (Connection connection = dataSource.getConnection()) {
            RoleAssignUtil.assignDepartmentRole(connection,deptId,
                    UserRole.DEPARTMENT_MEMBER,username);
         } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
+    }
 
+    @Override
+    public void promoteMemberToAdmin(long deptId, String username){
+        try (Connection connection = dataSource.getConnection()) {
+            RoleAssignUtil.assignDepartmentRole(connection,deptId,
+                    UserRole.DEPARTMENT_ADMIN,username);
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
         }
     }
 }

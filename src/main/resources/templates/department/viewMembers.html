@@ -29,11 +29,13 @@
                                     -->
                                     <div class="d-inline" th:if="${user.departmentId == 0}">
                                         <form th:action="@{members/assign/{username} (username = ${user.username})}" method="post">
-                                            <button class="btn btn-warning fw-bold">Tildel</button>
+                                            <button class="btn btn-success fw-bold">Invitér</button>
                                         </form>
                                     </div>
                                     <div th:if="${user.departmentId == department.id}">
-                                        <button class="btn btn-success btn-sm fw-bold" type="submit">Rettigheder</button>
+                                        <form th:action="@{members/promote/{username} (username = ${user.username})}" method="post">
+                                            <button class="btn btn-warning btn-sm fw-bold" type="submit">Tildel Admin</button>
+                                        </form>
                                         <button class="btn btn-danger btn-sm fw-bold" type="submit">Fjern</button>
                                     </div>
                                 </div>
