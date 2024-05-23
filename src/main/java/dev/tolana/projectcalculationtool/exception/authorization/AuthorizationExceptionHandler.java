@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.sql.DataTruncation;
 import java.sql.SQLException;
 
 @ControllerAdvice
@@ -40,6 +41,12 @@ public class AuthorizationExceptionHandler {
     @ExceptionHandler(DuplicateKeyException.class)
     public String sqlException(SQLException ex, HttpServletRequest request, RedirectAttributes redirectAttributes) {
         redirectAttributes.addFlashAttribute("alertWarning", "username already exists!");
+        return "redirect:/user/register";
+    }
+
+    @ExceptionHandler(DataTruncation.class)
+    public String usernameOrPasswordTooLong(SQLException ex, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("alertWarning", "Brugernavn eller kodeord for langt, maks 50 tegn!");
         return "redirect:/user/register";
     }
 
