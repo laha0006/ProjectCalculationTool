@@ -87,44 +87,47 @@ public class DepartmentController {
     }
 
     @PostMapping("/{deptId}/members/assign/{username}")
-    public String assignMemberToDepartment(@PathVariable("deptId") long departmentId,
+    public String assignMemberToDepartment(@PathVariable("orgId") long orgId,
+                                           @PathVariable("deptId") long deptId,
                                            @PathVariable("username") String username){
 
-        EntityViewDto department = departmentService.getDepartment(departmentId);
+
         UserEntityRoleDto user = departmentService.getUserFromOrganisationId(username,
-                department.parentId());
+                orgId);
 
-        departmentService.assignMemberToDepartment(departmentId,user.username());
+        departmentService.assignMemberToDepartment(deptId,user.username());
 
 
-        return "redirect:/organisation/" + department.parentId() + "/department/"+ departmentId +"/members";
+        return "redirect:/organisation/" + orgId + "/department/"+ deptId +"/members";
     }
 
     @PostMapping("/{deptId}/members/promote/{username}")
-    public String promoteMemberToAdmin(@PathVariable("deptId") long departmentId,
+    public String promoteMemberToAdmin(@PathVariable("orgId") long orgId,
+                                       @PathVariable("deptId") long deptId,
                                        @PathVariable("username") String username){
 
-        EntityViewDto department = departmentService.getDepartment(departmentId);
+
         UserEntityRoleDto user = departmentService.getUserFromOrganisationId(username,
-                department.parentId());
+                orgId);
 
-        departmentService.promoteMemberToAdmin(departmentId,user.username());
+        departmentService.promoteMemberToAdmin(deptId,user.username());
 
 
-        return "redirect:/organisation/" + department.parentId() + "/department/"+ departmentId +"/members";
+        return "redirect:/organisation/" + orgId + "/department/"+ deptId +"/members";
     }
 
     @PostMapping("/{deptId}/members/kick/{username}")
-    public String kickMemberFromDepartment(@PathVariable("deptId") long departmentId,
-                                       @PathVariable("username") String username){
+    public String kickMemberFromDepartment(@PathVariable("orgId") long orgId,
+                                           @PathVariable("deptId") long deptId,
+                                           @PathVariable("username") String username){
 
-        EntityViewDto department = departmentService.getDepartment(departmentId);
+
         UserEntityRoleDto user = departmentService.getUserFromOrganisationId(username,
-                department.parentId());
+                orgId);
 
-        departmentService.kickMemberFromDepartment(departmentId,user.username());
+        departmentService.kickMemberFromDepartment(deptId,user.username());
 
 
-        return "redirect:/organisation/" + department.parentId() + "/department/"+ departmentId +"/members";
+        return "redirect:/organisation/" + orgId + "/department/"+ deptId +"/members";
     }
 }

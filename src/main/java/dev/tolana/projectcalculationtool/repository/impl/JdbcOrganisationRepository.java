@@ -413,4 +413,9 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
     public void assignMemberToEntity(long entityId, String username) {
 
     }
+
+    @Override
+    public List<UserEntityRoleDto> getUsersFromParentIdAndEntityId(long parentId, long entityId) {
+        return null;
+    }
 }

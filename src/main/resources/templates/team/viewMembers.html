@@ -26,12 +26,12 @@
                                         add authorisation check
                                     -->
 
-                                    <div class="d-flex d-inline" th:if="${user.departmentId == 0}">
+                                    <div class="d-flex d-inline" th:if="${user.teamId == 0}">
                                         <form th:action="@{members/assign/{username} (username = ${user.username})}" method="post">
                                             <button class="btn btn-success fw-bold">Invitér</button>
                                         </form>
                                     </div>
-                                    <div class="d-flex d-inline" th:if="${user.departmentId == department.id}">
+                                    <div class="d-flex d-inline" th:if="${user.teamId == team.id}">
                                         <form th:action="@{members/promote/{username} (username = ${user.username})}" method="post">
                                             <button class="btn btn-warning btn-sm fw-bold" type="submit">Tildel Admin</button>
                                         </form>
@@ -48,8 +48,10 @@
 
                     <div class="d-flex">
                         <div class="d-inline">
-                            <a th:href="@{/organisation/{orgId}/department/{deptId} (orgId = ${department.parentId},
-                            deptId = ${department.id})}" class="btn btn-warning fw-bold">Gå tilbage</a>
+                            <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}
+                            (orgId=${department.parentId}, deptId=${department.id}, teamId=${team.id})}">
+                                <button class="btn btn-warning fw-bold">Tilbage</button>
+                            </a>
                         </div>
                     </div>
                 </div>

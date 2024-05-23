@@ -518,4 +518,9 @@ public class JdbcProjectRepository implements ProjectRepository {
     public void kickMember(long entityId, String username) {
 
     }
+
+    @Override
+    public List<UserEntityRoleDto> getUsersFromParentIdAndEntityId(long parentId, long entityId) {
+        return null;
+    }
 }
