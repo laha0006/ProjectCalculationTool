@@ -72,16 +72,16 @@ public class DepartmentService {
     }
 
     public List<UserEntityRoleDto> getUsersFromOrganisationId(long organisationId,long departmentId){
-        return jdbcDepartmentRepository.getUsersFromOrganisationId(organisationId,departmentId);
+        return jdbcDepartmentRepository.getUsersFromParentIdAndEntityId(organisationId,departmentId);
     }
 
     public UserEntityRoleDto getUserFromOrganisationId(String username, long orgId){
-        return jdbcDepartmentRepository.getUserFromOrganisationId(username,orgId);
+        return jdbcDepartmentRepository.getUserFromParentId(username,orgId);
     }
 
     //add authorisation
     public void assignMemberToDepartment(long deptId, String username){
-        jdbcDepartmentRepository.assignMemberToDepartment(deptId,username);
+        jdbcDepartmentRepository.assignMemberToEntity(deptId,username);
     }
 
     //add authorisation

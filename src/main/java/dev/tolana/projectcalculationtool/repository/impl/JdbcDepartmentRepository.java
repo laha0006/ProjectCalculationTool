@@ -271,7 +271,7 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
     }
 
     @Override
-    public List<UserEntityRoleDto> getUsersFromOrganisationId(long organisationId, long departmentId) {
+    public List<UserEntityRoleDto> getUsersFromParentIdAndEntityId(long organisationId, long departmentId) {
         List<UserEntityRoleDto> users = new ArrayList<>();
 
         try (Connection connection = dataSource.getConnection()) {
@@ -343,19 +343,19 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
     }
 
     @Override
-    public UserEntityRoleDto getUserFromOrganisationId(String username, long organisationId) {
+    public UserEntityRoleDto getUserFromParentId(String username, long parentId) {
         UserEntityRoleDto user = null;
 
         try (Connection connection = dataSource.getConnection()) {
-            String getAllUsersFromOrganisation = """
+            String getUserFromParent = """
                     SELECT username, role_id, task_id, project_id, team_id, department_id, organisation_id
                     FROM user_entity_role
                     WHERE username = ? AND organisation_id = ?
                     """;
 
-            PreparedStatement pstmt = connection.prepareStatement(getAllUsersFromOrganisation);
+            PreparedStatement pstmt = connection.prepareStatement(getUserFromParent);
             pstmt.setString(1, username);
-            pstmt.setLong(2, organisationId);
+            pstmt.setLong(2, parentId);
 
             ResultSet rs = pstmt.executeQuery();
 
@@ -382,7 +382,7 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
     }
 
     @Override
-    public void assignMemberToDepartment(long deptId, String username){
+    public void assignMemberToEntity(long deptId, String username){
         try (Connection connection = dataSource.getConnection()) {
            RoleAssignUtil.assignDepartmentRole(connection,deptId,
                    UserRole.DEPARTMENT_MEMBER,username);

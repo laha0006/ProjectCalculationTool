@@ -403,4 +403,14 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
             sqlException.printStackTrace();
         }
     }
+
+    @Override
+    public UserEntityRoleDto getUserFromParentId(String username, long parentId) {
+        return null;
+    }
+
+    @Override
+    public void assignMemberToEntity(long entityId, String username) {
+
+    }
 }

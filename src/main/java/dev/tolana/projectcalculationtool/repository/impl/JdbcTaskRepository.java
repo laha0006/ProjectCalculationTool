@@ -380,8 +380,13 @@ public class JdbcTaskRepository implements TaskRepository {
     }
 
     @Override
-    public UserEntityRoleDto getUserFromOrganisationId(String username, long organisationId) {
+    public UserEntityRoleDto getUserFromParentId(String username, long parentId) {
         return null;
+    }
+
+    @Override
+    public void assignMemberToEntity(long entityId, String username) {
+
     }
 
     @Override

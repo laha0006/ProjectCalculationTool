@@ -32,10 +32,13 @@ public interface EntityCrudOperations {
 
     List<UserInformationDto> getUsersFromEntityId(long entityId);
 
-    UserEntityRoleDto getUserFromOrganisationId(String username, long organisationId);
+    List<UserEntityRoleDto> getUsersFromParentIdAndEntityId(long parentId, long entityId);
+
+    UserEntityRoleDto getUserFromParentId(String username, long parentId);
 
     List<UserRole> getAllUserRoles();
 
+    void assignMemberToEntity(long entityId, String username);
 
     void promoteMemberToAdmin(long entityId, String username);
 
