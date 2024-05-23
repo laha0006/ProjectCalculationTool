@@ -42,7 +42,7 @@ public class OrganisationService {
         Entity organisation = entityDtoMapper.toEntity(creationInfo);
         organisationRepository.createEntity(username, organisation);
     }
-    //spring expression language...
+
     @PreAuthorize("@auth.hasOrgansiationAccess(#organisationId, " +
                   "T(dev.tolana.projectcalculationtool.enums.Permission).ORGANISATION_READ )")
     public EntityViewDto getOrganisation(long organisationId) {
