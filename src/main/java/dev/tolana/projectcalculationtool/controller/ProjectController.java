@@ -90,14 +90,15 @@ public class ProjectController {
     @GetMapping("/{projectId}/assign/members")
     public String getAllMembersFromTeamId(@PathVariable long teamId, @PathVariable long projectId, Model model, @PathVariable String deptId, @PathVariable String orgId) {
         ProjectViewDto project = projectService.getProjectToView(projectId);
+        model.addAttribute("projectName", project.projectName());
 
         List<UserInformationDto> memberList = projectService.getAllTeamMembersFromTeamId(teamId);
-        List<UserRole> userRoles = projectService.getAllUserRoles();
-
-        model.addAttribute("projectName", project.projectName());
         model.addAttribute("teamMembers", memberList);
+
+        List<UserRole> userRoles = projectService.getAllUserRoles();
         model.addAttribute("userRoles", userRoles);
         model.addAttribute("roleMember", UserRole.PROJECT_MEMBER);
+
         model.addAttribute("projectId", projectId);
         model.addAttribute("deptId", deptId);
         model.addAttribute("orgId", orgId);
@@ -112,6 +113,7 @@ public class ProjectController {
                                              @PathVariable long deptId,
                                              @PathVariable long teamId,
                                              @PathVariable long projectId) {
+
         if (!selectedTeamMembers.isEmpty()) {
             projectService.assignTeamMembersToProject(projectId, selectedTeamMembers, role);
         }
@@ -127,7 +129,9 @@ public class ProjectController {
 
         ProjectViewDto projectToDelete = projectService.getProjectToView(projectId);
         long projectParentId = projectToDelete.parentId();
+
         projectService.deleteProject(projectId);
+
         return determineRedirection(orgId, deptId, teamId, projectParentId);
     }
 
