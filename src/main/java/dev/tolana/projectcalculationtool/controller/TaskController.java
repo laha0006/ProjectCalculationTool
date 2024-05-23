@@ -107,6 +107,7 @@ public class TaskController {
 
         TaskEditDto taskToDelete = taskService.getTaskToEdit(taskId);
         long parentTaskId = taskToDelete.parentId();
+
         taskService.deleteTask(taskId);
 
         return determineRedirection(orgId, deptId, teamId, projectId, parentTaskId);
