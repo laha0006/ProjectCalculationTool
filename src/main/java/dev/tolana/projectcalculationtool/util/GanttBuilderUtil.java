@@ -82,8 +82,6 @@ public class GanttBuilderUtil {
         }
     }
 
-    ;
-
     public DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     public String buildGanttDataSet(List<Entity> tasks) {
@@ -101,7 +99,6 @@ public class GanttBuilderUtil {
                     formatter.format(task.getDateCreated()),
                     formatter.format(end)
             );
-
             items.add(item);
         }
         return new Gson().toJson(items);
