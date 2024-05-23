@@ -276,7 +276,7 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
 
         try (Connection connection = dataSource.getConnection()) {
             String getAllUsersFromOrganisation = """
-                    SELECT username, role_id, task_id, project_id, team_id, department_id, organisation_id
+                    SELECT DISTINCT username, role_id, task_id, project_id, team_id, department_id, organisation_id
                     FROM user_entity_role
                     WHERE organisation_id = ? OR department_id = ?
                     ORDER BY username;
@@ -395,6 +395,8 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
     public void promoteMemberToAdmin(long deptId, String username){
         try (Connection connection = dataSource.getConnection()) {
             RoleAssignUtil.removeDepartmentRole(connection,deptId,
+                    UserRole.DEPARTMENT_ADMIN,username);
+            RoleAssignUtil.removeDepartmentRole(connection,deptId,
                     UserRole.DEPARTMENT_MEMBER,username);
             RoleAssignUtil.assignDepartmentRole(connection,deptId,
                     UserRole.DEPARTMENT_ADMIN,username);
@@ -404,7 +406,7 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
     }
 
     @Override
-    public void kickMemberFromDepartment(long deptId, String username){
+    public void kickMember(long deptId, String username){
         try (Connection connection = dataSource.getConnection()) {
             RoleAssignUtil.removeDepartmentRole(connection,deptId,
                     UserRole.DEPARTMENT_ADMIN,username);

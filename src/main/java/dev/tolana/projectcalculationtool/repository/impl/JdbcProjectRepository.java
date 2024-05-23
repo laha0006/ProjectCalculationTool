@@ -1,5 +1,6 @@
 package dev.tolana.projectcalculationtool.repository.impl;
 
+import dev.tolana.projectcalculationtool.dto.UserEntityRoleDto;
 import dev.tolana.projectcalculationtool.dto.UserInformationDto;
 import dev.tolana.projectcalculationtool.enums.Alert;
 import dev.tolana.projectcalculationtool.enums.Status;
@@ -495,5 +496,21 @@ public class JdbcProjectRepository implements ProjectRepository {
         }
 
         return statusList;
+    }
+
+
+    @Override
+    public UserEntityRoleDto getUserFromOrganisationId(String username, long organisationId) {
+        return null;
+    }
+
+    @Override
+    public void promoteMemberToAdmin(long entityId, String username) {
+
+    }
+
+    @Override
+    public void kickMember(long entityId, String username) {
+
     }
 }

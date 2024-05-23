@@ -82,4 +82,18 @@ public class OrganisationService {
         List<Entity> departments = organisationRepository.getChildren(organisationId);
         return entityDtoMapper.toEntityViewDtoList(departments);
     }
+
+    public UserEntityRoleDto getUserFromOrganisationId(String username, long orgId){
+        return organisationRepository.getUserFromOrganisationId(username,orgId);
+    }
+
+    //add authorisation
+    public void promoteMemberToAdmin(long orgId, String username){
+        organisationRepository.promoteMemberToAdmin(orgId,username);
+    }
+
+    //add authorisation
+    public void kickMemberFromOrganisation(long orgId, String username){
+        organisationRepository.kickMember(orgId,username);
+    }
 }

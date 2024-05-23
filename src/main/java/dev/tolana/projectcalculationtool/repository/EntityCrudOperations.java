@@ -1,5 +1,6 @@
 package dev.tolana.projectcalculationtool.repository;
 
+import dev.tolana.projectcalculationtool.dto.UserEntityRoleDto;
 import dev.tolana.projectcalculationtool.dto.UserInformationDto;
 import dev.tolana.projectcalculationtool.enums.UserRole;
 import dev.tolana.projectcalculationtool.model.Entity;
@@ -31,5 +32,12 @@ public interface EntityCrudOperations {
 
     List<UserInformationDto> getUsersFromEntityId(long entityId);
 
+    UserEntityRoleDto getUserFromOrganisationId(String username, long organisationId);
+
     List<UserRole> getAllUserRoles();
+
+
+    void promoteMemberToAdmin(long entityId, String username);
+
+    void kickMember(long entityId, String username);
 }

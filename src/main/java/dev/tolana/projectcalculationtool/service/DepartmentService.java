@@ -91,6 +91,6 @@ public class DepartmentService {
 
     //add authorisation
     public void kickMemberFromDepartment(long deptId, String username){
-        jdbcDepartmentRepository.kickMemberFromDepartment(deptId,username);
+        jdbcDepartmentRepository.kickMember(deptId,username);
     }
 }

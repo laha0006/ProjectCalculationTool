@@ -23,10 +23,9 @@
                                 <div class="d-flex d-inline">
 
                                     <!--TODO
-                                        add functionality to buttons
-                                        make buttons dynamic, so that only "invite" shows up if not invited,
-                                        and only "kick" if they are already members
+                                        add authorisation check
                                     -->
+
                                     <div class="d-flex d-inline" th:if="${user.departmentId == 0}">
                                         <form th:action="@{members/assign/{username} (username = ${user.username})}" method="post">
                                             <button class="btn btn-success fw-bold">Invitér</button>

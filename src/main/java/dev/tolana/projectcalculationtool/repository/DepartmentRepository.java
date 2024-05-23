@@ -8,11 +8,6 @@ public interface DepartmentRepository extends EntityCrudOperations{
 
     List<UserEntityRoleDto> getUsersFromOrganisationId(long organisationId, long departmentId);
 
-    UserEntityRoleDto getUserFromOrganisationId(String username, long organisationId);
-
     void assignMemberToDepartment(long deptId, String username);
 
-    void promoteMemberToAdmin(long deptId, String username);
-
-    void kickMemberFromDepartment(long deptId, String username);
 }
