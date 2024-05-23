@@ -35,7 +35,6 @@ public class AuthorizationService {
     }
 
     public boolean hasProjectAccess(long projectId, Permission requiredPermission) {
-        System.out.println("PROJECT");
         return hasAccess(projectId, EntityType.PROJECT, requiredPermission);
     }
 
@@ -51,7 +50,6 @@ public class AuthorizationService {
         if (roles == null) {
             initRoles();
         }
-        //currently logged in user, gotten from session.
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
         HierarchyDto hierarchy = authorizationRepository.getHierarchy(entityId, entityType);
