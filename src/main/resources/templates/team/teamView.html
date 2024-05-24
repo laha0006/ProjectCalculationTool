@@ -33,15 +33,14 @@
                             <tbody>
                             <tr th:each="project : ${allProjects}">
                                 <td>
-                                    <a th:text="${project.resourceEntityName}"
+                                    <a th:text="${project.projectName}"
                                        th:href="@{{teamId}/project/{projectId} (teamId=${team.id}, projectId=${project.id})}"></a>
                                 </td>
                                 <td th:text="${project.deadline}"></td>
-                                <!--&lt;!&ndash;            <td th:text="${project.getDeadline()}"></td>&ndash;&gt; TODO MAKE LOGIC THAT CALCULATES PROGRESSION IN PERCENTAGE-->
                                 <td th:text="${project.status}"></td>
                                 <td>
                                     <div class="form-group">
-                                        <a th:href="@{{teamId}/project/{projectId}/assign/members (teamId=${project.teamId}, projectId=${project.id})}">
+                                        <a th:href="@{{teamId}/project/{projectId}/assign/members (teamId=${team.id}, projectId=${project.id})}">
                                             <button class="btn btn-success fw-bold">Tilknyt teammedlem</button>
                                         </a>
                                     </div>
@@ -58,24 +57,28 @@
                                 <button class="btn btn-success fw-bold">Opret projekt</button>
                             </form>
                         </div>
-                        <div class="d-inline">
-                            <a class="btn btn-primary" th:href="@{{teamId}/edit (teamId=${team.id})}">Edit</a>
-                        </div>
-
-
 
                         <div class="d-inline">
-                            <a th:href="@{/organisation/{orgId}/department/{deptId} (orgId=${orgId}, deptId=${team.parentId})}">
-                                <button class="btn btn-secondary fw-bold">Tilbage</button>
-                            </a>
+                            <a th:href="@{{teamId}/members (teamId = ${team.id})}"
+                               class="btn btn-success fw-bold">Se medlemmer</a>
                         </div>
-                    </div>
-                    <div>
-                        <h3>Farligt!</h3>
+
+                        <div class="d-inline">
+                            <a th:href="@{{teamId}/edit (teamId=${team.id})}"
+                               class="btn btn-primary fw-bold">Ændr afdeling</a>
+                        </div>
+
                         <div class="d-inline">
                             <form th:action="@{{teamId}/delete (teamId=${team.id})}" method="post">
                                 <button class="btn btn-danger fw-bold">Slet</button>
                             </form>
+                        </div>
+
+                        <div class="d-inline">
+                            <a th:href="@{/organisation/{orgId}/department/{deptId}
+                            (orgId=${orgId}, deptId=${team.parentId})}">
+                                <button class="btn btn-warning fw-bold">Tilbage</button>
+                            </a>
                         </div>
                     </div>
                 </div>

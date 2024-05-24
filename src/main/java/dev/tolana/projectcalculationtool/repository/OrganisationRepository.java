@@ -10,4 +10,7 @@ public interface OrganisationRepository extends EntityCrudOperations{
     List<Invitation> getAllOutstandingInvitations(long organisationId);
 
     List<UserEntityRoleDto> getUsersFromOrganisationId(long entityId);
-}
+
+    UserEntityRoleDto getUserFromOrganisationId(String username, long organisationId);
+
+    }

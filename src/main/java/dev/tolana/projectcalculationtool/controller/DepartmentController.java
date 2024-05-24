@@ -1,11 +1,9 @@
 package dev.tolana.projectcalculationtool.controller;
 
-import dev.tolana.projectcalculationtool.dto.EntityCreationDto;
-import dev.tolana.projectcalculationtool.dto.EntityEditDto;
-import dev.tolana.projectcalculationtool.dto.EntityViewDto;
-import dev.tolana.projectcalculationtool.dto.UserEntityRoleDto;
+import dev.tolana.projectcalculationtool.dto.*;
 import dev.tolana.projectcalculationtool.enums.EntityType;
 import dev.tolana.projectcalculationtool.service.DepartmentService;
+import dev.tolana.projectcalculationtool.util.RoleAssignUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,6 +35,7 @@ public class DepartmentController {
 
     @GetMapping("{deptId}/members")
     public String organisationMembersView(@PathVariable("deptId") long departmentId, Model model){
+        //TODO exclude owner of department from results
         EntityViewDto department = departmentService.getDepartment(departmentId);
         model.addAttribute("department", department);
 
@@ -44,7 +43,7 @@ public class DepartmentController {
         model.addAttribute("organisation", organisation);
 
         List<UserEntityRoleDto> users = departmentService.getUsersFromOrganisationId(
-                            organisation.id());
+                            organisation.id(),departmentId);
         model.addAttribute("orgUsers",users);
 
         return "department/viewMembers";
@@ -85,5 +84,50 @@ public class DepartmentController {
 
         departmentService.editDepartment(editDto);
         return "redirect:../{deptId}";
+    }
+
+    @PostMapping("/{deptId}/members/assign/{username}")
+    public String assignMemberToDepartment(@PathVariable("orgId") long orgId,
+                                           @PathVariable("deptId") long deptId,
+                                           @PathVariable("username") String username){
+
+
+        UserEntityRoleDto user = departmentService.getUserFromOrganisationId(username,
+                orgId);
+
+        departmentService.assignMemberToDepartment(deptId,user.username());
+
+
+        return "redirect:/organisation/" + orgId + "/department/"+ deptId +"/members";
+    }
+
+    @PostMapping("/{deptId}/members/promote/{username}")
+    public String promoteMemberToAdmin(@PathVariable("orgId") long orgId,
+                                       @PathVariable("deptId") long deptId,
+                                       @PathVariable("username") String username){
+
+
+        UserEntityRoleDto user = departmentService.getUserFromOrganisationId(username,
+                orgId);
+
+        departmentService.promoteMemberToAdmin(deptId,user.username());
+
+
+        return "redirect:/organisation/" + orgId + "/department/"+ deptId +"/members";
+    }
+
+    @PostMapping("/{deptId}/members/kick/{username}")
+    public String kickMemberFromDepartment(@PathVariable("orgId") long orgId,
+                                           @PathVariable("deptId") long deptId,
+                                           @PathVariable("username") String username){
+
+
+        UserEntityRoleDto user = departmentService.getUserFromOrganisationId(username,
+                orgId);
+
+        departmentService.kickMemberFromDepartment(deptId,user.username());
+
+
+        return "redirect:/organisation/" + orgId + "/department/"+ deptId +"/members";
     }
 }

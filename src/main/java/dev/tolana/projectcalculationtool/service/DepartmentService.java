@@ -1,9 +1,6 @@
 package dev.tolana.projectcalculationtool.service;
 
-import dev.tolana.projectcalculationtool.dto.EntityCreationDto;
-import dev.tolana.projectcalculationtool.dto.EntityEditDto;
-import dev.tolana.projectcalculationtool.dto.EntityViewDto;
-import dev.tolana.projectcalculationtool.dto.UserEntityRoleDto;
+import dev.tolana.projectcalculationtool.dto.*;
 import dev.tolana.projectcalculationtool.mapper.EntityDtoMapper;
 import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.repository.DepartmentRepository;
@@ -74,7 +71,26 @@ public class DepartmentService {
         return entityDtoMapper.toEntityViewDto(organisation);
     }
 
-    public List<UserEntityRoleDto> getUsersFromOrganisationId(long organisationId){
-        return jdbcDepartmentRepository.getUsersFromOrganisationId(organisationId);
+    public List<UserEntityRoleDto> getUsersFromOrganisationId(long organisationId,long departmentId){
+        return jdbcDepartmentRepository.getUsersFromParentIdAndEntityId(organisationId,departmentId);
+    }
+
+    public UserEntityRoleDto getUserFromOrganisationId(String username, long orgId){
+        return jdbcDepartmentRepository.getUserFromParentId(username,orgId);
+    }
+
+    //add authorisation
+    public void assignMemberToDepartment(long deptId, String username){
+        jdbcDepartmentRepository.assignMemberToEntity(deptId,username);
+    }
+
+    //add authorisation
+    public void promoteMemberToAdmin(long deptId, String username){
+        jdbcDepartmentRepository.promoteMemberToAdmin(deptId,username);
+    }
+
+    //add authorisation
+    public void kickMemberFromDepartment(long deptId, String username){
+        jdbcDepartmentRepository.kickMember(deptId,username);
     }
 }

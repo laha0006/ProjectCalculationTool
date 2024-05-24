@@ -14,11 +14,11 @@
             <main class="d-flex justify-content-center text-center bg-secondary-subtle py-3 px-5 rounded shadow">
                 <div>
                     <div th:if="${project.parentId() == 0}">
-                        <h1 th:text="'Projekt: ' + ${project.resourceEntityName}"></h1>
+                        <h1 th:text="'Projekt: ' + ${project.projectName}"></h1>
                     </div>
 
                     <div th:if="${project.parentId() != 0}">
-                        <h1 th:text="'Sub-projekt: ' + ${project.resourceEntityName}"></h1>
+                        <h1 th:text="'Sub-projekt: ' + ${project.projectName}"></h1>
                     </div>
 
                     <div th:if="${allTasks.isEmpty() && allSubProjects.isEmpty()}">
@@ -42,7 +42,7 @@
                             <tbody>
                             <tr th:each="subProjekt : ${allSubProjects}">
                                 <td>
-                                    <a th:text="${subProjekt.resourceEntityName}"
+                                    <a th:text="${subProjekt.projectName}"
                                        th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId} (orgId=${orgId}, deptId=${deptId}, teamId=${teamId}, projectId=${subProjekt.id}) }">
                                     </a>
                                 </td>
@@ -73,14 +73,14 @@
                             <tbody>
                             <tr th:each="task : ${allTasks}">
                                 <td>
-                                    <a th:text="${task.resourceEntityName}"
+                                    <a th:text="${task.taskName}"
                                        th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/task/{taskId} (orgId=${orgId}, deptId=${deptId}, teamId=${teamId}, projectId=${projectId}, taskId=${task.id})}">
                                     </a>
                                 </td>
                                 <td th:text="${task.description}"></td>
                                 <td th:text="${task.deadline}"></td>
                                 <td th:text="${task.estimatedHours}"></td>
-                                <td th:text="${task.actualHours()}"></td>
+                                <td th:text="${task.actualHours}"></td>
                                 <td th:text="${task.status}"></td>
                                 <td>
                                     <div class="d-flex">
@@ -186,7 +186,7 @@
 
 <!--                    BACK BUTTON FOR MAIN PROJECT-->
                     <div th:if="${project.parentId() == 0}" class="d-inline">
-                        <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId} (orgId=${orgId}, deptId=${deptId}, teamId=${project.teamId})}">
+                        <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId} (orgId=${orgId}, deptId=${deptId}, teamId=${teamId})}">
                             <button class="btn btn-secondary fw-bold">Tilbage</button>
                         </a>
                     </div>
