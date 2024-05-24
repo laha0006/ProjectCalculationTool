@@ -26,65 +26,111 @@ public class BreadCrumbService {
 
     private List<BreadCrumbItmDto> createItems(NameHierarchy nameHierarchy, String url, EntityType entityType) {
         List<BreadCrumbItmDto> items = new ArrayList<>();
+        System.out.println("NAME HIERARCHY: " + nameHierarchy);
+        System.out.println("CREATE ENTITY TYPE: " + entityType);
         String[] tokens = url.split("/");
-        for (String token : tokens) {
-            System.out.println(token);
-        }
-        System.out.println("Tokens: " + tokens.length);
         String last = tokens[tokens.length - 1];
-        boolean isNumeric = tokens[tokens.length - 1].matches("\\d+");
+        String secondLast = tokens[tokens.length - 2];
+        boolean isNumeric = last.matches("\\d+");
+        boolean isSecondNumeric = last.matches("\\d+");
+
         String currPath = "/organisation";
         if (nameHierarchy == null) {
+            System.out.println("##### ?????  NUL ????? #######");
             items.add(new BreadCrumbItmDto(false, "/organisation", "organisation"));
             items.add(new BreadCrumbItmDto(false, "/organisation/" + last, last));
         }
         if (nameHierarchy != null) {
+            System.out.println("<= ORGANISATION");
             if (nameHierarchy.organisationName() != null) {
-                items.add(new BreadCrumbItmDto(false, "/organisation", "organisation"));
+                items.add(new BreadCrumbItmDto(false, "/organisation", "Organisations"));
                 if (entityType == EntityType.ORGANISATION) {
-                    items.add(new BreadCrumbItmDto(true, currPath += "/" + tokens[2], nameHierarchy.organisationName()));
+                    if (!isNumeric) {
+                        items.add(new BreadCrumbItmDto(true, currPath += "/" + tokens[2], nameHierarchy.organisationName()));
+                        items.add(new BreadCrumbItmDto(true, currPath += "/" + tokens[2], last));
+                    } else {
+                        items.add(new BreadCrumbItmDto(true, currPath += "/" + tokens[2], nameHierarchy.organisationName()));
+                    }
                 } else {
                     items.add(new BreadCrumbItmDto(false, currPath += "/" + tokens[2], nameHierarchy.organisationName()));
                 }
             }
             if (entityType.ordinal() <= EntityType.DEPARTMENT.ordinal()) {
+                System.out.println("<= DEPARTMENT");
                 if (entityType == EntityType.DEPARTMENT) {
-                    items.add(new BreadCrumbItmDto(true, currPath += "/department/" + tokens[4], last.matches("\\d+") ? nameHierarchy.departmentName() : last));
+                    if (!isNumeric) {
+                        System.out.println("DEPT isNUM FIRST");
+                        items.add(new BreadCrumbItmDto(true, currPath += "/department/" + tokens[4], nameHierarchy.departmentName()));
+                        items.add(new BreadCrumbItmDto(true, currPath += "/department/" + tokens[4], last));
+                    } else {
+                        System.out.println("DEPPT ELSE LAST");
+                        items.add(new BreadCrumbItmDto(true, currPath += "/department/" + tokens[4], last.matches("\\d+") ? nameHierarchy.departmentName() : last));
+                    }
                 } else {
                     items.add(new BreadCrumbItmDto(false, currPath += "/department/" + tokens[4], nameHierarchy.departmentName()));
                 }
             }
             if (entityType.ordinal() <= EntityType.TEAM.ordinal()) {
+                System.out.println("<= TEAM");
                 if (entityType == EntityType.TEAM) {
-                    items.add(new BreadCrumbItmDto(true, currPath += "/team/" + tokens[6], last.matches("\\d+") ? nameHierarchy.teamName() : last));
+                    if (!isNumeric) {
+                        items.add(new BreadCrumbItmDto(true, currPath += "/team/" + tokens[6], nameHierarchy.teamName()));
+                        items.add(new BreadCrumbItmDto(true, currPath += "/team/" + tokens[6], last));
+                    } else {
+                        items.add(new BreadCrumbItmDto(true, currPath += "/team/" + tokens[6], last.matches("\\d+") ? nameHierarchy.teamName() : last));
+                    }
                 } else {
                     items.add(new BreadCrumbItmDto(false, currPath += "/team/" + tokens[6], nameHierarchy.teamName()));
                 }
             }
             if (entityType.ordinal() <= EntityType.PROJECT.ordinal()) {
+                System.out.println("<= PROJECT");
                 if (entityType == EntityType.PROJECT) {
                     if (nameHierarchy.parentProjectName() != null) {
+                        System.out.println("   <= SUB_PROJECT last");
                         items.add(new BreadCrumbItmDto(true, currPath + "/project/" + nameHierarchy.parentProjectId(), nameHierarchy.parentProjectName()));
-                        items.add(new BreadCrumbItmDto(true, currPath += "/project/" + tokens[8], last.matches("\\d+") ? nameHierarchy.projectName() : last));
+                        if (!isNumeric) {
+                            items.add(new BreadCrumbItmDto(true, currPath += "/project/" + tokens[8], nameHierarchy.projectName()));
+                            items.add(new BreadCrumbItmDto(true, currPath += "/project/" + tokens[8], last.matches("\\d+") ? nameHierarchy.projectName() : last));
+                        } else {
+                            items.add(new BreadCrumbItmDto(true, currPath += "/project/" + tokens[8], last.matches("\\d+") ? nameHierarchy.projectName() : last));
+                        }
                     } else {
-                        items.add(new BreadCrumbItmDto(true, currPath += "/project/" + tokens[8], last.matches("\\d+") ? nameHierarchy.projectName() : last));
+                        if (!isNumeric) {
+                            items.add(new BreadCrumbItmDto(true, currPath += "/project/" + tokens[8], nameHierarchy.projectName()));
+                            items.add(new BreadCrumbItmDto(true, currPath += "/project/" + tokens[8], last));
+                        } else {
+                            items.add(new BreadCrumbItmDto(true, currPath += "/project/" + tokens[8], last.matches("\\d+") ? nameHierarchy.projectName() : last));
+                        }
                     }
                 } else {
                     if (nameHierarchy.parentProjectName() != null) {
+                        System.out.println("   <= SUB_PROJECT not last");
                         items.add(new BreadCrumbItmDto(false, currPath + "/project/" + nameHierarchy.parentProjectId(), nameHierarchy.parentProjectName()));
-                        items.add(new BreadCrumbItmDto(false, currPath += "/project/" + tokens[8], last.matches("\\d+") ? nameHierarchy.projectName() : last));
+                        items.add(new BreadCrumbItmDto(false, currPath += "/project/" + tokens[8], last));
                     } else {
                         items.add(new BreadCrumbItmDto(false, currPath += "/project/" + tokens[8], nameHierarchy.projectName()));
                     }
                 }
             }
             if (entityType.ordinal() == EntityType.TASK.ordinal()) {
+                System.out.println("<= TASK");
                 if (entityType == EntityType.TASK) {
                     if (nameHierarchy.parentTaskName() != null) {
+                        System.out.println("   <= SUB_TASK");
                         items.add(new BreadCrumbItmDto(true, currPath + "/task/" + nameHierarchy.parentTaskId(), nameHierarchy.parentTaskName()));
-                        items.add(new BreadCrumbItmDto(true, currPath += "/task/" + tokens[10], last.matches("\\d+") ? nameHierarchy.taskName() : last));
+                        if (!isNumeric) {
+                            items.add(new BreadCrumbItmDto(true, currPath + "/task/" + tokens[10], nameHierarchy.taskName()));
+                        } else {
+                            items.add(new BreadCrumbItmDto(true, currPath += "/task/" + tokens[10], last.matches("\\d+") ? nameHierarchy.taskName() : last));
+                        }
                     } else {
-                        items.add(new BreadCrumbItmDto(true, currPath += "/task/" + tokens[10], last.matches("\\d+") ? nameHierarchy.taskName() : last));
+                        if (!isNumeric) {
+                            items.add(new BreadCrumbItmDto(true, currPath += "/task/" + tokens[10], nameHierarchy.taskName()));
+                            items.add(new BreadCrumbItmDto(true, currPath += "/task/" + tokens[10], last));
+                        } else {
+                            items.add(new BreadCrumbItmDto(true, currPath += "/task/" + tokens[10], last.matches("\\d+") ? nameHierarchy.taskName() : last));
+                        }
                     }
                 } else {
                     items.add(new BreadCrumbItmDto(false, currPath += "/task/" + tokens[10], nameHierarchy.taskName()));
@@ -99,41 +145,54 @@ public class BreadCrumbService {
         String strippedUrl = url.substring(1);
         String[] tokens = strippedUrl.split("/");
         int length = tokens.length;
+        System.out.println("LENGTH: " + length);
         boolean isNumeric = tokens[tokens.length - 1].matches("\\d+");
+        boolean isSecondNumeric = tokens[tokens.length - 2].matches("\\d+");
         EntityType entityType;
         NameHierarchy nameHierarchy;
-        if (length == 2 && isNumeric) {
+        System.out.println("############## URL: " + strippedUrl);
+        if (!url.contains("department") && isNumeric) {
             nameHierarchy = breadCrumbRepository.getNameHierarchy(Long.parseLong(tokens[1]), EntityType.ORGANISATION);
             entityType = EntityType.ORGANISATION;
-        } else if (length == 2) {
+        } else if (!url.contains("department") && !isNumeric) {
+            System.out.println("YOO WE DEPARTING OR WHAT?");
             entityType = EntityType.ORGANISATION;
-            nameHierarchy = null;
-        } else if (length == 4 && isNumeric) {
+            nameHierarchy = breadCrumbRepository.getNameHierarchy(Long.parseLong(tokens[1]), EntityType.ORGANISATION);
+        } else if (!url.contains("team") && isNumeric) {
             nameHierarchy = breadCrumbRepository.getNameHierarchy(Long.parseLong(tokens[3]), EntityType.DEPARTMENT);
             entityType = EntityType.DEPARTMENT;
-        } else if (length == 4) {
-            entityType = EntityType.DEPARTMENT;
+        } else if (!url.contains("team") && !isNumeric) {
+            if (!isSecondNumeric) {
+                entityType = EntityType.ORGANISATION;
+            } else {
+                entityType = EntityType.DEPARTMENT;
+            }
             nameHierarchy = breadCrumbRepository.getNameHierarchy(Long.parseLong(tokens[1]), EntityType.ORGANISATION);
-        } else if (length == 6 && isNumeric) {
+
+        } else if (!url.contains("project") && isNumeric) {
             entityType = EntityType.TEAM;
             nameHierarchy = breadCrumbRepository.getNameHierarchy(Long.parseLong(tokens[5]), EntityType.TEAM);
-        } else if (length == 6) {
-            entityType = EntityType.TEAM;
+        } else if (!url.contains("project") && !isNumeric) {
+            if (!isSecondNumeric) {
+                entityType = EntityType.DEPARTMENT;
+            } else {
+                entityType = EntityType.TEAM;
+            }
             nameHierarchy = breadCrumbRepository.getNameHierarchy(Long.parseLong(tokens[3]), EntityType.DEPARTMENT);
-        } else if (length == 8 && isNumeric) {
+        } else if (!url.contains("task") && isNumeric) {
             entityType = EntityType.PROJECT;
             nameHierarchy = breadCrumbRepository.getNameHierarchy(Long.parseLong(tokens[7]), EntityType.PROJECT);
-        } else if (length == 8) {
+        } else if (!url.contains("task") && !isNumeric) {
             entityType = EntityType.PROJECT;
             nameHierarchy = breadCrumbRepository.getNameHierarchy(Long.parseLong(tokens[5]), EntityType.TEAM);
-        } else if (length == 10 && isNumeric) {
+        } else if (url.contains("task") && isNumeric) {
             entityType = EntityType.TASK;
             nameHierarchy = breadCrumbRepository.getNameHierarchy(Long.parseLong(tokens[9]), EntityType.TASK);
-        } else if (length == 10) {
+        } else if (url.contains("task") && !isNumeric) {
             entityType = EntityType.TASK;
             nameHierarchy = breadCrumbRepository.getNameHierarchy(Long.parseLong(tokens[7]), EntityType.PROJECT);
         } else {
-            return new BreadCrumbDto(false,null);
+            return new BreadCrumbDto(false, null);
         }
         List<BreadCrumbItmDto> items = createItems(nameHierarchy, url, entityType);
         return new BreadCrumbDto(true, items);
@@ -142,7 +201,7 @@ public class BreadCrumbService {
 
     public BreadCrumbDto getBreadCrumb(HttpServletRequest request) {
         String url = request.getRequestURI();
-        if (url.startsWith("/organisation/")) {
+        if (url.startsWith("/organisation/") && !url.startsWith("/organisation/create")) {
             return createBreadCrumb(url);
         }
         return new BreadCrumbDto(false, null);

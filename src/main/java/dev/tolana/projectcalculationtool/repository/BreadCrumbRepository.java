@@ -45,6 +45,7 @@ public class BreadCrumbRepository {
     }
 
     public NameHierarchy getNameHierarchy(long id, EntityType entityType) {
+        System.out.println("WE'RE CHILLIN'");
         try(Connection con = dataSource.getConnection()) {
             PreparedStatement ps = con.prepareStatement(NAME_HIERARCHY_SQL);
 
