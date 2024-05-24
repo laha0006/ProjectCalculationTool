@@ -462,6 +462,7 @@ INSERT INTO task(name,description,project_id,actual_hours, deadline) VALUES('Fro
 INSERT INTO task(name,description,project_id,actual_hours, deadline) VALUES('Frontend Task','Task',1,7, now() + INTERVAL 1 WEEK);
 INSERT INTO task(name,description,project_id,actual_hours, deadline) VALUES('Frontend Task','Task',1,16, now() + INTERVAL 1 WEEK);
 INSERT INTO task(name,description,project_id,actual_hours, deadline) VALUES('Frontend Task','Task',1,26, now() + INTERVAL 1 WEEK);
+
 INSERT INTO task(name,description,project_id) VALUES('Backend Task','Task',2);
 INSERT INTO task(name,description,project_id) VALUES('Frontend Task','Task',3);
 INSERT INTO task(name,description,project_id) VALUES('Backend Task','Task',4);
@@ -469,6 +470,9 @@ INSERT INTO task(name,description,project_id) VALUES('Frontend Task','Task',5);
 INSERT INTO task(name,description,project_id) VALUES('Backend Task','Task',6);
 INSERT INTO task(name,description,project_id) VALUES('Frontend Task','Task',7);
 INSERT INTO task(name,description,project_id) VALUES('Backend Task','Task',8);
+
+INSERT INTO task(name,description,project_id,actual_hours, deadline) VALUES('MainTask Task','Task',1,26, now() + INTERVAL 1 WEEK);
+INSERT INTO task(name,description,project_id,actual_hours, deadline, parent_id) VALUES('SubTask Task','Task',1,26, now() + INTERVAL 1 WEEK, 15);
 
 INSERT INTO users(username,password) VALUES('tolana','password');
 INSERT INTO users(username,password) VALUES('vz','password');
