@@ -271,9 +271,8 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
             String getAllUsersFromOrganisation = """
                     SELECT username, role_id, task_id, project_id, team_id, department_id, organisation_id
                     FROM user_entity_role
-                    JOIN organisation ON user_entity_role.organisation_id = organisation.id
-                    JOIN role ON user_entity_role.role_id = role.id
-                    WHERE organisation.id = ?;
+                    WHERE organisation_id = ?
+                    ORDER BY username;
                     """;
 
             PreparedStatement pstmt = connection.prepareStatement(getAllUsersFromOrganisation);
@@ -327,5 +326,96 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
             throw new RuntimeException(e);
         }
         return outstandingInvitations;
+    }
+
+
+    @Override
+    public UserEntityRoleDto getUserFromOrganisationId(String username, long organisationId) {
+        UserEntityRoleDto user = null;
+
+        try (Connection connection = dataSource.getConnection()) {
+            String getAllUsersFromOrganisation = """
+                    SELECT username, role_id, task_id, project_id, team_id, department_id, organisation_id
+                    FROM user_entity_role
+                    WHERE username = ? AND organisation_id = ?
+                    """;
+
+            PreparedStatement pstmt = connection.prepareStatement(getAllUsersFromOrganisation);
+            pstmt.setString(1, username);
+            pstmt.setLong(2, organisationId);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+
+                String name = rs.getString(1);
+                long roleId = rs.getLong(2);
+                long taskId = rs.getLong(3);
+                long projectId = rs.getLong(4);
+                long teamId = rs.getLong(5);
+                long deptId = rs.getLong(6);
+                long orgId = rs.getLong(7);
+
+                user = new UserEntityRoleDto(name, roleId, taskId, projectId,
+                        teamId, deptId, orgId);
+            }
+
+
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
+
+        return user;
+    }
+
+    @Override
+    public void promoteMemberToAdmin(long orgId, String username){
+        try (Connection connection = dataSource.getConnection()) {
+            //in order to avoid getting multiple admin entries from several presses
+            //we start up by removing admin
+            RoleAssignUtil.removeOrganisationRole(connection,orgId,
+                    UserRole.ORGANISATION_ADMIN,username);
+            //then we removed member, before adding admin
+            //TODO ideally, we want the option to add admin rank to only show up if the user
+            // isn't an admin already, but this works for now
+            RoleAssignUtil.removeOrganisationRole(connection,orgId,
+                    UserRole.ORGANISATION_MEMBER,username);
+            RoleAssignUtil.assignOrganisationRole(connection,orgId,
+                    UserRole.ORGANISATION_ADMIN,username);
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
+    }
+
+    @Override
+    public void kickMember(long orgId, String username){
+        //TODO
+        // add "remove from all" into this, such that it recursively removes a
+        // member from dept, team, project, task
+        try (Connection connection = dataSource.getConnection()) {
+            RoleAssignUtil.removeOrganisationRole(connection,orgId,
+                    UserRole.ORGANISATION_ADMIN,username);
+            RoleAssignUtil.removeOrganisationRole(connection,orgId,
+                    UserRole.ORGANISATION_MEMBER,username);
+            RoleAssignUtil.removeOrganisationRole(connection,orgId,
+                    UserRole.ORGANISATION_USER,username);
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
+    }
+
+    @Override
+    public UserEntityRoleDto getUserFromParentId(String username, long parentId) {
+        return null;
+    }
+
+    @Override
+    public void assignMemberToEntity(long entityId, String username) {
+
+    }
+
+    @Override
+    public List<UserEntityRoleDto> getUsersFromParentIdAndEntityId(long parentId, long entityId) {
+        return null;
     }
 }

@@ -1,9 +1,6 @@
 package dev.tolana.projectcalculationtool.service;
 
-import dev.tolana.projectcalculationtool.dto.EntityCreationDto;
-import dev.tolana.projectcalculationtool.dto.EntityEditDto;
-import dev.tolana.projectcalculationtool.dto.EntityViewDto;
-import dev.tolana.projectcalculationtool.dto.ResourceEntityViewDto;
+import dev.tolana.projectcalculationtool.dto.*;
 import dev.tolana.projectcalculationtool.mapper.EntityDtoMapper;
 import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.ResourceEntity;
@@ -75,5 +72,34 @@ public class TeamService {
 
     public void deleteTeam(long teamId) {
         teamRepository.deleteEntity(teamId);
+    }
+
+    public EntityViewDto getParent(long parentId) {
+        Entity organisation = teamRepository.getParent(parentId);
+        return entityDtoMapper.toEntityViewDto(organisation);
+    }
+
+
+    public List<UserEntityRoleDto> getUsersFromDepartmentId(long departmentId,long teamId){
+        return teamRepository.getUsersFromParentIdAndEntityId(departmentId,teamId);
+    }
+
+    public UserEntityRoleDto getUserFromDepartmentId(String username, long deptId){
+        return teamRepository.getUserFromParentId(username,deptId);
+    }
+
+    //add authorisation
+    public void assignMemberToTeam(long teamId, String username){
+        teamRepository.assignMemberToEntity(teamId,username);
+    }
+
+    //add authorisation
+    public void promoteMemberToAdmin(long teamId, String username){
+        teamRepository.promoteMemberToAdmin(teamId,username);
+    }
+
+    //add authorisation
+    public void kickMemberFromTeam(long teamId, String username){
+        teamRepository.kickMember(teamId,username);
     }
 }
