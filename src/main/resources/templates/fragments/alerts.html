@@ -23,6 +23,13 @@
     </div>
     <div th:if="${alertWarning != null}" th:text="${alertWarning}" class="alert alert-warning alertPanel" role="alert">
     </div>
+    <div th:text="${breadCrumb}"></div>
+    <div th:if="${breadCrumb.show}">
+
+        <div th:each="breadcrumb : ${breadCrumb.breadCrumbs}">
+            <a th:href="${breadcrumb.url}" th:text="${breadcrumb.name}"></a>
+        </div>
+    </div>
 </div>
 
 </body>
