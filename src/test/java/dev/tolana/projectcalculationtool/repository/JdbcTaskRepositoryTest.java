@@ -96,7 +96,7 @@ class JdbcTaskRepositoryTest {
         Entity task = jdbcTaskRepository.getEntityOnId(1);
         String expectedTaskName = task.getName();
 
-        assertEquals("Frontend Task", expectedTaskName);
+        assertEquals("Frontend Task: 1", expectedTaskName);
     }
 
     @Test
