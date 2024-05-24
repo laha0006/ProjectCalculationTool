@@ -28,6 +28,42 @@ class JdbcTaskRepositoryTest {
     private JdbcTaskRepository jdbcTaskRepository;
 
     @Test
+    void attempt_Create_Test_With_Name_Longer_Than_50_Character_And_Description_Longer_Than_100_Characters() {
+        String username = "vz";
+        Entity taskWithName51CharacterAndDescription100Characters = new Task(0,
+                "mainTaskaamainTaskaamainTaskaamainTaskaamainTaskaa1",
+                "mainTaskaamainTaskaamainTaskaamainTaskaamainTaskaa1mainTaskaamainTaskaamainTaskaamainTaskaamainTaskaa",
+                LocalDateTime.now(),
+                false,
+                LocalDateTime.now(),
+                Status.TODO,
+                0,
+                1,
+                1,
+                1);
+
+        assertThrows(EntityException.class, ()-> jdbcTaskRepository.createEntity(username, taskWithName51CharacterAndDescription100Characters));
+    }
+
+    @Test
+    void attempt_Create_Task_With_No_Name() {
+        String username = "vz";
+        Entity taskWithNoName = new Task(0,
+                null,
+                null,
+                LocalDateTime.now(),
+                false,
+                LocalDateTime.now(),
+                Status.TODO,
+                0,
+                1,
+                1,
+                1);
+
+        assertThrows(EntityException.class, ()-> jdbcTaskRepository.createEntity(username, taskWithNoName));
+    }
+
+    @Test
     void createTask() {
         Entity taskToCreate = new Task(0, "mainTask", "MainTask", LocalDateTime.now(), false, LocalDateTime.now(), Status.TODO, 0, 1, 1, 1);
         String username = "vz";
@@ -88,7 +124,7 @@ class JdbcTaskRepositoryTest {
     @Test
     void deleteEntity() {
         jdbcTaskRepository.deleteEntity(1);
-        assertThrows(EntityException.class, ()-> jdbcTaskRepository.getEntityOnId(1));
+        assertThrows(EntityException.class, () -> jdbcTaskRepository.getEntityOnId(1));
     }
 
     @Test
