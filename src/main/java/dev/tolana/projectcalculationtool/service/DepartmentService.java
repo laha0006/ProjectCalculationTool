@@ -36,11 +36,6 @@ public class DepartmentService {
 //    @PreAuthorize("@auth.hasAccess(#id, T(dev.tolana.projectcalculationtool.enums.Permission).ORGANISATION_READ)")
 
     //filterObject referes to the current object of the collection, when looping.
-    @PostFilter("@auth.hasDepartmentAccess(filterObject.id, T(dev.tolana.projectcalculationtool.enums.Permission).DEPARTMENT_READ)")
-    public List<EntityViewDto> getAll(long departmentId) {
-        List<Entity> teamList = jdbcDepartmentRepository.getAllEntitiesOnId(departmentId);
-        return entityDtoMapper.toEntityViewDtoList(teamList);
-    }
 
     public List<EntityViewDto> getChildren(long parentId) {
         List<Entity> teamList = jdbcDepartmentRepository.getChildren(parentId);

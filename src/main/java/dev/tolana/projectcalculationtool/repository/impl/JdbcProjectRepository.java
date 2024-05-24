@@ -203,11 +203,6 @@ public class JdbcProjectRepository implements ProjectRepository {
     }
 
     @Override
-    public List<Entity> getAllEntitiesOnId(long entityId) {
-        return null;
-    }
-
-    @Override
     public List<Entity> getChildren(long projectId) {
         List<Entity> taskList = new ArrayList<>();
         String getTasks = """
