@@ -14,8 +14,6 @@ public interface EntityCrudOperations {
     Entity getEntityOnId(long id);
     List<Entity> getAllEntitiesOnUsername(String username);
 
-    List<Entity> getAllEntitiesOnId(long entityId);
-
     List<Entity> getChildren(long entityId);
 
     Entity getParent(long parentId);
