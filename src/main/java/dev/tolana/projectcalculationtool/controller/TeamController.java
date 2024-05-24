@@ -26,7 +26,7 @@ public class TeamController {
         EntityViewDto team = teamService.getTeam(teamId);
         model.addAttribute("team", team);
 
-        List<ResourceEntityViewDto> projects = teamService.getAllChildren(teamId);
+        List<ProjectViewDto> projects = teamService.getChildren(teamId);
         model.addAttribute("allProjects", projects);
         model.addAttribute("orgId", orgId);
 

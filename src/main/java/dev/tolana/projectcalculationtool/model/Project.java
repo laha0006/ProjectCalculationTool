@@ -2,8 +2,6 @@ package dev.tolana.projectcalculationtool.model;
 
 import dev.tolana.projectcalculationtool.enums.Status;
 
-import java.sql.Time;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 public class Project extends ResourceEntity{
@@ -23,6 +21,19 @@ public class Project extends ResourceEntity{
                    int allottedHours) {
         super(id, name, description, dateCreated, archived, deadline, status, parentId);
         this.teamId = teamId;
+        this.allottedHours = allottedHours;
+    }
+
+    //constructor for mapping ProjectCreationDto to Entity
+    public Project(String projectName, String description, long parentId, long teamId, LocalDateTime deadline, int allottedHours) {
+        super(projectName, description, parentId, deadline);
+        this.teamId = teamId;
+        this.allottedHours = allottedHours;
+    }
+
+    //used for mapping ProjectEditDto to Entity
+    public Project(long id, String projectName, String description, LocalDateTime deadline, int allottedHours, Status status) {
+        super(id, projectName, description, deadline, status);
         this.allottedHours = allottedHours;
     }
 

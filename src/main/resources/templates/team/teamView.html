@@ -33,15 +33,14 @@
                             <tbody>
                             <tr th:each="project : ${allProjects}">
                                 <td>
-                                    <a th:text="${project.resourceEntityName}"
+                                    <a th:text="${project.projectName}"
                                        th:href="@{{teamId}/project/{projectId} (teamId=${team.id}, projectId=${project.id})}"></a>
                                 </td>
                                 <td th:text="${project.deadline}"></td>
-                                <!--&lt;!&ndash;            <td th:text="${project.getDeadline()}"></td>&ndash;&gt; TODO MAKE LOGIC THAT CALCULATES PROGRESSION IN PERCENTAGE-->
                                 <td th:text="${project.status}"></td>
                                 <td>
                                     <div class="form-group">
-                                        <a th:href="@{{teamId}/project/{projectId}/assign/members (teamId=${project.teamId}, projectId=${project.id})}">
+                                        <a th:href="@{{teamId}/project/{projectId}/assign/members (teamId=${team.id}, projectId=${project.id})}">
                                             <button class="btn btn-success fw-bold">Tilknyt teammedlem</button>
                                         </a>
                                     </div>

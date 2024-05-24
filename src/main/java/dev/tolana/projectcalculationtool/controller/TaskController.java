@@ -49,7 +49,10 @@ public class TaskController {
                                  @PathVariable long teamId,
                                  @PathVariable long projectId,
                                  Model model) {
-        model.addAttribute("taskToCreate", new TaskCreationDto("", "", projectId, 0, LocalDateTime.now(), 0));
+
+        TaskCreationDto taskToCreate = new TaskCreationDto("", "", projectId, 0, LocalDateTime.now(), 0);
+        model.addAttribute("taskToCreate", taskToCreate);
+
         model.addAttribute("orgId", orgId);
         model.addAttribute("deptId", deptId);
         model.addAttribute("teamId", teamId);
@@ -69,7 +72,10 @@ public class TaskController {
         TaskViewDto parentTask = taskService.getTaskToView(taskId);
         String parentTaskName = parentTask.taskName();
         model.addAttribute("parentTaskName", parentTaskName);
-        model.addAttribute("subTaskToCreate", new TaskCreationDto("", "", projectId, taskId, LocalDateTime.now(), 0));
+
+        TaskCreationDto subTaskToCreate = new TaskCreationDto("", "", projectId, taskId, LocalDateTime.now(), 0);
+        model.addAttribute("subTaskToCreate", subTaskToCreate);
+
         model.addAttribute("orgId", orgId);
         model.addAttribute("deptId", deptId);
         model.addAttribute("teamId", teamId);
@@ -101,6 +107,7 @@ public class TaskController {
 
         TaskEditDto taskToDelete = taskService.getTaskToEdit(taskId);
         long parentTaskId = taskToDelete.parentId();
+
         taskService.deleteTask(taskId);
 
         return determineRedirection(orgId, deptId, teamId, projectId, parentTaskId);

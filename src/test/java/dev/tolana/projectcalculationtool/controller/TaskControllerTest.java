@@ -142,9 +142,9 @@ class TaskControllerTest {
     @Test
     @WithMockUser
     void editSubTask() throws Exception {
-        TaskEditDto taskToEdit = new TaskEditDto(1, "name","description", 1, LocalDateTime.now(), 1, 1, Status.TODO);
+        TaskEditDto subTaskToEdit = new TaskEditDto(1, "name","description", 1, LocalDateTime.now(), 1, 1, Status.TODO);
         when(taskService.getTaskToEdit(1))
-                .thenReturn(taskToEdit);
+                .thenReturn(subTaskToEdit);
 
         mockMvc.perform(post("/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/task/{taskId}/delete", 1, 1, 1, 1, 1)
                         .with(csrf()))
