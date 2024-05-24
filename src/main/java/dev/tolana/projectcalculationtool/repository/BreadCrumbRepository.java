@@ -20,7 +20,7 @@ public class BreadCrumbRepository {
                                org.name AS organisation_name,
                                pjt2.name AS parent_project_name,
                                pjt2.id AS parent_project_id,
-                               tsk.name AS parent_task_name,
+                               tsk2.name AS parent_task_name,
                                tsk2.id AS parent_task_id
                         FROM organisation org
                              LEFT JOIN department dpt
