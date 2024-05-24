@@ -1,6 +1,7 @@
 package dev.tolana.projectcalculationtool.repository;
 
 import dev.tolana.projectcalculationtool.dto.NameHierarchy;
+import dev.tolana.projectcalculationtool.enums.EntityType;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Repository;
@@ -12,11 +13,11 @@ import java.sql.*;
 public class BreadCrumbRepository {
 
     private final String NAME_HIERARCHY_SQL = """
-                        SELECT tsk.name      AS task_name,
-                               pjt.name      AS project_name,
-                               tm.name       AS team_name,
-                               dpt.name      AS department_name,
-                               org.name      AS organisation_name,
+                        SELECT tsk.name AS task_name,
+                               pjt.name AS project_name,
+                               tm.name AS team_name,
+                               dpt.name AS department_name,
+                               org.name AS organisation_name,
                                pjt2.name AS parent_project_name,
                                pjt2.id AS parent_project_id,
                                tsk.name AS parent_task_name,
@@ -34,7 +35,7 @@ public class BreadCrumbRepository {
                                        ON pjt.id = tsk.project_id
                              LEFT JOIN task tsk2
                                        ON tsk.parent_id = tsk2.id
-            WHERE organisation_id = ? OR department_id = ? OR team_id = ? OR project_id = ? OR task_id = ?;
+                        WHERE org.id = ? OR dpt.id = ? OR tm.id = ? OR pjt.id = ? OR tsk.id = ?;
             """;
 
     private DataSource dataSource;
@@ -43,10 +44,22 @@ public class BreadCrumbRepository {
         this.dataSource = dataSource;
     }
 
-    public NameHierarchy getNameHierarchy() {
+    public NameHierarchy getNameHierarchy(long id, EntityType entityType) {
         try(Connection con = dataSource.getConnection()) {
             PreparedStatement ps = con.prepareStatement(NAME_HIERARCHY_SQL);
-            ResultSet rs = ps.executeQuery(NAME_HIERARCHY_SQL);
+
+            switch (entityType) {
+                case TASK -> {ps.setLong(5, id); ps.setLong(4, 0);ps.setLong(3, 0);ps.setLong(2, 0);ps.setLong(1, 0);}
+                case PROJECT -> {ps.setLong(5,0); ;ps.setLong(4, id);ps.setLong(3, 0);ps.setLong(2, 0);ps.setLong(1, 0);}
+                case TEAM -> {ps.setLong(5,0); ;ps.setLong(4, 0);ps.setLong(3, id);ps.setLong(2, 0);ps.setLong(1, 0);}
+                case DEPARTMENT -> {ps.setLong(5,0); ;ps.setLong(4, 0);ps.setLong(3, 0);ps.setLong(2, id);ps.setLong(1, 0);}
+                case ORGANISATION -> {ps.setLong(5,0); ;ps.setLong(4, 0);ps.setLong(3, 0);ps.setLong(2, 0);ps.setLong(1, id);}
+            }
+            System.out.println("PS: " + ps.toString());
+            System.out.println("EntityType: " + entityType.name());
+
+
+            ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 return new NameHierarchy(
                         rs.getString(1),

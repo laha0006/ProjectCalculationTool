@@ -1,6 +1,7 @@
 package dev.tolana.projectcalculationtool.exception.authorization;
 
 
+import dev.tolana.projectcalculationtool.dto.BreadCrumbDto;
 import dev.tolana.projectcalculationtool.service.BreadCrumbService;
 import dev.tolana.projectcalculationtool.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -72,7 +73,7 @@ public class AuthorizationExceptionHandler {
     }
 
     @ModelAttribute("breadCrumb")
-    public String getBreadCrumb(HttpServletRequest request) {
+    public BreadCrumbDto getBreadCrumb(HttpServletRequest request) {
         return breadCrumbService.getBreadCrumb(request);
     }
 }
