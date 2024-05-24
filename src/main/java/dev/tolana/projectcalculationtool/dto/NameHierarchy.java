@@ -6,6 +6,8 @@ public record NameHierarchy(String taskName,
                             String departmentName,
                             String organisationName,
                             String parentProjectName,
-                            String parentTaskName
+                            long parentProjectId,
+                            String parentTaskName,
+                            long parentTaskId
                             ) {
 }

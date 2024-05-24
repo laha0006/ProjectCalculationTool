@@ -18,7 +18,9 @@ public class BreadCrumbRepository {
                    dpt.name      AS department_name,
                    org.name      AS organisation_name,
                    pjt2.name AS parent_project_name,
-                   tsk2.name AS parent_task_name
+                   pjt2.id AS parent_project_id,
+                   tsk.name AS parent_task_name,
+                   tsk2.id AS parent_task_id
             FROM organisation org
                  LEFT JOIN department dpt
                            ON org.id = dpt.organisation_id
@@ -52,7 +54,9 @@ public class BreadCrumbRepository {
                         rs.getString(4),
                         rs.getString(5),
                         rs.getString(6),
-                        rs.getString(7)
+                        rs.getLong(7),
+                        rs.getString(8),
+                        rs.getLong(9)
                 );
             }
         } catch (SQLException e) {

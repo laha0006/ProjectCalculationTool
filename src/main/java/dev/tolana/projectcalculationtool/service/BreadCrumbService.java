@@ -22,6 +22,6 @@ public class BreadCrumbService {
             return null;
         }
         NameHierarchy nameHierarchy = breadCrumbRepository.getNameHierarchy();
-        return "breadCrumb yea..."
+        return "breadCrumb yea...";
     }
 }
