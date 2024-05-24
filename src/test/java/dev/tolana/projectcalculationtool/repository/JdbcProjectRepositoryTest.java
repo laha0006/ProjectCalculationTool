@@ -93,7 +93,7 @@ class JdbcProjectRepositoryTest {
         Entity project = jdbcProjectRepository.getEntityOnId(1);
         String expectedTaskName = project.getName();
 
-        assertEquals("Frontend Project", expectedTaskName);
+        assertEquals("Frontend Project: 1", expectedTaskName);
     }
 
     @Test
