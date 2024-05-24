@@ -28,7 +28,7 @@ class JdbcTaskRepositoryTest {
     private JdbcTaskRepository jdbcTaskRepository;
 
     @Test
-    void attempt_Create_Test_With_Name_Longer_Than_50_Character_And_Description_Longer_Than_100_Characters() {
+    void attempt_Create_Task_With_Name_Longer_Than_50_Character_And_Description_Longer_Than_100_Characters() {
         String username = "vz";
         Entity taskWithName51CharacterAndDescription100Characters = new Task(0,
                 "mainTaskaamainTaskaamainTaskaamainTaskaamainTaskaa1",
@@ -46,7 +46,7 @@ class JdbcTaskRepositoryTest {
     }
 
     @Test
-    void attempt_Create_Task_With_No_Name() {
+    void attempt_Create_Task_With_No_Name_And_No_Description() {
         String username = "vz";
         Entity taskWithNoName = new Task(0,
                 null,
