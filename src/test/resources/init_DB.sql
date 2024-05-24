@@ -455,13 +455,13 @@ INSERT INTO project(name,description,team_id) VALUES('Frontend Project','a proje
 INSERT INTO project(name,description,team_id) VALUES('Backend Project','a project',8);
 INSERT INTO project(name,description,team_id, parent_id,allotted_hours,deadline) VALUES('sub one','one',8, 1,100,now() + INTERVAL 1 WEEK);
 
-INSERT INTO task(name,description,project_id,actual_hours, deadline) VALUES('Frontend Task','Task',1,10, now() + INTERVAL 1 WEEK);
-INSERT INTO task(name,description,project_id,actual_hours, deadline) VALUES('Frontend Task','Task',1,15, now() + INTERVAL 1 WEEK);
-INSERT INTO task(name,description,project_id,actual_hours, deadline) VALUES('Frontend Task','Task',1,8, now() + INTERVAL 1 WEEK);
-INSERT INTO task(name,description,project_id,actual_hours, deadline) VALUES('Frontend Task','Task',1,12, now() + INTERVAL 1 WEEK);
-INSERT INTO task(name,description,project_id,actual_hours, deadline) VALUES('Frontend Task','Task',1,7, now() + INTERVAL 1 WEEK);
-INSERT INTO task(name,description,project_id,actual_hours, deadline) VALUES('Frontend Task','Task',1,16, now() + INTERVAL 1 WEEK);
-INSERT INTO task(name,description,project_id,actual_hours, deadline) VALUES('Frontend Task','Task',1,26, now() + INTERVAL 1 WEEK);
+INSERT INTO task(name,description,project_id,actual_hours, deadline) VALUES('Frontend Task: 1','Task',1,10, now() + INTERVAL 1 WEEK);
+INSERT INTO task(name,description,project_id,actual_hours, deadline) VALUES('Frontend Task: 2','Task',1,15, now() + INTERVAL 1 WEEK);
+INSERT INTO task(name,description,project_id,actual_hours, deadline) VALUES('Frontend Task: 3','Task',1,8, now() + INTERVAL 1 WEEK);
+INSERT INTO task(name,description,project_id,actual_hours, deadline) VALUES('Frontend Task: 4','Task',1,12, now() + INTERVAL 1 WEEK);
+INSERT INTO task(name,description,project_id,actual_hours, deadline) VALUES('Frontend Task: 5','Task',1,7, now() + INTERVAL 1 WEEK);
+INSERT INTO task(name,description,project_id,actual_hours, deadline) VALUES('Frontend Task: 6','Task',1,16, now() + INTERVAL 1 WEEK);
+INSERT INTO task(name,description,project_id,actual_hours, deadline) VALUES('Frontend Task: 7','Task',1,26, now() + INTERVAL 1 WEEK);
 
 INSERT INTO task(name,description,project_id) VALUES('Backend Task','Task',2);
 INSERT INTO task(name,description,project_id) VALUES('Frontend Task','Task',3);
