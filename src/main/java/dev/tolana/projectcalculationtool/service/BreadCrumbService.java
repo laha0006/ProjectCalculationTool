@@ -1,5 +1,6 @@
 package dev.tolana.projectcalculationtool.service;
 
+import dev.tolana.projectcalculationtool.dto.BreadCrumbDto;
 import dev.tolana.projectcalculationtool.dto.NameHierarchy;
 import dev.tolana.projectcalculationtool.repository.BreadCrumbRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,6 +15,11 @@ public class BreadCrumbService {
         this.breadCrumbRepository = breadCrumbRepository;
     }
 
+    private BreadCrumbDto createBreadCrumb() {
+        NameHierarchy nameHierarchy = breadCrumbRepository.getNameHierarchy();
+
+    }
+
 
     public String getBreadCrumb(HttpServletRequest request) {
         String url = request.getRequestURI();
@@ -21,7 +27,6 @@ public class BreadCrumbService {
         if (!url.startsWith("/organisation/")) {
             return null;
         }
-        NameHierarchy nameHierarchy = breadCrumbRepository.getNameHierarchy();
         return "breadCrumb yea...";
     }
 }

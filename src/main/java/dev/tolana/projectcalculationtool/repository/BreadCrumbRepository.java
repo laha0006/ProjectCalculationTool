@@ -12,28 +12,29 @@ import java.sql.*;
 public class BreadCrumbRepository {
 
     private final String NAME_HIERARCHY_SQL = """
-            SELECT tsk.name      AS task_name,
-                   pjt.name      AS project_name,
-                   tm.name       AS team_name,
-                   dpt.name      AS department_name,
-                   org.name      AS organisation_name,
-                   pjt2.name AS parent_project_name,
-                   pjt2.id AS parent_project_id,
-                   tsk.name AS parent_task_name,
-                   tsk2.id AS parent_task_id
-            FROM organisation org
-                 LEFT JOIN department dpt
-                           ON org.id = dpt.organisation_id
-                 LEFT JOIN team tm
-                           ON dpt.id = tm.department_id
-                 LEFT JOIN project pjt
-                           ON tm.id = pjt.team_id
-                 LEFT JOIN project pjt2
-                           ON pjt.parent_id = pjt2.id
-                 LEFT JOIN task tsk
-                           ON pjt.id = tsk.project_id
-                 LEFT JOIN task tsk2
-                           ON tsk.parent_id = tsk2.id;
+                        SELECT tsk.name      AS task_name,
+                               pjt.name      AS project_name,
+                               tm.name       AS team_name,
+                               dpt.name      AS department_name,
+                               org.name      AS organisation_name,
+                               pjt2.name AS parent_project_name,
+                               pjt2.id AS parent_project_id,
+                               tsk.name AS parent_task_name,
+                               tsk2.id AS parent_task_id
+                        FROM organisation org
+                             LEFT JOIN department dpt
+                                       ON org.id = dpt.organisation_id
+                             LEFT JOIN team tm
+                                       ON dpt.id = tm.department_id
+                             LEFT JOIN project pjt
+                                       ON tm.id = pjt.team_id
+                             LEFT JOIN project pjt2
+                                       ON pjt.parent_id = pjt2.id
+                             LEFT JOIN task tsk
+                                       ON pjt.id = tsk.project_id
+                             LEFT JOIN task tsk2
+                                       ON tsk.parent_id = tsk2.id
+            WHERE organisation_id = ? OR department_id = ? OR team_id = ? OR project_id = ? OR task_id = ?;
             """;
 
     private DataSource dataSource;
