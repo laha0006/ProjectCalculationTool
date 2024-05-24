@@ -25,12 +25,12 @@ class JdbcProjectRepositoryTest {
     private JdbcProjectRepository jdbcProjectRepository;
 
     @Test
-    void attempt_Create_Project_With_Name_Longer_Than_50_Character_And_Description_Longer_Than_100_Characters() {
+    void createProjectExceedingMaximumCharacterForName() {
         String username = "vz";
-        Entity projectWithName51CharacterAndDescription100Characters = new Project(
+        Entity project = new Project(
                 0,
-                "mainTaskaamainTaskaamainTaskaamainTaskaamainTaskaa1",
-                "mainTaskaamainTaskaamainTaskaamainTaskaamainTaskaa1mainTaskaamainTaskaamainTaskaamainTaskaamainTaskaa",
+                "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxz",
+                "Project description",
                 LocalDateTime.now(),
                 false,
                 LocalDateTime.now(),
@@ -39,16 +39,16 @@ class JdbcProjectRepositoryTest {
                 1,
                 1);
 
-        assertThrows(EntityException.class, ()-> jdbcProjectRepository.createEntity(username, projectWithName51CharacterAndDescription100Characters));
+        assertThrows(EntityException.class, ()-> jdbcProjectRepository.createEntity(username, project));
     }
 
     @Test
-    void attempt_Create_Project_With_No_Name_And_Description() {
+    void createProjectBelowMinimumCharactersForName() {
         String username = "vz";
-        Entity projectWithNoNameOrDescription = new Project(
+        Entity project = new Project(
                 0,
                 null,
-                null,
+                "Project description",
                 LocalDateTime.now(),
                 false,
                 LocalDateTime.now(),
@@ -57,7 +57,56 @@ class JdbcProjectRepositoryTest {
                 1,
                 1);
 
-        assertThrows(EntityException.class, ()-> jdbcProjectRepository.createEntity(username, projectWithNoNameOrDescription));
+        assertThrows(EntityException.class, ()-> jdbcProjectRepository.createEntity(username, project));
+    }
+
+    @Test
+    void createProjectAtMinimumCharactersForName() {
+        String username = "vz";
+        Entity project = new Project(
+                0,
+                "x",
+                "Project description",
+                LocalDateTime.now(),
+                false,
+                LocalDateTime.now(),
+                Status.TODO,
+                0,
+                1,
+                1);
+
+        jdbcProjectRepository.createEntity(username, project);
+        Entity createdProject = jdbcProjectRepository.getEntityOnId(10);
+        assertNotNull(createdProject);
+
+        String actualProjectName = createdProject.getName();
+        String expectedProjectName = "x";
+        assertEquals(expectedProjectName, actualProjectName);
+
+    }
+
+    @Test
+    void createProjectAtMaximumCharacterForName() {
+        String username = "vz";
+        Entity project = new Project(
+                0,
+                "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+                "Project description",
+                LocalDateTime.now(),
+                false,
+                LocalDateTime.now(),
+                Status.TODO,
+                0,
+                1,
+                1);
+
+        jdbcProjectRepository.createEntity(username, project);
+        Entity createdProject = jdbcProjectRepository.getEntityOnId(10);
+        assertNotNull(createdProject);
+
+        String actualProjectName = createdProject.getName();
+        String expectedProjectName = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+        assertEquals(expectedProjectName, actualProjectName);
     }
 
     @Test
@@ -107,7 +156,7 @@ class JdbcProjectRepositoryTest {
     }
 
     @Test
-    void get_Only_Task_And_Not_Sub_Tasks_From_Project() {
+    void getOnlyTaskAndNotSubTasksFromProject() {
         List<Entity> taskList = jdbcProjectRepository.getChildren(1);
 
         List<String> actualTaskNames = new ArrayList<>();
