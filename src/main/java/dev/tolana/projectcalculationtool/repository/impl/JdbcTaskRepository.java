@@ -169,55 +169,6 @@ public class JdbcTaskRepository implements TaskRepository {
     }
 
     @Override
-    public List<Entity> getAllEntitiesOnId(long projectId) {
-        List<Entity> taskList = new ArrayList<>();
-        String retrieveAllTaskOnProjectId = """
-                SELECT
-                t.id,
-                t.name,
-                t.description,
-                t.project_id,
-                t.date_created,
-                t.deadline,
-                t.estimated_hours,
-                t.actual_hours,
-                s.name,
-                t.parent_id,
-                t.archived
-                FROM task t
-                LEFT JOIN status s ON t.status = s.id
-                WHERE t.project_id = ? AND t.parent_id IS NULL
-                """;
-
-        try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement pstmt = connection.prepareStatement(retrieveAllTaskOnProjectId);
-            pstmt.setLong(1, projectId);
-            ResultSet rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-                Task retrivedTask = new Task(
-                        rs.getLong(1),
-                        rs.getString(2),
-                        rs.getString(3),
-                        rs.getTimestamp(5).toLocalDateTime(),
-                        rs.getBoolean(11),
-                        rs.getTimestamp(6).toLocalDateTime(),
-                        Status.valueOf(rs.getString(9)),
-                        rs.getLong(10),
-                        rs.getLong(4),
-                        rs.getInt(7),
-                        rs.getInt(8)
-                );
-                taskList.add(retrivedTask);
-            }
-
-        } catch (SQLException sqlException) {
-            throw new EntityException("Opgaver blev ikke fundet, noget gik galt!", Alert.WARNING);
-        }
-        return taskList;
-    }
-
-    @Override
     public List<Entity> getChildren(long taskId) {
         List<Entity> taskList = new ArrayList<>();
         String getTasks = """

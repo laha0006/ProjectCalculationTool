@@ -103,30 +103,6 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
     }
 
     @Override
-    public List<Entity> getAllEntitiesOnId(long organisationId) {
-        List<Entity> departments = new ArrayList<>();
-        try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM department WHERE organisation_id = ?");
-            preparedStatement.setLong(1, organisationId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                departments.add(new Department(
-                        resultSet.getLong(1),
-                        resultSet.getString(2),
-                        resultSet.getString(3),
-                        resultSet.getTimestamp(5).toLocalDateTime(),
-                        resultSet.getBoolean(6),
-                        resultSet.getLong(4)
-                ));
-            }
-
-        } catch (SQLException e) {
-            throw new EntityException("Noget gik galt, kunne ikke hente afdelinger", Alert.WARNING);
-        }
-        return departments;
-    }
-
-    @Override
     public List<Entity> getChildren(long departmentId) {
         List<Entity> teamList = new ArrayList<>();
         String getAllTeamsFromParent = """

@@ -20,14 +20,14 @@ CREATE TABLE IF NOT EXISTS authorities
 CREATE TABLE IF NOT EXISTS role
 (
     id     INT AUTO_INCREMENT PRIMARY KEY,
-    name   VARCHAR(255) NOT NULL,
+    name   VARCHAR(50) NOT NULL,
     weight SMALLINT UNSIGNED
 );
 
 CREATE TABLE IF NOT EXISTS permission
 (
     id   INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL
+    name VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS role_permission
@@ -57,8 +57,8 @@ CREATE TABLE IF NOT EXISTS organisation
 CREATE TABLE IF NOT EXISTS department
 (
     id              INT AUTO_INCREMENT PRIMARY KEY,
-    name            VARCHAR(255) NOT NULL,
-    description     VARCHAR(255) NOT NULL,
+    name            VARCHAR(50) NOT NULL,
+    description     VARCHAR(100) NOT NULL,
     organisation_id INT,
     date_created    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     archived        BOOLEAN   DEFAULT FALSE,
@@ -68,8 +68,8 @@ CREATE TABLE IF NOT EXISTS department
 CREATE TABLE IF NOT EXISTS team
 (
     id            INT AUTO_INCREMENT PRIMARY KEY,
-    name          VARCHAR(255) NOT NULL,
-    description   VARCHAR(255) NOT NULL,
+    name          VARCHAR(50) NOT NULL,
+    description   VARCHAR(100) NOT NULL,
     department_id INT,
     date_created  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     archived      BOOLEAN   DEFAULT FALSE,
@@ -79,8 +79,8 @@ CREATE TABLE IF NOT EXISTS team
 CREATE TABLE IF NOT EXISTS project
 (
     id             INT AUTO_INCREMENT PRIMARY KEY,
-    name           VARCHAR(255) NOT NULL,
-    description    VARCHAR(255) NOT NULL,
+    name           VARCHAR(50) NOT NULL,
+    description    VARCHAR(100) NOT NULL,
     team_id        INT,
     date_created   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     deadline       TIMESTAMP,
@@ -96,8 +96,8 @@ CREATE TABLE IF NOT EXISTS project
 CREATE TABLE IF NOT EXISTS task
 (
     id              INT AUTO_INCREMENT PRIMARY KEY,
-    name            VARCHAR(255) NOT NULL,
-    description     VARCHAR(255) NOT NULL,
+    name            VARCHAR(50) NOT NULL,
+    description     VARCHAR(100) NOT NULL,
     project_id      INT          NOT NULL,
     date_created    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     deadline        TIMESTAMP,
@@ -150,11 +150,11 @@ SELECT tsk.id        AS task_id,
        pjt.parent_id AS project_parent_id,
        tsk.parent_id AS task_parent_id
 FROM organisation org
-     LEFT JOIN department dpt
-               ON org.id = dpt.organisation_id
-     LEFT JOIN team tm
-               ON dpt.id = tm.department_id
-     LEFT JOIN project pjt
-               ON tm.id = pjt.team_id
-     LEFT JOIN task tsk
-               ON pjt.id = tsk.project_id;
+         LEFT JOIN department dpt
+                   ON org.id = dpt.organisation_id
+         LEFT JOIN team tm
+                   ON dpt.id = tm.department_id
+         LEFT JOIN project pjt
+                   ON tm.id = pjt.team_id
+         LEFT JOIN task tsk
+                   ON pjt.id = tsk.project_id;
