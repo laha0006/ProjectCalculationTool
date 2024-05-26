@@ -351,8 +351,10 @@ public class JdbcTeamRepository implements TeamRepository {
                         cleanedUsers.add(users.get(i));
                     }
                 }
-            } else if (!users.get(i-1).username().equals(users.get(i).username())) {
-                cleanedUsers.add(users.get(i));
+            }else if(i != 0){
+                if(!users.get(i-1).username().equals(users.get(i).username())) {
+                    cleanedUsers.add(users.get(i));
+                }
             }
         }
         return cleanedUsers;

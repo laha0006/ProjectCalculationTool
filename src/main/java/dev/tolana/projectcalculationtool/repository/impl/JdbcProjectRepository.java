@@ -496,26 +496,147 @@ public class JdbcProjectRepository implements ProjectRepository {
 
     @Override
     public UserEntityRoleDto getUserFromParentId(String username, long parentId) {
-        return null;
+        UserEntityRoleDto user = null;
+
+        try (Connection connection = dataSource.getConnection()) {
+            String getUserFromParent = """
+                    SELECT username, role_id, task_id, project_id, team_id, department_id, organisation_id
+                    FROM user_entity_role
+                    WHERE username = ? AND team_id = ?
+                    """;
+
+            PreparedStatement pstmt = connection.prepareStatement(getUserFromParent);
+            pstmt.setString(1, username);
+            pstmt.setLong(2, parentId);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+
+                String name = rs.getString(1);
+                long roleId = rs.getLong(2);
+                long taskId = rs.getLong(3);
+                long projectId = rs.getLong(4);
+                long teamId = rs.getLong(5);
+                long deptId = rs.getLong(6);
+                long orgId = rs.getLong(7);
+
+                user = new UserEntityRoleDto(name, roleId, taskId, projectId,
+                        teamId, deptId, orgId);
+            }
+
+
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
+
+        return user;
     }
 
     @Override
-    public void assignMemberToEntity(long entityId, String username) {
-
+    public void assignMemberToEntity(long projectId, String username) {
+        try (Connection connection = dataSource.getConnection()) {
+            RoleAssignUtil.assignProjectRole(connection,projectId,
+                    UserRole.PROJECT_MEMBER,username);
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
     }
 
     @Override
-    public void promoteMemberToAdmin(long entityId, String username) {
-
+    public void promoteMemberToAdmin(long projectId, String username) {
+        try (Connection connection = dataSource.getConnection()) {
+            RoleAssignUtil.removeProjectRole(connection,projectId,
+                    UserRole.PROJECT_ADMIN,username);
+            RoleAssignUtil.removeProjectRole(connection,projectId,
+                    UserRole.PROJECT_MEMBER,username);
+            RoleAssignUtil.assignProjectRole(connection,projectId,
+                    UserRole.PROJECT_ADMIN,username);
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
     }
 
     @Override
-    public void kickMember(long entityId, String username) {
-
+    public void kickMember(long projectId, String username) {
+        try (Connection connection = dataSource.getConnection()) {
+            RoleAssignUtil.removeProjectRole(connection,projectId,
+                    UserRole.PROJECT_ADMIN,username);
+            RoleAssignUtil.removeProjectRole(connection,projectId,
+                    UserRole.PROJECT_MEMBER,username);
+            RoleAssignUtil.removeProjectRole(connection,projectId,
+                    UserRole.PROJECT_USER,username);
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
     }
 
-    @Override
-    public List<UserEntityRoleDto> getUsersFromParentIdAndEntityId(long parentId, long entityId) {
-        return null;
+    public List<UserEntityRoleDto> getUsersFromParentIdAndEntityId(long teamId, long projectId) {
+        List<UserEntityRoleDto> users = new ArrayList<>();
+
+        try (Connection connection = dataSource.getConnection()) {
+            String getAllUsersFromTeam = """
+                    SELECT DISTINCT username, role_id, task_id, project_id, team_id, department_id, organisation_id
+                    FROM user_entity_role
+                    WHERE team_id = ? OR project_id = ?
+                    ORDER BY username;
+                    """;
+
+            PreparedStatement pstmt = connection.prepareStatement(getAllUsersFromTeam);
+            pstmt.setLong(1, teamId);
+            pstmt.setLong(2, projectId);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+
+                String username = rs.getString(1);
+                long roleId = rs.getLong(2);
+                long taskId = rs.getLong(3);
+                long pId = rs.getLong(4); //changed because "projectId" is used in parameter
+                long tId = rs.getLong(5); //changed name because "teamId" is used in parameter
+                long deptId = rs.getLong(6);
+                long orgId = rs.getLong(7);
+
+                UserEntityRoleDto newUser = new UserEntityRoleDto(username, roleId, taskId, pId,
+                        tId, deptId, orgId);
+
+                users.add(newUser);
+            }
+
+
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
+
+
+        List<UserEntityRoleDto> cleanedUsers = getCleanUserEntityRoleDtos(users);
+
+        return cleanedUsers;
+    }
+
+
+    private static List<UserEntityRoleDto> getCleanUserEntityRoleDtos(List<UserEntityRoleDto> users) {
+        List<UserEntityRoleDto> cleanedUsers = new ArrayList<>();
+        for (int i = 0; i < users.size(); i++) {
+            if(i+1 != users.size()){ //avoids out of bounds
+                if (users.get(i+1).username().equals(users.get(i).username())){
+                    //adds user with the teamId of the duplicate that comes after it
+                    cleanedUsers.add(new UserEntityRoleDto(users.get(i).username(),
+                            users.get(i).roleId(), users.get(i).taskId(), users.get(i).projectId(),
+                            users.get(i+1).teamId(), users.get(i).departmentId(),
+                            users.get(i).organizationId()));
+                }else if(i != 0){ //avoids out of bounds
+                    if (!users.get(i-1).username().equals(users.get(i).username())){
+                        cleanedUsers.add(users.get(i));
+                    }
+                }
+            }else if(i != 0){
+                if(!users.get(i-1).username().equals(users.get(i).username())) {
+                    cleanedUsers.add(users.get(i));
+                }
+            }
+        }
+        return cleanedUsers;
     }
 }
