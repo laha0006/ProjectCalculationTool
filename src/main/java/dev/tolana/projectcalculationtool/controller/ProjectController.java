@@ -189,7 +189,7 @@ public class ProjectController {
         model.addAttribute("project", project);
 
         List<UserEntityRoleDto> users = projectService.getUsersFromTeamId(
-                project.parentId(),projectId);
+                teamId,projectId);
         model.addAttribute("projectUsers",users);
 
         //used for redirect by storing the values from the url and using them on the return button

@@ -38,7 +38,8 @@ public class ProjectService {
         projectRepository.createEntity(username, newProject);
     }
 
-    //TODO this should return EntityViewDTO which ProjectView inherits fron
+    //TODO this should return EntityViewDTO which ProjectView inherits from,
+    // it is causing problems and it's also just not consistent with rest of code
     public ProjectViewDto getProjectToView(long projectId) {
         Entity project = projectRepository.getEntityOnId(projectId);
         return projectDtoMapper.toProjectViewDto(project);
