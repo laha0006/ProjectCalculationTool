@@ -107,6 +107,16 @@
                         <!--                        TODO MAKE SURE THIS IS HOW YOU CHECK ENUM VALUES-->
                         <!--                        <div th:if="${userRole == 'ORGANISATION_OWNER' || userRole == 'ORGANISATION_ADMIN'}">-->
 
+                        <!--The following structure is really bizarre
+                        Reasons:
+                        1- if you make sub-project you can only make sub-projects in a project, i.e. no tasks,
+                           is this actually intended functionality? Surely you'd want both tasks and sub-projects
+                           in the same project, right?
+                        2- the way things are set up, the layout on the project page looks incredibly janky,
+                           because buttons are not lined up well and things that seem related aren't next to
+                           each other. (I'd propose moving "delete/edit project" to the bottom with the "return"
+                           button).
+                        -->
 
 <!--                        IF THERE ARE NO TASKS OR SUBPROJECTS IN PROJECT HEAD SHOW OPTION FOR CREATING EITHER SUBPROJECT OR TASK.-->
                         <div th:if="${allTasks.isEmpty() && allSubProjects.isEmpty() && project.parentId() == 0}" class="d-flex flex-row justify-content-start">
@@ -161,7 +171,7 @@
                                 </div>
                             </div>
                         </div>
-
+                        <!--TODO change this below since it appears weirdly on project page, with "ændre" on newline-->
                         <div class="d-inline">
                             <form th:action="@{{projectId}/delete (projectId = ${project.id})}" method="post">
                                 <button class="btn btn-danger fw-bold">Slet projekt</button>
@@ -187,14 +197,14 @@
 <!--                    BACK BUTTON FOR MAIN PROJECT-->
                     <div th:if="${project.parentId() == 0}" class="d-inline">
                         <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId} (orgId=${orgId}, deptId=${deptId}, teamId=${teamId})}">
-                            <button class="btn btn-secondary fw-bold">Tilbage</button>
+                            <button class="btn btn-warning fw-bold">Tilbage</button>
                         </a>
                     </div>
 
 <!--                    BACK BUTTON FOR SUBPROJECT THAT DIRECT TO MAIN PROJECT-->
                     <div th:if="${project.parentId() != 0}" class="d-inline">
                         <a th:href="@{{projectParentId} (projectParentId=${project.parentId})}">
-                            <button class="btn btn-secondary fw-bold">Tilbage</button>
+                            <button class="btn btn-warning fw-bold">Tilbage</button>
                         </a>
                     </div>
                 </div>
