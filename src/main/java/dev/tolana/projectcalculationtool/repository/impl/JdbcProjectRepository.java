@@ -623,8 +623,8 @@ public class JdbcProjectRepository implements ProjectRepository {
                 if (users.get(i+1).username().equals(users.get(i).username())){
                     //adds user with the teamId of the duplicate that comes after it
                     cleanedUsers.add(new UserEntityRoleDto(users.get(i).username(),
-                            users.get(i).roleId(), users.get(i).taskId(), users.get(i).projectId(),
-                            users.get(i+1).teamId(), users.get(i).departmentId(),
+                            users.get(i).roleId(), users.get(i).taskId(), users.get(i+1).projectId(),
+                            users.get(i).teamId(), users.get(i).departmentId(),
                             users.get(i).organizationId()));
                 }else if(i != 0){ //avoids out of bounds
                     if (!users.get(i-1).username().equals(users.get(i).username())){

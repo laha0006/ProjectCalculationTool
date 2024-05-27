@@ -349,6 +349,8 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
 
                 user = new UserEntityRoleDto(name, roleId, taskId, projectId,
                         teamId, deptId, orgId);
+
+                return user;
             }
 
 

@@ -208,10 +208,6 @@
 
 <!--                    BACK BUTTON FOR SUBPROJECT THAT DIRECT TO MAIN PROJECT-->
                     <div th:if="${project.parentId() != 0}" class="d-inline">
-                        <div class="d-inline">
-                            <a th:href="@{{id}/members (id = ${project.id}) }"
-                               class="btn btn-success fw-bold">Se medlemmer</a>
-                        </div>
                         <a th:href="@{{projectParentId} (projectParentId=${project.parentId})}">
                             <button class="btn btn-warning fw-bold">Tilbage</button>
                         </a>
