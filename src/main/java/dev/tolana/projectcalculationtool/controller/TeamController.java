@@ -79,17 +79,19 @@ public class TeamController {
 
 
     @GetMapping("{teamId}/members")
-    public String departmentMembersView(@PathVariable("teamId") long teamId, Model model){
+    public String departmentMembersView(@PathVariable("orgId") long orgId,
+                                        @PathVariable("deptId") long deptId,
+                                        @PathVariable("teamId") long teamId, Model model){
         //TODO exclude owner of department from results
         EntityViewDto team = teamService.getTeam(teamId);
         model.addAttribute("team", team);
 
-        EntityViewDto department = teamService.getParent(team.parentId());
-        model.addAttribute("department", department);
-
         List<UserEntityRoleDto> users = teamService.getUsersFromDepartmentId(
-                department.id(),teamId);
-        model.addAttribute("deptUsers",users);
+                team.parentId(),teamId);
+        model.addAttribute("teamUsers",users);
+
+        model.addAttribute("organisationId",orgId);
+        model.addAttribute("departmentId",deptId);
 
         return "team/viewMembers";
     }

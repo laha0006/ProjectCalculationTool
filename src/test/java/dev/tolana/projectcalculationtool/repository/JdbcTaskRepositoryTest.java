@@ -1,18 +1,16 @@
 package dev.tolana.projectcalculationtool.repository;
 
-import dev.tolana.projectcalculationtool.enums.Alert;
 import dev.tolana.projectcalculationtool.enums.Status;
 import dev.tolana.projectcalculationtool.exception.EntityException;
 import dev.tolana.projectcalculationtool.model.Entity;
+import dev.tolana.projectcalculationtool.model.Project;
 import dev.tolana.projectcalculationtool.model.Task;
 import dev.tolana.projectcalculationtool.repository.impl.JdbcTaskRepository;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,11 +26,12 @@ class JdbcTaskRepositoryTest {
     private JdbcTaskRepository jdbcTaskRepository;
 
     @Test
-    void attempt_Create_Test_With_Name_Longer_Than_50_Character_And_Description_Longer_Than_100_Characters() {
+    void createTaskExceedingMaximumCharacterForName() {
         String username = "vz";
-        Entity taskWithName51CharacterAndDescription100Characters = new Task(0,
-                "mainTaskaamainTaskaamainTaskaamainTaskaamainTaskaa1",
-                "mainTaskaamainTaskaamainTaskaamainTaskaamainTaskaa1mainTaskaamainTaskaamainTaskaamainTaskaamainTaskaa",
+        Entity task = new Task(
+                0,
+                "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxz",
+                "Task description",
                 LocalDateTime.now(),
                 false,
                 LocalDateTime.now(),
@@ -42,15 +41,16 @@ class JdbcTaskRepositoryTest {
                 1,
                 1);
 
-        assertThrows(EntityException.class, ()-> jdbcTaskRepository.createEntity(username, taskWithName51CharacterAndDescription100Characters));
+        assertThrows(EntityException.class, ()-> jdbcTaskRepository.createEntity(username, task));
     }
 
     @Test
-    void attempt_Create_Task_With_No_Name() {
+    void createTaskBelowMinimumCharactersForName() {
         String username = "vz";
-        Entity taskWithNoName = new Task(0,
+        Entity task = new Task(
+                0,
                 null,
-                null,
+                "Task description",
                 LocalDateTime.now(),
                 false,
                 LocalDateTime.now(),
@@ -60,9 +60,58 @@ class JdbcTaskRepositoryTest {
                 1,
                 1);
 
-        assertThrows(EntityException.class, ()-> jdbcTaskRepository.createEntity(username, taskWithNoName));
+        assertThrows(EntityException.class, ()-> jdbcTaskRepository.createEntity(username, task));
     }
 
+    @Test
+    void createTaskAtMinimumCharactersForName() {
+        String username = "vz";
+        Entity task = new Task(
+                0,
+                "x",
+                "Task description",
+                LocalDateTime.now(),
+                false,
+                LocalDateTime.now(),
+                Status.TODO,
+                0,
+                1,
+                1,
+                1);
+
+        jdbcTaskRepository.createEntity(username, task);
+        Entity createdTask = jdbcTaskRepository.getEntityOnId(17);
+        assertNotNull(createdTask);
+
+        String actualTaskName = createdTask.getName();
+        String expectedTaskName = "x";
+        assertEquals(expectedTaskName, actualTaskName);
+    }
+
+    @Test
+    void createProjectAtMaximumCharacterForName() {
+        String username = "vz";
+        Entity task = new Task(
+                0,
+                "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+                "Task description",
+                LocalDateTime.now(),
+                false,
+                LocalDateTime.now(),
+                Status.TODO,
+                0,
+                1,
+                1,
+                1);
+
+        jdbcTaskRepository.createEntity(username, task);
+        Entity createdTask = jdbcTaskRepository.getEntityOnId(17);
+        assertNotNull(createdTask);
+
+        String actualTaskName = createdTask.getName();
+        String expectedTaskName = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+        assertEquals(expectedTaskName, actualTaskName);
+    }
     @Test
     void createTask() {
         Entity taskToCreate = new Task(0, "mainTask", "MainTask", LocalDateTime.now(), false, LocalDateTime.now(), Status.TODO, 0, 1, 1, 1);
@@ -96,7 +145,7 @@ class JdbcTaskRepositoryTest {
         Entity task = jdbcTaskRepository.getEntityOnId(1);
         String expectedTaskName = task.getName();
 
-        assertEquals("Frontend Task", expectedTaskName);
+        assertEquals("Frontend Task: 1", expectedTaskName);
     }
 
     @Test

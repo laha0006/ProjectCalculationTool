@@ -39,6 +39,11 @@
                                 </td>
                                 <td th:text="${project.deadline}"></td>
                                 <td th:text="${project.status}"></td>
+                                <!--
+                                The following doesn't seem fully implemented and is also redundant with US36 adding the
+                                view/assign members list within projects for easier control, similar to what
+                                teams, departments, and organisations already have
+
                                 <td>
                                     <div class="form-group">
                                         <a th:href="@{{teamId}/project/{projectId}/assign/members (teamId=${team.id}, projectId=${project.id})}">
@@ -47,6 +52,8 @@
                                     </div>
 
                                 </td>
+
+                                -->
                             </tr>
                             </tbody>
                         </table>
