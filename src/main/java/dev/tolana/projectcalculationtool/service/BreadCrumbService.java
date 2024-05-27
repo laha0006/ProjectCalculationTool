@@ -196,7 +196,7 @@ public class BreadCrumbService {
     public BreadCrumbDto getBreadCrumb(HttpServletRequest request) {
         try {
             String url = request.getRequestURI();
-            if (url.startsWith("/organisation/") && !url.startsWith("/organisation/create")) {
+            if (url.startsWith("/organisation/") && !url.startsWith("/organisation/create") && !url.startsWith("/organisation/invite")) {
                 return createBreadCrumb(url);
             }
             return new BreadCrumbDto(false, null);

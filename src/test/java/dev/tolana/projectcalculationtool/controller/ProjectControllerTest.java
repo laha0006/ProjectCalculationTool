@@ -1,12 +1,16 @@
 package dev.tolana.projectcalculationtool.controller;
 
+import dev.tolana.projectcalculationtool.dto.BreadCrumbDto;
 import dev.tolana.projectcalculationtool.dto.ProjectEditDto;
 import dev.tolana.projectcalculationtool.dto.ProjectStatsDto;
 import dev.tolana.projectcalculationtool.dto.ProjectViewDto;
 import dev.tolana.projectcalculationtool.enums.Status;
+import dev.tolana.projectcalculationtool.service.BreadCrumbService;
 import dev.tolana.projectcalculationtool.service.ProjectService;
 import dev.tolana.projectcalculationtool.service.UserService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -19,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -37,6 +42,14 @@ class ProjectControllerTest {
 
     @MockBean
     private UserService userService;
+
+    @MockBean
+    private BreadCrumbService breadCrumbService;
+
+    @BeforeEach
+    public void breadcrumbMock() {
+        when(breadCrumbService.getBreadCrumb(any())).thenReturn(new BreadCrumbDto(false, null));
+    }
 
     @Test
     @WithMockUser
