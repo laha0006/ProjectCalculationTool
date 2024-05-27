@@ -39,6 +39,8 @@ jobs:
 
       - name: Build with Maven
         run: mvn clean install
+        env:
+          profile: ${{ vars.PROFILE }}
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
