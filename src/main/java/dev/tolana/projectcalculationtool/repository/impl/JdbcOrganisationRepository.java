@@ -140,11 +140,6 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
     }
 
     @Override
-    public List<Entity> getAllEntitiesOnId(long entityId) {
-        return null;
-    }
-
-    @Override
     public List<Entity> getChildren(long organisationId) {
         List<Entity> departmentList = new ArrayList<>();
         String getAllTeamsFromParent = """
