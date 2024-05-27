@@ -3,7 +3,9 @@ package dev.tolana.projectcalculationtool.service;
 import dev.tolana.projectcalculationtool.dto.BreadCrumbDto;
 import dev.tolana.projectcalculationtool.dto.BreadCrumbItmDto;
 import dev.tolana.projectcalculationtool.dto.NameHierarchy;
+import dev.tolana.projectcalculationtool.enums.Alert;
 import dev.tolana.projectcalculationtool.enums.EntityType;
+import dev.tolana.projectcalculationtool.exception.EntityException;
 import dev.tolana.projectcalculationtool.repository.BreadCrumbRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -224,10 +226,14 @@ public class BreadCrumbService {
 
 
     public BreadCrumbDto getBreadCrumb(HttpServletRequest request) {
-        String url = request.getRequestURI();
-        if (url.startsWith("/organisation/") && !url.startsWith("/organisation/create")) {
-            return createBreadCrumb(url);
+        try {
+            String url = request.getRequestURI();
+            if (url.startsWith("/organisation/") && !url.startsWith("/organisation/create")) {
+                return createBreadCrumb(url);
+            }
+            return new BreadCrumbDto(false, null);
+        } catch (Exception e) {
+            throw new EntityException("Noget gik galt med navigationen.", Alert.WARNING);
         }
-        return new BreadCrumbDto(false, null);
     }
 }
