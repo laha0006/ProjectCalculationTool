@@ -6,7 +6,13 @@ public record UserEntityRoleDto(String username,
                                 long projectId,
                                 long teamId,
                                 long departmentId,
-                                long organizationId) {
+                                long organizationId)
+implements Comparable<UserEntityRoleDto>
+{
+    @Override
+    public int compareTo(UserEntityRoleDto userEntityRoleDto){
+        return CharSequence.compare(this.username,userEntityRoleDto.username);
+    }
 }
 
 
