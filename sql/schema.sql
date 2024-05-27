@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS status
 CREATE TABLE IF NOT EXISTS organisation
 (
     id           INT AUTO_INCREMENT PRIMARY KEY,
-    name         VARCHAR(50) NOT NULL,
+    name         VARCHAR(50)  NOT NULL,
     description  VARCHAR(100) NOT NULL,
     date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     archived     BOOLEAN   DEFAULT FALSE
@@ -57,8 +57,8 @@ CREATE TABLE IF NOT EXISTS organisation
 CREATE TABLE IF NOT EXISTS department
 (
     id              INT AUTO_INCREMENT PRIMARY KEY,
-    name            VARCHAR(255) NOT NULL,
-    description     VARCHAR(255) NOT NULL,
+    name            VARCHAR(50) NOT NULL,
+    description     VARCHAR(80) NOT NULL,
     organisation_id INT,
     date_created    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     archived        BOOLEAN   DEFAULT FALSE,
@@ -68,8 +68,8 @@ CREATE TABLE IF NOT EXISTS department
 CREATE TABLE IF NOT EXISTS team
 (
     id            INT AUTO_INCREMENT PRIMARY KEY,
-    name          VARCHAR(255) NOT NULL,
-    description   VARCHAR(255) NOT NULL,
+    name          VARCHAR(50) NOT NULL,
+    description   VARCHAR(80) NOT NULL,
     department_id INT,
     date_created  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     archived      BOOLEAN   DEFAULT FALSE,
@@ -79,8 +79,8 @@ CREATE TABLE IF NOT EXISTS team
 CREATE TABLE IF NOT EXISTS project
 (
     id             INT AUTO_INCREMENT PRIMARY KEY,
-    name           VARCHAR(255) NOT NULL,
-    description    VARCHAR(255) NOT NULL,
+    name           VARCHAR(50) NOT NULL,
+    description    VARCHAR(80) NOT NULL,
     team_id        INT,
     date_created   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     deadline       TIMESTAMP,
@@ -88,17 +88,17 @@ CREATE TABLE IF NOT EXISTS project
     status         INT       DEFAULT 1,
     parent_id      INT,
     archived       BOOLEAN   DEFAULT FALSE,
-    FOREIGN KEY (team_id) REFERENCES team (id) ON DELETE CASCADE ,
-    FOREIGN KEY (parent_id) REFERENCES project (id) ON DELETE CASCADE ,
+    FOREIGN KEY (team_id) REFERENCES team (id) ON DELETE CASCADE,
+    FOREIGN KEY (parent_id) REFERENCES project (id) ON DELETE CASCADE,
     FOREIGN KEY (status) REFERENCES status (id)
 );
 
 CREATE TABLE IF NOT EXISTS task
 (
     id              INT AUTO_INCREMENT PRIMARY KEY,
-    name            VARCHAR(255) NOT NULL,
-    description     VARCHAR(255) NOT NULL,
-    project_id      INT          NOT NULL,
+    name            VARCHAR(50) NOT NULL,
+    description     VARCHAR(80) NOT NULL,
+    project_id      INT         NOT NULL,
     date_created    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     deadline        TIMESTAMP,
     estimated_hours INT,
