@@ -106,6 +106,7 @@ public class ProjectController {
         return "project/viewAllTeamMembers";
     }
 
+    //obsolete with US36
     @PostMapping("/{projectId}/assign/members")
     public String assignTeamMembersToProject(@RequestParam(value = "teamMember", required = false) List<String> selectedTeamMembers,
                                              @RequestParam UserRole role,
@@ -175,5 +176,78 @@ public class ProjectController {
         } else {
             return "redirect:/" + "organisation/" + orgId + "/department/" + deptId + "/team/" + teamId + "/project/" + projectParentId;
         }
+    }
+
+
+    @GetMapping("{projectId}/members")
+    public String projectMembersView(@PathVariable("orgId") long orgId,
+                                     @PathVariable("deptId") long deptId,
+                                     @PathVariable("teamId") long teamId,
+                                     @PathVariable("teamId") long projectId, Model model){
+        //TODO exclude owner of department from results
+        ProjectViewDto project = projectService.getProjectToView(projectId);
+        model.addAttribute("project", project);
+
+        List<UserEntityRoleDto> users = projectService.getUsersFromTeamId(
+                teamId,projectId);
+        model.addAttribute("projectUsers",users);
+
+        //used for redirect by storing the values from the url and using them on the return button
+        model.addAttribute("organisationId",orgId);
+        model.addAttribute("departmentId",deptId);
+        model.addAttribute("teamId",teamId);
+
+        return "project/viewMembers";
+    }
+
+
+    @PostMapping("/{projectId}/members/assign/{username}")
+    public String assignMemberToProject(@PathVariable("orgId") long orgId,
+                                     @PathVariable("deptId") long deptId,
+                                     @PathVariable("teamId") long teamId,
+                                     @PathVariable("projectId") long projectId,
+                                     @PathVariable("username") String username){
+
+        UserEntityRoleDto user = projectService.getUserFromTeamId(username,
+                teamId);
+
+        projectService.assignMemberToProject(projectId,user.username());
+
+
+        return "redirect:/organisation/" + orgId + "/department/"+ deptId +
+                "/team/" + teamId + "/project/" + projectId + "/members";
+    }
+
+    @PostMapping("/{projectId}/members/promote/{username}")
+    public String promoteMemberToAdmin(@PathVariable("orgId") long orgId,
+                                       @PathVariable("deptId") long deptId,
+                                       @PathVariable("teamId") long teamId,
+                                       @PathVariable("projectId") long projectId,
+                                       @PathVariable("username") String username){
+
+        UserEntityRoleDto user = projectService.getUserFromTeamId(username,
+                teamId);
+
+        projectService.promoteMemberToAdmin(projectId,user.username());
+
+
+        return "redirect:/organisation/" + orgId + "/department/"+ deptId +
+                "/team/" + teamId + "/project/" + projectId + "/members";
+    }
+
+    @PostMapping("/{projectId}/members/kick/{username}")
+    public String kickMemberFromDepartment(@PathVariable("orgId") long orgId,
+                                           @PathVariable("deptId") long deptId,
+                                           @PathVariable("teamId") long teamId,
+                                           @PathVariable("projectId") long projectId,
+                                           @PathVariable("username") String username){
+
+        UserEntityRoleDto user = projectService.getUserFromTeamId(username,
+                teamId);
+
+        projectService.kickMemberFromProject(projectId,user.username());
+
+        return "redirect:/organisation/" + orgId + "/department/"+ deptId +
+                "/team/" + teamId + "/project/" + projectId + "/members";
     }
 }
