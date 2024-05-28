@@ -1,7 +1,5 @@
 # How to contribute to Project Calculation Tool
 
---- 
-
 ### Did you find a bug?
 
 Make sure that there aren't any duplicates.
