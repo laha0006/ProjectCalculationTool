@@ -7,6 +7,8 @@ import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.repository.TeamRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -58,7 +60,29 @@ public class TeamService {
 
 
     public List<UserEntityRoleDto> getUsersFromDepartmentId(long departmentId,long teamId){
-        return teamRepository.getUsersFromParentIdAndEntityId(departmentId,teamId);
+        List<UserEntityRoleDto> scrubbedUsers = new ArrayList<>();
+
+        List<UserEntityRoleDto> users = teamRepository.getUsersFromParentIdAndEntityId(
+                departmentId,teamId);
+
+        for (UserEntityRoleDto user: users) {
+            boolean exists = false;
+            if (!scrubbedUsers.isEmpty()){
+                for (UserEntityRoleDto scrub: scrubbedUsers) {
+                    if (user.username().equals(scrub.username())){
+                        exists = true;
+                    }
+                }
+                if (!exists){
+                    scrubbedUsers.add(user);
+                }
+            }else{
+                scrubbedUsers.add(user);
+            }
+        }
+
+        Collections.sort(scrubbedUsers);
+        return scrubbedUsers;
     }
 
     public UserEntityRoleDto getUserFromDepartmentId(String username, long deptId){
