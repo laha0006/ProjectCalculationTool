@@ -1,5 +1,6 @@
 package dev.tolana.projectcalculationtool;
 
+import dev.tolana.projectcalculationtool.exception.EntityException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,14 +11,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class MysqlConnectionTest {
 
     @Autowired
     private DataSource dataSource;
+
 
     @Test
     void testConnection() {

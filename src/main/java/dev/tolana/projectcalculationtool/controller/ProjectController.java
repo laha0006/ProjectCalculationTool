@@ -106,22 +106,6 @@ public class ProjectController {
         return "project/viewAllTeamMembers";
     }
 
-    //obsolete with US36
-    @PostMapping("/{projectId}/assign/members")
-    public String assignTeamMembersToProject(@RequestParam(value = "teamMember", required = false) List<String> selectedTeamMembers,
-                                             @RequestParam UserRole role,
-                                             @PathVariable long orgId,
-                                             @PathVariable long deptId,
-                                             @PathVariable long teamId,
-                                             @PathVariable long projectId) {
-
-        if (!selectedTeamMembers.isEmpty()) {
-            projectService.assignTeamMembersToProject(projectId, selectedTeamMembers, role);
-        }
-
-        return "redirect:/organisation/" + orgId + "/department/" + deptId + "/team/" + teamId;
-    }
-
     @PostMapping("/{projectId}/delete")
     public String deleteProject(@PathVariable long orgId,
                                 @PathVariable long deptId,

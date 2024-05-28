@@ -47,8 +47,8 @@ CREATE TABLE IF NOT EXISTS permission
 
 CREATE TABLE IF NOT EXISTS role_permission
 (
-    role_id INT,
-    perm_id INT,
+    role_id INT NOT NULL,
+    perm_id INT NOT NULL,
     FOREIGN KEY (role_id) REFERENCES role (id),
     FOREIGN KEY (perm_id) REFERENCES permission (id),
     PRIMARY KEY (role_id, perm_id)
@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS status
 CREATE TABLE IF NOT EXISTS organisation
 (
     id           INT AUTO_INCREMENT PRIMARY KEY,
-    name         VARCHAR(50) NOT NULL,
+    name         VARCHAR(50)  NOT NULL,
     description  VARCHAR(100) NOT NULL,
     date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     archived     BOOLEAN   DEFAULT FALSE
@@ -72,9 +72,9 @@ CREATE TABLE IF NOT EXISTS organisation
 CREATE TABLE IF NOT EXISTS department
 (
     id              INT AUTO_INCREMENT PRIMARY KEY,
-    name            VARCHAR(50) NOT NULL,
+    name            VARCHAR(50)  NOT NULL,
     description     VARCHAR(100) NOT NULL,
-    organisation_id INT,
+    organisation_id INT          NOT NULL,
     date_created    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     archived        BOOLEAN   DEFAULT FALSE,
     FOREIGN KEY (organisation_id) REFERENCES organisation (id) ON DELETE CASCADE
@@ -83,9 +83,9 @@ CREATE TABLE IF NOT EXISTS department
 CREATE TABLE IF NOT EXISTS team
 (
     id            INT AUTO_INCREMENT PRIMARY KEY,
-    name          VARCHAR(50) NOT NULL,
+    name          VARCHAR(50)  NOT NULL,
     description   VARCHAR(100) NOT NULL,
-    department_id INT,
+    department_id INT          NOT NULL,
     date_created  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     archived      BOOLEAN   DEFAULT FALSE,
     FOREIGN KEY (department_id) REFERENCES department (id) ON DELETE CASCADE
@@ -94,29 +94,29 @@ CREATE TABLE IF NOT EXISTS team
 CREATE TABLE IF NOT EXISTS project
 (
     id             INT AUTO_INCREMENT PRIMARY KEY,
-    name           VARCHAR(50) NOT NULL,
+    name           VARCHAR(50)  NOT NULL,
     description    VARCHAR(100) NOT NULL,
-    team_id        INT,
+    team_id        INT          NOT NULL,
     date_created   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    deadline       TIMESTAMP,
-    allotted_hours INT,
+    deadline       TIMESTAMP    NOT NULL,
+    allotted_hours INT          NOT NULL,
     status         INT       DEFAULT 1,
     parent_id      INT,
     archived       BOOLEAN   DEFAULT FALSE,
-    FOREIGN KEY (team_id) REFERENCES team (id) ON DELETE CASCADE ,
-    FOREIGN KEY (parent_id) REFERENCES project (id) ON DELETE CASCADE ,
+    FOREIGN KEY (team_id) REFERENCES team (id) ON DELETE CASCADE,
+    FOREIGN KEY (parent_id) REFERENCES project (id) ON DELETE CASCADE,
     FOREIGN KEY (status) REFERENCES status (id)
     );
 
 CREATE TABLE IF NOT EXISTS task
 (
     id              INT AUTO_INCREMENT PRIMARY KEY,
-    name            VARCHAR(50) NOT NULL,
+    name            VARCHAR(50)  NOT NULL,
     description     VARCHAR(100) NOT NULL,
     project_id      INT          NOT NULL,
     date_created    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    deadline        TIMESTAMP,
-    estimated_hours INT,
+    deadline        TIMESTAMP    NOT NULL,
+    estimated_hours INT          NOT NULL,
     actual_hours    INT       DEFAULT 0,
     status          INT       DEFAULT 4,
     parent_id       INT,
@@ -130,7 +130,7 @@ CREATE TABLE IF NOT EXISTS user_entity_role
 (
     id              INT AUTO_INCREMENT PRIMARY KEY,
     username        VARCHAR(50) NOT NULL,
-    role_id         INT,
+    role_id         INT         NOT NULL,
     task_id         INT,
     project_id      INT,
     team_id         INT,
@@ -142,7 +142,12 @@ CREATE TABLE IF NOT EXISTS user_entity_role
     FOREIGN KEY (project_id) REFERENCES project (id) ON DELETE CASCADE,
     FOREIGN KEY (team_id) REFERENCES team (id) ON DELETE CASCADE,
     FOREIGN KEY (department_id) REFERENCES department (id) ON DELETE CASCADE,
-    FOREIGN KEY (organisation_id) REFERENCES organisation (id) ON DELETE CASCADE
+    FOREIGN KEY (organisation_id) REFERENCES organisation (id) ON DELETE CASCADE,
+    CHECK (task_id IS NOT NULL OR
+    project_id IS NOT NULL OR
+    team_id IS NOT NULL OR
+    department_id IS NOT NULL OR
+    organisation_id IS NOT NULL)
     );
 
 
@@ -173,7 +178,6 @@ FROM organisation org
                    ON tm.id = pjt.team_id
          LEFT JOIN task tsk
                    ON pjt.id = tsk.project_id;
-
 
 USE test_db;
 
@@ -420,7 +424,7 @@ INSERT INTO status(name)
 VALUES ('IN_PROGRESS'),
        ('DONE'),
        ('IN_REVIEW'),
-       ("TODO");
+       ('TODO');
 
 INSERT INTO organisation(name,description) VALUES('EvilCorp','Evil Organisation');
 INSERT INTO organisation(name,description) VALUES('Apple','Fruit Organisation');
@@ -446,33 +450,33 @@ INSERT INTO team(name,description,department_id) VALUES('Frontend Team','Fronten
 INSERT INTO team(name,description,department_id) VALUES('Backend Team','Backend Team',8);
 
 INSERT INTO project(name,description,team_id,allotted_hours,deadline) VALUES('Frontend Project','a project',1,100,now() + INTERVAL 1 WEEK);
-INSERT INTO project(name,description,team_id) VALUES('Backend Project','a project',2);
-INSERT INTO project(name,description,team_id) VALUES('Frontend Project','a project',3);
-INSERT INTO project(name,description,team_id) VALUES('Backend Project','a project',4);
-INSERT INTO project(name,description,team_id) VALUES('Frontend Project','a project',5);
-INSERT INTO project(name,description,team_id) VALUES('Backend Project','a project',6);
-INSERT INTO project(name,description,team_id) VALUES('Frontend Project','a project',7);
-INSERT INTO project(name,description,team_id) VALUES('Backend Project','a project',8);
+INSERT INTO project(name,description,team_id,allotted_hours,deadline) VALUES('Backend Project','a project',2,50,now() + INTERVAL 1 WEEK);
+INSERT INTO project(name,description,team_id,allotted_hours,deadline) VALUES('Frontend Project','a project',3,50,now() + INTERVAL 1 WEEK);
+INSERT INTO project(name,description,team_id,allotted_hours,deadline) VALUES('Backend Project','a project',4,50,now() + INTERVAL 1 WEEK);
+INSERT INTO project(name,description,team_id,allotted_hours,deadline) VALUES('Frontend Project','a project',5,50,now() + INTERVAL 1 WEEK);
+INSERT INTO project(name,description,team_id,allotted_hours,deadline) VALUES('Backend Project','a project',6,50,now() + INTERVAL 1 WEEK);
+INSERT INTO project(name,description,team_id,allotted_hours,deadline) VALUES('Frontend Project','a project',7,50,now() + INTERVAL 1 WEEK);
+INSERT INTO project(name,description,team_id,allotted_hours,deadline) VALUES('Backend Project','a project',8,50,now() + INTERVAL 1 WEEK);
 INSERT INTO project(name,description,team_id, parent_id,allotted_hours,deadline) VALUES('sub one','one',8, 1,100,now() + INTERVAL 1 WEEK);
 
-INSERT INTO task(name,description,project_id,actual_hours, deadline) VALUES('Frontend Task: 1','Task',1,10, now() + INTERVAL 1 WEEK);
-INSERT INTO task(name,description,project_id,actual_hours, deadline) VALUES('Frontend Task: 2','Task',1,15, now() + INTERVAL 1 WEEK);
-INSERT INTO task(name,description,project_id,actual_hours, deadline) VALUES('Frontend Task: 3','Task',1,8, now() + INTERVAL 1 WEEK);
-INSERT INTO task(name,description,project_id,actual_hours, deadline) VALUES('Frontend Task: 4','Task',1,12, now() + INTERVAL 1 WEEK);
-INSERT INTO task(name,description,project_id,actual_hours, deadline) VALUES('Frontend Task: 5','Task',1,7, now() + INTERVAL 1 WEEK);
-INSERT INTO task(name,description,project_id,actual_hours, deadline) VALUES('Frontend Task: 6','Task',1,16, now() + INTERVAL 1 WEEK);
-INSERT INTO task(name,description,project_id,actual_hours, deadline) VALUES('Frontend Task: 7','Task',1,26, now() + INTERVAL 1 WEEK);
+INSERT INTO task(name,description,project_id,actual_hours, estimated_hours, deadline) VALUES('Frontend Task: 1','Task',1,10,14, now() + INTERVAL 1 WEEK);
+INSERT INTO task(name,description,project_id,actual_hours, estimated_hours, deadline) VALUES('Frontend Task: 2','Task',1,15,47, now() + INTERVAL 1 WEEK);
+INSERT INTO task(name,description,project_id,actual_hours, estimated_hours, deadline) VALUES('Frontend Task: 3','Task',1,8,65, now() + INTERVAL 1 WEEK);
+INSERT INTO task(name,description,project_id,actual_hours, estimated_hours, deadline) VALUES('Frontend Task: 4','Task',1,12,11, now() + INTERVAL 1 WEEK);
+INSERT INTO task(name,description,project_id,actual_hours, estimated_hours, deadline) VALUES('Frontend Task: 5','Task',1,7,71, now() + INTERVAL 1 WEEK);
+INSERT INTO task(name,description,project_id,actual_hours, estimated_hours, deadline) VALUES('Frontend Task: 6','Task',1,16,23, now() + INTERVAL 1 WEEK);
+INSERT INTO task(name,description,project_id,actual_hours, estimated_hours, deadline) VALUES('Frontend Task: 7','Task',1,26,11, now() + INTERVAL 1 WEEK);
 
-INSERT INTO task(name,description,project_id) VALUES('Backend Task','Task',2);
-INSERT INTO task(name,description,project_id) VALUES('Frontend Task','Task',3);
-INSERT INTO task(name,description,project_id) VALUES('Backend Task','Task',4);
-INSERT INTO task(name,description,project_id) VALUES('Frontend Task','Task',5);
-INSERT INTO task(name,description,project_id) VALUES('Backend Task','Task',6);
-INSERT INTO task(name,description,project_id) VALUES('Frontend Task','Task',7);
-INSERT INTO task(name,description,project_id) VALUES('Backend Task','Task',8);
+INSERT INTO task(name,description,project_id,actual_hours, estimated_hours, deadline) VALUES('Backend Task','Task',2,26,11, now() + INTERVAL 1 WEEK);
+INSERT INTO task(name,description,project_id,actual_hours, estimated_hours, deadline) VALUES('Frontend Task','Task',3,26,11, now() + INTERVAL 1 WEEK);
+INSERT INTO task(name,description,project_id,actual_hours, estimated_hours, deadline) VALUES('Backend Task','Task',4,26,11, now() + INTERVAL 1 WEEK);
+INSERT INTO task(name,description,project_id,actual_hours, estimated_hours, deadline) VALUES('Frontend Task','Task',5,26,11, now() + INTERVAL 1 WEEK);
+INSERT INTO task(name,description,project_id,actual_hours, estimated_hours, deadline) VALUES('Backend Task','Task',6,26,11, now() + INTERVAL 1 WEEK);
+INSERT INTO task(name,description,project_id,actual_hours, estimated_hours, deadline) VALUES('Frontend Task','Task',7,26,11, now() + INTERVAL 1 WEEK);
+INSERT INTO task(name,description,project_id,actual_hours, estimated_hours, deadline) VALUES('Backend Task','Task',8,26,11, now() + INTERVAL 1 WEEK);
 
-INSERT INTO task(name,description,project_id,actual_hours, deadline) VALUES('MainTask Task','Task',1,26, now() + INTERVAL 1 WEEK);
-INSERT INTO task(name,description,project_id,actual_hours, deadline, parent_id) VALUES('SubTask Task','Task',1,26, now() + INTERVAL 1 WEEK, 15);
+INSERT INTO task(name,description,project_id,actual_hours, estimated_hours, deadline) VALUES('MainTask Task','Task',1,26,41, now() + INTERVAL 1 WEEK);
+INSERT INTO task(name,description,project_id,actual_hours, estimated_hours, deadline, parent_id) VALUES('SubTask Task','Task',1,12,26, now() + INTERVAL 1 WEEK, 15);
 
 INSERT INTO users(username,password) VALUES('tolana','password');
 INSERT INTO users(username,password) VALUES('vz','password');

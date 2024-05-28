@@ -1,6 +1,8 @@
 package dev.tolana.projectcalculationtool.exception.authorization;
 
 
+import dev.tolana.projectcalculationtool.dto.BreadCrumbDto;
+import dev.tolana.projectcalculationtool.service.BreadCrumbService;
 import dev.tolana.projectcalculationtool.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -21,9 +23,11 @@ public class AuthorizationExceptionHandler {
 //    we know it's a 'username already exists' error, and send that back.
 
     private UserService userService;
+    private BreadCrumbService breadCrumbService;
 
-    public AuthorizationExceptionHandler(UserService userService) {
+    public AuthorizationExceptionHandler(UserService userService, BreadCrumbService breadCrumbService) {
         this.userService = userService;
+        this.breadCrumbService = breadCrumbService;
     }
 
     @ExceptionHandler(AccessDeniedException.class)
@@ -66,5 +70,10 @@ public class AuthorizationExceptionHandler {
         }
         String username = authentication.getName();
         return userService.getInvitationsCount(username);
+    }
+
+    @ModelAttribute("breadCrumb")
+    public BreadCrumbDto getBreadCrumb(HttpServletRequest request) {
+        return breadCrumbService.getBreadCrumb(request);
     }
 }
