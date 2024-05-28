@@ -105,8 +105,6 @@ public class DepartmentController {
                                        @PathVariable("username") String username){
 
 
-
-
         departmentService.promoteMemberToAdmin(deptId,username);
 
 
