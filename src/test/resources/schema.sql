@@ -35,20 +35,20 @@ CREATE TABLE IF NOT EXISTS authorities
 CREATE TABLE IF NOT EXISTS role
 (
     id     INT AUTO_INCREMENT PRIMARY KEY,
-    name   VARCHAR(255) NOT NULL,
+    name   VARCHAR(50) NOT NULL,
     weight SMALLINT UNSIGNED
 );
 
 CREATE TABLE IF NOT EXISTS permission
 (
     id   INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL
+    name VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS role_permission
 (
-    role_id INT,
-    perm_id INT,
+    role_id INT NOT NULL,
+    perm_id INT NOT NULL,
     FOREIGN KEY (role_id) REFERENCES role (id),
     FOREIGN KEY (perm_id) REFERENCES permission (id),
     PRIMARY KEY (role_id, perm_id)
@@ -63,8 +63,8 @@ CREATE TABLE IF NOT EXISTS status
 CREATE TABLE IF NOT EXISTS organisation
 (
     id           INT AUTO_INCREMENT PRIMARY KEY,
-    name         VARCHAR(255) NOT NULL,
-    description  VARCHAR(255) NOT NULL,
+    name         VARCHAR(50)  NOT NULL,
+    description  VARCHAR(100) NOT NULL,
     date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     archived     BOOLEAN   DEFAULT FALSE
 );
@@ -72,9 +72,9 @@ CREATE TABLE IF NOT EXISTS organisation
 CREATE TABLE IF NOT EXISTS department
 (
     id              INT AUTO_INCREMENT PRIMARY KEY,
-    name            VARCHAR(255) NOT NULL,
-    description     VARCHAR(255) NOT NULL,
-    organisation_id INT,
+    name            VARCHAR(50)  NOT NULL,
+    description     VARCHAR(100) NOT NULL,
+    organisation_id INT          NOT NULL,
     date_created    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     archived        BOOLEAN   DEFAULT FALSE,
     FOREIGN KEY (organisation_id) REFERENCES organisation (id) ON DELETE CASCADE
@@ -83,9 +83,9 @@ CREATE TABLE IF NOT EXISTS department
 CREATE TABLE IF NOT EXISTS team
 (
     id            INT AUTO_INCREMENT PRIMARY KEY,
-    name          VARCHAR(255) NOT NULL,
-    description   VARCHAR(255) NOT NULL,
-    department_id INT,
+    name          VARCHAR(50)  NOT NULL,
+    description   VARCHAR(100) NOT NULL,
+    department_id INT          NOT NULL,
     date_created  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     archived      BOOLEAN   DEFAULT FALSE,
     FOREIGN KEY (department_id) REFERENCES department (id) ON DELETE CASCADE
@@ -94,12 +94,12 @@ CREATE TABLE IF NOT EXISTS team
 CREATE TABLE IF NOT EXISTS project
 (
     id             INT AUTO_INCREMENT PRIMARY KEY,
-    name           VARCHAR(255) NOT NULL,
-    description    VARCHAR(255) NOT NULL,
-    team_id        INT,
+    name           VARCHAR(50)  NOT NULL,
+    description    VARCHAR(100) NOT NULL,
+    team_id        INT          NOT NULL,
     date_created   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    deadline       TIMESTAMP,
-    allotted_hours INT,
+    deadline       TIMESTAMP    NOT NULL,
+    allotted_hours INT          NOT NULL,
     status         INT       DEFAULT 1,
     parent_id      INT,
     archived       BOOLEAN   DEFAULT FALSE,
@@ -111,12 +111,12 @@ CREATE TABLE IF NOT EXISTS project
 CREATE TABLE IF NOT EXISTS task
 (
     id              INT AUTO_INCREMENT PRIMARY KEY,
-    name            VARCHAR(255) NOT NULL,
-    description     VARCHAR(255) NOT NULL,
+    name            VARCHAR(50)  NOT NULL,
+    description     VARCHAR(100) NOT NULL,
     project_id      INT          NOT NULL,
     date_created    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    deadline        TIMESTAMP,
-    estimated_hours INT,
+    deadline        TIMESTAMP    NOT NULL,
+    estimated_hours INT          NOT NULL,
     actual_hours    INT       DEFAULT 0,
     status          INT       DEFAULT 4,
     parent_id       INT,
@@ -130,7 +130,7 @@ CREATE TABLE IF NOT EXISTS user_entity_role
 (
     id              INT AUTO_INCREMENT PRIMARY KEY,
     username        VARCHAR(50) NOT NULL,
-    role_id         INT,
+    role_id         INT         NOT NULL,
     task_id         INT,
     project_id      INT,
     team_id         INT,
@@ -142,7 +142,12 @@ CREATE TABLE IF NOT EXISTS user_entity_role
     FOREIGN KEY (project_id) REFERENCES project (id) ON DELETE CASCADE,
     FOREIGN KEY (team_id) REFERENCES team (id) ON DELETE CASCADE,
     FOREIGN KEY (department_id) REFERENCES department (id) ON DELETE CASCADE,
-    FOREIGN KEY (organisation_id) REFERENCES organisation (id) ON DELETE CASCADE
+    FOREIGN KEY (organisation_id) REFERENCES organisation (id) ON DELETE CASCADE,
+    CHECK (task_id IS NOT NULL OR
+           project_id IS NOT NULL OR
+           team_id IS NOT NULL OR
+           department_id IS NOT NULL OR
+           organisation_id IS NOT NULL)
 );
 
 
@@ -165,11 +170,11 @@ SELECT tsk.id        AS task_id,
        pjt.parent_id AS project_parent_id,
        tsk.parent_id AS task_parent_id
 FROM organisation org
-     LEFT JOIN department dpt
-               ON org.id = dpt.organisation_id
-     LEFT JOIN team tm
-               ON dpt.id = tm.department_id
-     LEFT JOIN project pjt
-               ON tm.id = pjt.team_id
-     LEFT JOIN task tsk
-               ON pjt.id = tsk.project_id;
+         LEFT JOIN department dpt
+                   ON org.id = dpt.organisation_id
+         LEFT JOIN team tm
+                   ON dpt.id = tm.department_id
+         LEFT JOIN project pjt
+                   ON tm.id = pjt.team_id
+         LEFT JOIN task tsk
+                   ON pjt.id = tsk.project_id;
