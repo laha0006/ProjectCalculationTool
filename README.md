@@ -7,8 +7,6 @@
 
 ## Table of Contents
 
----
-
 - [Features](#features)
 - [Technologies](#technologies)
 - [Usage](#usage)
@@ -18,8 +16,6 @@
 
 
 # Features
-
----
 
 - User system, featuring roles and permissions
 - Create an Organisation, featuring teams, departments.
@@ -31,8 +27,6 @@
 
 # Technologies
 
----
-
 - Java 17 SDK
 - Spring 6.1.6 & Spring Boot 3.2.5
 - IntelliJ IDEA Ultimate 2024.1
@@ -41,15 +35,9 @@
 
 # Usage
 
----
-
 Try out the live demo at https://tolana.dev
 
-
-
 # Installation
-
----
 
 You'll need: 
 - Java 17 SDK.
@@ -67,11 +55,7 @@ set the active profile to dev.
 
 And you're set!
 
-
-
 # Contributing
-
----
 
 See [CONTRIBUTING.md](CONTRIBUTING.md)
 
