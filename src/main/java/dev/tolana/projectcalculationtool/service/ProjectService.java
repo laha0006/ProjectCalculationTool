@@ -9,6 +9,8 @@ import dev.tolana.projectcalculationtool.mapper.TaskDtoMapper;
 import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.Project;
 import dev.tolana.projectcalculationtool.repository.ProjectRepository;
+import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -34,18 +36,22 @@ public class ProjectService {
         this.entityDtoMapper = entityDtoMapper;
     }
 
+    @PreAuthorize("@auth.hasTeamAccess(#project.parentId(), " +
+                  "T(dev.tolana.projectcalculationtool.enums.Permission).PROJECT_CREATE)")
     public void createProject(String username, ProjectCreationDto project) {
         Entity newProject = projectDtoMapper.toEntity(project);
         projectRepository.createEntity(username, newProject);
     }
 
-    //TODO this should return EntityViewDTO which ProjectView inherits from,
-    // it is causing problems and it's also just not consistent with rest of code
+    @PreAuthorize("@auth.hasProjectAccess(#projectId, " +
+                  "T(dev.tolana.projectcalculationtool.enums.Permission).PROJECT_READ)")
     public ProjectViewDto getProjectToView(long projectId) {
         Entity project = projectRepository.getEntityOnId(projectId);
         return projectDtoMapper.toProjectViewDto(project);
     }
 
+    @PostFilter("@auth.hasProjectAccess(filterObject.id, " +
+                  "T(dev.tolana.projectcalculationtool.enums.Permission).PROJECT_READ)")
     public List<ProjectViewDto> getSubProjects(long projectId) {
         List<Project> subProjects = projectRepository.getSubProjects(projectId);
         List<Entity> upCastedSubProjects = fromProjecToEntityList(subProjects);
@@ -56,6 +62,8 @@ public class ProjectService {
         return calculationService.getProjectStats(projectId);
     }
 
+    @PreAuthorize("@auth.hasProjectAccess(#projectId, " +
+                  "T(dev.tolana.projectcalculationtool.enums.Permission).PROJECT_READ)")
     public List<TaskViewDto> getTasks(long projectId) {
         List<Entity> taskList = projectRepository.getChildren(projectId);
         return taskDtoMapper.toTaskDtoViewList(taskList);
@@ -73,6 +81,8 @@ public class ProjectService {
         projectRepository.assignUser(projectId, selectedTeamMembers, userRole);
     }
 
+    @PreAuthorize("@auth.hasProjectAccess(#projectId, " +
+                  "T(dev.tolana.projectcalculationtool.enums.Permission).PROJECT_DELETE)")
     public void deleteProject(long projectId) {
         projectRepository.deleteEntity(projectId);
     }
@@ -85,11 +95,16 @@ public class ProjectService {
         return projectRepository.getStatusList();
     }
 
+
+    @PreAuthorize("@auth.hasProjectAccess(#projectToEdit.id(), " +
+                  "T(dev.tolana.projectcalculationtool.enums.Permission).PROJECT_EDIT)")
     public void editProject(ProjectEditDto projectToEdit) {
         Entity project = projectDtoMapper.toEntity(projectToEdit);
         projectRepository.editEntity(project);
     }
 
+    @PreAuthorize("@auth.hasProjectAccess(#projectId, " +
+                  "T(dev.tolana.projectcalculationtool.enums.Permission).PROJECT_EDIT)")
     public ProjectEditDto getProjectToEdit(long projectId) {
         Entity projectToEdit = projectRepository.getEntityOnId(projectId);
         return projectDtoMapper.toProjectEditDto(projectToEdit);
@@ -115,17 +130,20 @@ public class ProjectService {
         return projectRepository.getUserFromParentId(username, teamId);
     }
 
-    //add authorisation
+    @PreAuthorize("@auth.hasProjectAccess(#projectId, " +
+                  "T(dev.tolana.projectcalculationtool.enums.Permission).PROJECT_INVITE)")
     public void assignMemberToProject(long projectId, String username) {
         projectRepository.assignMemberToEntity(projectId, username);
     }
 
-    //add authorisation
+    @PreAuthorize("@auth.hasProjectAccess(#projectId, " +
+                  "T(dev.tolana.projectcalculationtool.enums.Permission).PROJECT_EDIT)")
     public void promoteMemberToAdmin(long projectId, String username) {
         projectRepository.promoteMemberToAdmin(projectId, username);
     }
 
-    //add authorisation
+    @PreAuthorize("@auth.hasProjectAccess(#projectId, " +
+                  "T(dev.tolana.projectcalculationtool.enums.Permission).PROJECT_READ)")
     public void kickMemberFromProject(long projectId, String username) {
         projectRepository.kickMember(projectId, username);
     }
