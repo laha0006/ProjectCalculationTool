@@ -92,7 +92,7 @@ public class ProjectController {
         ProjectViewDto project = projectService.getProjectToView(projectId);
         model.addAttribute("projectName", project.projectName());
 
-        List<UserInformationDto> memberList = projectService.getAllTeamMembersFromTeamId(teamId);
+        List<UserEntityRoleDto> memberList = projectService.getAllTeamMembersFromTeamId(teamId);
         model.addAttribute("teamMembers", memberList);
 
         List<UserRole> userRoles = projectService.getAllUserRoles();
@@ -163,13 +163,15 @@ public class ProjectController {
     }
 
 
-    @GetMapping("{projectId}/members")
+    @GetMapping("/{projectId}/members")
     public String projectMembersView(@PathVariable("orgId") long orgId,
                                      @PathVariable("deptId") long deptId,
                                      @PathVariable("teamId") long teamId,
-                                     @PathVariable("teamId") long projectId, Model model){
+                                     @PathVariable("projectId") long projectId, Model model){
         //TODO exclude owner of department from results
+
         ProjectViewDto project = projectService.getProjectToView(projectId);
+        System.out.println("Project: " + project);
         model.addAttribute("project", project);
 
         List<UserEntityRoleDto> users = projectService.getUsersFromTeamId(
@@ -226,10 +228,8 @@ public class ProjectController {
                                            @PathVariable("projectId") long projectId,
                                            @PathVariable("username") String username){
 
-        UserEntityRoleDto user = projectService.getUserFromTeamId(username,
-                teamId);
 
-        projectService.kickMemberFromProject(projectId,user.username());
+        projectService.kickMemberFromProject(projectId,username);
 
         return "redirect:/organisation/" + orgId + "/department/"+ deptId +
                 "/team/" + teamId + "/project/" + projectId + "/members";
