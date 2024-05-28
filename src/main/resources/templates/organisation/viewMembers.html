@@ -14,7 +14,7 @@
             <div th:replace="~{fragments/alerts :: alerts}"></div>
             <main class="d-flex justify-content-center text-center bg-secondary-subtle py-3 px-5 rounded shadow">
                 <div class="" style="width: 800px">
-                    <h1 th:text="${'Brugere i afdeling '+ organisation.name}"></h1>
+                    <h1 th:text="${'Brugere i organisation '+ organisation.name}"></h1>
                     <table class="table rounded align-middle">
                         <tbody>
                         <tr th:each="user : ${users}">
@@ -22,16 +22,16 @@
                             <td>
                                 <div class="d-flex d-inline">
 
-                                        <!--TODO
-                                            add functionality to buttons
-                                            only access to "Rettigheder" and "Kick" features if
-                                            users has authorisation
-                                        -->
-
-                                        <button class="btn btn-success btn-sm fw-bold" type="submit">Rettigheder</button>
-
-                                        <button class="btn btn-danger btn-sm fw-bold" type="submit">Kick</button>
-
+                                    <form th:unless="${user.roleId == T(dev.tolana.projectcalculationtool.enums.UserRole).ORGANISATION_OWNER.getRoleId() || user.roleId == T(dev.tolana.projectcalculationtool.enums.UserRole).ORGANISATION_ADMIN.getRoleId()}" th:action=
+                                            "@{members/promote/{username} (username = ${user.username})}" method="post">
+                                        <button class="btn btn-warning btn-sm fw-bold" type="submit">Tildel Admin</button>
+                                    </form>
+                                    <form th:unless="${user.roleId == T(dev.tolana.projectcalculationtool.enums.UserRole).ORGANISATION_OWNER.getRoleId()}" th:action="@{members/kick/{username}
+                                    (username = ${user.username})}" method="post">
+                                        <button class="btn btn-danger btn-sm fw-bold" type="submit">Fjern</button>
+                                    </form>
+                                    <button th:if="${user.roleId == T(dev.tolana.projectcalculationtool.enums.UserRole).ORGANISATION_OWNER.getRoleId()}" class="btn btn-primary fw-bold"
+                                            type="submit">Owner</button>
                                 </div>
                             </td>
                         </tr>

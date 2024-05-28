@@ -1,7 +1,9 @@
 package dev.tolana.projectcalculationtool.repository.impl;
 
+import dev.tolana.projectcalculationtool.dto.UserEntityRoleDto;
 import dev.tolana.projectcalculationtool.dto.UserInformationDto;
 import dev.tolana.projectcalculationtool.enums.Alert;
+import dev.tolana.projectcalculationtool.enums.EntityType;
 import dev.tolana.projectcalculationtool.enums.Status;
 import dev.tolana.projectcalculationtool.enums.UserRole;
 import dev.tolana.projectcalculationtool.exception.EntityException;
@@ -10,6 +12,8 @@ import dev.tolana.projectcalculationtool.model.ResourceEntity;
 import dev.tolana.projectcalculationtool.model.Task;
 import dev.tolana.projectcalculationtool.repository.TaskRepository;
 import dev.tolana.projectcalculationtool.util.RoleAssignUtil;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -168,55 +172,6 @@ public class JdbcTaskRepository implements TaskRepository {
     }
 
     @Override
-    public List<Entity> getAllEntitiesOnId(long projectId) {
-        List<Entity> taskList = new ArrayList<>();
-        String retrieveAllTaskOnProjectId = """
-                SELECT
-                t.id,
-                t.name,
-                t.description,
-                t.project_id,
-                t.date_created,
-                t.deadline,
-                t.estimated_hours,
-                t.actual_hours,
-                s.name,
-                t.parent_id,
-                t.archived
-                FROM task t
-                LEFT JOIN status s ON t.status = s.id
-                WHERE t.project_id = ? AND t.parent_id IS NULL
-                """;
-
-        try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement pstmt = connection.prepareStatement(retrieveAllTaskOnProjectId);
-            pstmt.setLong(1, projectId);
-            ResultSet rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-                Task retrivedTask = new Task(
-                        rs.getLong(1),
-                        rs.getString(2),
-                        rs.getString(3),
-                        rs.getTimestamp(5).toLocalDateTime(),
-                        rs.getBoolean(11),
-                        rs.getTimestamp(6).toLocalDateTime(),
-                        Status.valueOf(rs.getString(9)),
-                        rs.getLong(10),
-                        rs.getLong(4),
-                        rs.getInt(7),
-                        rs.getInt(8)
-                );
-                taskList.add(retrivedTask);
-            }
-
-        } catch (SQLException sqlException) {
-            throw new EntityException("Opgaver blev ikke fundet, noget gik galt!", Alert.WARNING);
-        }
-        return taskList;
-    }
-
-    @Override
     public List<Entity> getChildren(long taskId) {
         List<Entity> taskList = new ArrayList<>();
         String getTasks = """
@@ -348,8 +303,44 @@ public class JdbcTaskRepository implements TaskRepository {
     }
 
     @Override
-    public List<UserInformationDto> getUsersFromEntityId(long entityId) {
-        return null;
+    public List<UserEntityRoleDto> getUsersFromEntityId(long entityId) {
+        List<UserEntityRoleDto> users = new ArrayList<>();
+
+        try (Connection connection = dataSource.getConnection()) {
+            String getAllUsersFromProject = """
+                    SELECT DISTINCT username, role_id, task_id, project_id, team_id, department_id, organisation_id
+                    FROM user_entity_role
+                    WHERE task_id = ?
+                    ORDER BY role_id DESC;
+                    """;
+
+            PreparedStatement pstmt = connection.prepareStatement(getAllUsersFromProject);
+            pstmt.setLong(1, entityId);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+
+                String username = rs.getString(1);
+                long roleId = rs.getLong(2);
+                long taskId = rs.getLong(3);
+                long pId = rs.getLong(4); //changed because "projectId" is used in parameter
+                long tId = rs.getLong(5); //changed name because "teamId" is used in parameter
+                long deptId = rs.getLong(6);
+                long orgId = rs.getLong(7);
+
+                UserEntityRoleDto newUser = new UserEntityRoleDto(username, roleId, taskId, pId,
+                        tId, deptId, orgId);
+
+                users.add(newUser);
+            }
+
+
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
+
+        return users;
     }
 
     @Override
@@ -376,5 +367,93 @@ public class JdbcTaskRepository implements TaskRepository {
         }
 
         return statusList;
+    }
+
+    @Override
+    public UserEntityRoleDto getUserFromParentId(String username, long parentId) {
+        return null;
+    }
+
+    @Override
+    public void assignMemberToEntity(long entityId, String username) {
+        try(Connection con = dataSource.getConnection()) {
+            RoleAssignUtil.removeTaskRole(con,entityId, UserRole.TASK_MEMBER,username);
+            RoleAssignUtil.assignTaskRole(con,entityId, UserRole.TASK_MEMBER,username);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void promoteMemberToAdmin(long taskId, String username) {
+        try(Connection con = dataSource.getConnection()) {
+            RoleAssignUtil.removeTaskRole(con,taskId, UserRole.TASK_ADMIN,username);
+            RoleAssignUtil.removeTaskRole(con,taskId, UserRole.TASK_MEMBER,username);
+            RoleAssignUtil.assignTaskRole(con,taskId, UserRole.TASK_ADMIN,username);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void kickMember(long entityId, String username) {
+        try(Connection con = dataSource.getConnection()) {
+            RoleAssignUtil.removeAllRoles(con, EntityType.TASK,entityId,username);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    @Override
+    public void removeSelfFromTask(long taskId) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        try(Connection con = dataSource.getConnection()) {
+            RoleAssignUtil.removeTaskRole(con,taskId,UserRole.TASK_MEMBER,username);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public List<UserEntityRoleDto> getUsersFromParentIdAndEntityId(long parentId, long entityId) {
+         List<UserEntityRoleDto> users = new ArrayList<>();
+
+        try (Connection connection = dataSource.getConnection()) {
+            String getAllUsersFromProject = """
+                    SELECT DISTINCT username, role_id, task_id, project_id, team_id, department_id, organisation_id
+                    FROM user_entity_role
+                    WHERE project_id = ? OR task_id = ?
+                    ORDER BY role_id DESC;
+                    """;
+
+            PreparedStatement pstmt = connection.prepareStatement(getAllUsersFromProject);
+            pstmt.setLong(1, parentId);
+            pstmt.setLong(2, entityId);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+
+                String username = rs.getString(1);
+                long roleId = rs.getLong(2);
+                long taskId = rs.getLong(3);
+                long pId = rs.getLong(4); //changed because "projectId" is used in parameter
+                long tId = rs.getLong(5); //changed name because "teamId" is used in parameter
+                long deptId = rs.getLong(6);
+                long orgId = rs.getLong(7);
+
+                UserEntityRoleDto newUser = new UserEntityRoleDto(username, roleId, taskId, pId,
+                        tId, deptId, orgId);
+
+                users.add(newUser);
+            }
+
+
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
+
+        return users;
     }
 }

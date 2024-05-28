@@ -1,9 +1,6 @@
 package dev.tolana.projectcalculationtool.controller;
 
-import dev.tolana.projectcalculationtool.dto.EntityCreationDto;
-import dev.tolana.projectcalculationtool.dto.EntityEditDto;
-import dev.tolana.projectcalculationtool.dto.EntityViewDto;
-import dev.tolana.projectcalculationtool.dto.ResourceEntityViewDto;
+import dev.tolana.projectcalculationtool.dto.*;
 import dev.tolana.projectcalculationtool.enums.EntityType;
 import dev.tolana.projectcalculationtool.service.TeamService;
 import org.springframework.security.core.Authentication;
@@ -29,7 +26,7 @@ public class TeamController {
         EntityViewDto team = teamService.getTeam(teamId);
         model.addAttribute("team", team);
 
-        List<ResourceEntityViewDto> projects = teamService.getAllChildren(teamId);
+        List<ProjectViewDto> projects = teamService.getChildren(teamId);
         model.addAttribute("allProjects", projects);
         model.addAttribute("orgId", orgId);
 
@@ -78,5 +75,65 @@ public class TeamController {
         teamService.deleteTeam(teamId);
 
         return "redirect:/organisation/" + orgId + "/department/" + deptId;
+    }
+
+
+    @GetMapping("{teamId}/members")
+    public String departmentMembersView(@PathVariable("orgId") long orgId,
+                                        @PathVariable("deptId") long deptId,
+                                        @PathVariable("teamId") long teamId, Model model){
+        //TODO exclude owner of department from results
+        EntityViewDto team = teamService.getTeam(teamId);
+        model.addAttribute("team", team);
+
+        List<UserEntityRoleDto> users = teamService.getUsersFromDepartmentId(
+                team.parentId(),teamId);
+        model.addAttribute("teamUsers",users);
+
+        model.addAttribute("organisationId",orgId);
+        model.addAttribute("departmentId",deptId);
+
+        return "team/viewMembers";
+    }
+
+
+    @PostMapping("/{teamId}/members/assign/{username}")
+    public String assignMemberToTeam(@PathVariable("orgId") long orgId,
+                                     @PathVariable("deptId") long deptId,
+                                     @PathVariable("teamId") long teamId,
+                                     @PathVariable("username") String username){
+
+
+
+        teamService.assignMemberToTeam(teamId,username);
+
+
+        return "redirect:/organisation/" + orgId + "/department/"+ deptId + "/team/" + teamId +"/members";
+    }
+
+    @PostMapping("/{teamId}/members/promote/{username}")
+    public String promoteMemberToAdmin(@PathVariable("orgId") long orgId,
+                                       @PathVariable("deptId") long deptId,
+                                       @PathVariable("teamId") long teamId,
+                                       @PathVariable("username") String username){
+
+
+        teamService.promoteMemberToAdmin(teamId,username);
+
+
+        return "redirect:/organisation/" + orgId + "/department/"+ deptId + "/team/" + teamId +"/members";
+    }
+
+    @PostMapping("/{teamId}/members/kick/{username}")
+    public String kickMemberFromDepartment(@PathVariable("orgId") long orgId,
+                                           @PathVariable("deptId") long deptId,
+                                           @PathVariable("teamId") long teamId,
+                                           @PathVariable("username") String username){
+
+
+        teamService.kickMemberFromTeam(teamId,username);
+
+
+        return "redirect:/organisation/" + orgId + "/department/"+ deptId + "/team/" + teamId +"/members";
     }
 }

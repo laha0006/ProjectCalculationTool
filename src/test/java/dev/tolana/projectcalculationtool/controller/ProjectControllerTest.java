@@ -1,11 +1,16 @@
 package dev.tolana.projectcalculationtool.controller;
 
+import dev.tolana.projectcalculationtool.dto.BreadCrumbDto;
+import dev.tolana.projectcalculationtool.dto.ProjectEditDto;
 import dev.tolana.projectcalculationtool.dto.ProjectStatsDto;
-import dev.tolana.projectcalculationtool.dto.ResourceEntityViewDto;
+import dev.tolana.projectcalculationtool.dto.ProjectViewDto;
 import dev.tolana.projectcalculationtool.enums.Status;
+import dev.tolana.projectcalculationtool.service.BreadCrumbService;
 import dev.tolana.projectcalculationtool.service.ProjectService;
 import dev.tolana.projectcalculationtool.service.UserService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -18,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -37,11 +43,19 @@ class ProjectControllerTest {
     @MockBean
     private UserService userService;
 
+    @MockBean
+    private BreadCrumbService breadCrumbService;
+
+    @BeforeEach
+    public void breadcrumbMock() {
+        when(breadCrumbService.getBreadCrumb(any())).thenReturn(new BreadCrumbDto(false, null));
+    }
+
     @Test
     @WithMockUser
     void viewProject() throws Exception {
-        when(projectService.getProject(1))
-                .thenReturn(new ResourceEntityViewDto("name", "description", 1, 1, 1, 1, LocalDateTime.now(), 1, 1, 1, Status.TODO));
+        when(projectService.getProjectToView(1))
+                .thenReturn(new ProjectViewDto(1, 1,"name", "description", LocalDateTime.now(), Status.TODO));
         when(projectService.getProjectStats(1))
                 .thenReturn(new ProjectStatsDto(1,1,1,1,1,1,1,1,new HashMap<>(),new HashMap<>()));
         mockMvc.perform(get("/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}", 1, 1, 1, 1))
@@ -90,8 +104,8 @@ class ProjectControllerTest {
     @Test
     @WithMockUser
     void getAllMembersFromTeamId() throws Exception {
-        when(projectService.getProject(1))
-                .thenReturn(new ResourceEntityViewDto("name", "description", 1, 1, 1, 1, LocalDateTime.now(), 1, 1, 1, Status.TODO));
+        when(projectService.getProjectToView(1))
+                .thenReturn(new ProjectViewDto(1, 1,"name", "description", LocalDateTime.now(), Status.TODO));
         mockMvc.perform(get("/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/assign/members",1,1,1,1))
                 .andExpect(status().isOk())
                 .andExpect(view().name("project/viewAllTeamMembers"));
@@ -111,8 +125,8 @@ class ProjectControllerTest {
     @Test
     @WithMockUser
     void deleteProject() throws Exception {
-        ResourceEntityViewDto projectToDelete = new ResourceEntityViewDto("name", "description", 1, 0, 1, 1, LocalDateTime.now(), 1, 1, 1, Status.IN_PROGRESS);
-        when(projectService.getProject(1))
+        ProjectViewDto projectToDelete = new ProjectViewDto(1, 0,"name", "description", LocalDateTime.now(), Status.TODO);
+        when(projectService.getProjectToView(1))
                 .thenReturn(projectToDelete);
         mockMvc.perform(post("/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/delete",1,1,1,1)
                         .with(csrf()))
@@ -123,9 +137,9 @@ class ProjectControllerTest {
     @Test
     @WithMockUser
     void deleteSubProject() throws Exception {
-        ResourceEntityViewDto projectToDelete = new ResourceEntityViewDto("name", "description", 1, 1, 1, 1, LocalDateTime.now(), 1, 1, 1, Status.IN_PROGRESS);
-        when(projectService.getProject(1))
-                .thenReturn(projectToDelete);
+        ProjectViewDto subProjectToDelete = new ProjectViewDto(1, 1,"name", "description", LocalDateTime.now(), Status.TODO);
+        when(projectService.getProjectToView(1))
+                .thenReturn(subProjectToDelete);
         mockMvc.perform(post("/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/delete",1,1,1,1)
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
@@ -135,8 +149,8 @@ class ProjectControllerTest {
     @Test
     @WithMockUser
     void displayEditProjectPage() throws Exception {
-        ResourceEntityViewDto projectToEdit = new ResourceEntityViewDto("name", "description", 1, 1,1,1,LocalDateTime.now(), 1, 1,1,Status.TODO);
-        when(projectService.getProject(1))
+        ProjectEditDto projectToEdit = new ProjectEditDto(1, "name", "description", LocalDateTime.now(), 1, Status.IN_PROGRESS);
+        when(projectService.getProjectToEdit(1))
                 .thenReturn(projectToEdit);
 
         List<Status> statusList = new ArrayList<>();
@@ -152,21 +166,12 @@ class ProjectControllerTest {
     @Test
     @WithMockUser
     void editProject() throws Exception {
-//        ResourceEntityViewDto projectToEdit = new ResourceEntityViewDto("name", "description", 1, 1,1,1,LocalDateTime.now(), 1, 1,1,Status.TODO);
-//        when(projectService.getProject(1))
-//                .thenReturn(projectToEdit);
-
         mockMvc.perform(post("/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/edit", 1, 1, 1, 1)
                         .with(csrf())
-                        .param("resourceEntityName", "name")
-                        .param("description", "description")
                         .param("id", "1")
-                        .param("parentId", "1")
-                        .param("teamId", "1")
-                        .param("projectId", "1")
+                        .param("projectName", "name")
+                        .param("description", "description")
                         .param("deadline", "2024-12-12T10:32")
-                        .param("estimatedHours", "1")
-                        .param("actualHours", "1")
                         .param("allottedHours", "1")
                         .param("status", "TODO"))
                 .andExpect(status().is3xxRedirection())

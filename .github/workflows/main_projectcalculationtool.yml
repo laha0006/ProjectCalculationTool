@@ -13,6 +13,22 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    services:
+      mysql:
+        # Docker Hub image
+        image: mysql:8.0.36
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: test_db
+        options: >-
+          --health-cmd "mysqladmin ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+        ports:
+          # Maps port 6379 on service container to the host
+          - 13306:3306
+
     steps:
       - uses: actions/checkout@v4
 
@@ -23,6 +39,8 @@ jobs:
 
       - name: Build with Maven
         run: mvn clean install
+        env:
+          profile: ${{ vars.PROFILE }}
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3

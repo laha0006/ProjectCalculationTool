@@ -16,37 +16,31 @@
                 <div th:if="${taskToCreate != null}">
                     <h1>Opret opgave</h1>
                     <form th:action="@{create}" method="post" th:object="${taskToCreate}">
-                        <p>
-                            <label>Navn:
-                                <input type="text" th:field="*{taskName}" required>
-                            </label>
-                        </p>
+                        <div class="form-group">
+                            <label for="taskName" class="form-label">Navn: </label>
+                            <input id="taskName" class="form-control" type="text" th:field="*{taskName}" required>
+                        </div>
 
-                        <p>
-                            <label>Beskrivelse:
-                                <input type="text" th:field="*{description}" required>
-                            </label>
-                        </p>
+                        <div class="form-group">
+                            <label class="form-label" for="taskDescription">Beskrivelse:</label>
+                            <input class="form-control" id="taskDescription" type="text" th:field="*{description}"
+                                   required>
+                        </div>
 
-                        <p>
-                            <label>Deadline:
-                                <input type="datetime-local" th:field="*{deadline}" required>
-                            </label>
-                        </p>
+                        <div class="form-group">
+                            <label class="form-label" for="taskDeadline">Deadline:</label>
+                            <input class="form-control" id="taskDeadline" type="datetime-local" th:field="*{deadline}"
+                                   required>
+                        </div>
 
-                        <p>
-                            <label>Estimeret antal timer for færdiggørelse:
-                                <input type="number" th:name="estimatedHours" required>
-                            </label>
-                        </p>
-
-                        <label>
-                            <input type="number" th:field="*{projectId}" hidden="hidden">
-                        </label>
-
-                        <label>
-                            <input type="number" th:field="*{parentId}" hidden="hidden">
-                        </label>
+                        <div class="form-group">
+                            <label class="form-label" for="estimatedHours">Estimeret antal timer for
+                                færdiggørelse:</label>
+                            <input class="form-control" id="estimatedHours" type="number" th:name="estimatedHours"
+                                   required>
+                        </div>
+                        <input type="number" th:field="*{projectId}" hidden="hidden">
+                        <input type="number" th:field="*{parentId}" hidden="hidden">
 
                         <button type="submit" class="btn btn-success fw-bold in-line">Opret</button>
                     </form>
@@ -61,37 +55,32 @@
                     <h1 th:text="'Opret underopgave for: ' + ${parentTaskName}"></h1>
                     <form th:action="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/task/create (orgId=${orgId}, deptId=${deptId}, teamId=${teamId}, projectId=${projectId})}"
                           method="post" th:object="${subTaskToCreate}">
-                        <p>
-                            <label>Navn:
-                                <input type="text" th:field="*{taskName}" required>
-                            </label>
-                        </p>
+                        <div class="form-group">
+                            <label for="subtaskName" class="form-label">Navn:</label>
+                            <input id="subtaskName" class="form-control" type="text" th:field="*{taskName}" required>
+                        </div>
 
-                        <p>
-                            <label>Beskrivelse:
-                                <input type="text" th:field="*{description}" required>
-                            </label>
-                        </p>
+                        <div class="form-group">
+                            <label for="subtaskDescription" class="form-label">Beskrivelse:</label>
+                            <input id="subtaskDescription" class="form-control" type="text" th:field="*{description}"
+                                   required>
+                        </div>
 
-                        <p>
-                            <label>Estimeret antal timer for færdiggørelse:
-                                <input type="number" th:name="estimatedHours" required>
-                            </label>
-                        </p>
 
-                        <p>
-                            <label>Deadline:
-                                <input type="datetime-local" th:field="*{deadline}" required>
-                            </label>
-                        </p>
+                        <div class="form-group">
+                            <label for="subtaskDeadline" class="form-label">Deadline:</label>
+                            <input id="subtaskDeadline" class="form-control" type="datetime-local"
+                                   th:field="*{deadline}" required>
+                        </div>
 
-                        <label>
-                            <input type="number" th:field="*{projectId}" hidden="hidden">
-                        </label>
-
-                        <label>
-                            <input type="number" th:field="*{parentId}" hidden="hidden">
-                        </label>
+                        <div class="form-group">
+                            <label for="subtaskEstimatedHours" class="form-label">Estimeret antal timer for
+                                færdiggørelse:</label>
+                            <input id="subtaskEstimatedHours" class="form-control" type="number"
+                                   th:name="estimatedHours" required>
+                        </div>
+                        <input type="number" th:field="*{projectId}" hidden="hidden">
+                        <input type="number" th:field="*{parentId}" hidden="hidden">
 
                         <button class="btn btn-success fw-bold in-line" type="submit">Opret</button>
                     </form>

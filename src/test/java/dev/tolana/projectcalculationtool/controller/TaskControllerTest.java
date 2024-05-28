@@ -1,10 +1,13 @@
 package dev.tolana.projectcalculationtool.controller;
 
+import dev.tolana.projectcalculationtool.dto.BreadCrumbDto;
 import dev.tolana.projectcalculationtool.dto.TaskEditDto;
 import dev.tolana.projectcalculationtool.dto.TaskViewDto;
 import dev.tolana.projectcalculationtool.enums.Status;
+import dev.tolana.projectcalculationtool.service.BreadCrumbService;
 import dev.tolana.projectcalculationtool.service.TaskService;
 import dev.tolana.projectcalculationtool.service.UserService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -17,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -35,6 +39,14 @@ class TaskControllerTest {
 
     @MockBean
     private UserService userService;
+
+    @MockBean
+    private BreadCrumbService breadCrumbService;
+
+    @BeforeEach
+    public void breadcrumbMock() {
+        when(breadCrumbService.getBreadCrumb(any())).thenReturn(new BreadCrumbDto(false, null));
+    }
 
     @Test
     @WithMockUser()
@@ -142,9 +154,9 @@ class TaskControllerTest {
     @Test
     @WithMockUser
     void editSubTask() throws Exception {
-        TaskEditDto taskToEdit = new TaskEditDto(1, "name","description", 1, LocalDateTime.now(), 1, 1, Status.TODO);
+        TaskEditDto subTaskToEdit = new TaskEditDto(1, "name","description", 1, LocalDateTime.now(), 1, 1, Status.TODO);
         when(taskService.getTaskToEdit(1))
-                .thenReturn(taskToEdit);
+                .thenReturn(subTaskToEdit);
 
         mockMvc.perform(post("/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId}/task/{taskId}/delete", 1, 1, 1, 1, 1)
                         .with(csrf()))

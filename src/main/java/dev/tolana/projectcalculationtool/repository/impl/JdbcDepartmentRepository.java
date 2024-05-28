@@ -3,6 +3,7 @@ package dev.tolana.projectcalculationtool.repository.impl;
 import dev.tolana.projectcalculationtool.dto.UserEntityRoleDto;
 import dev.tolana.projectcalculationtool.dto.UserInformationDto;
 import dev.tolana.projectcalculationtool.enums.Alert;
+import dev.tolana.projectcalculationtool.enums.EntityType;
 import dev.tolana.projectcalculationtool.enums.UserRole;
 import dev.tolana.projectcalculationtool.exception.EntityException;
 import dev.tolana.projectcalculationtool.model.Department;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Repository
@@ -99,30 +101,6 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
     @Override
     public List<Entity> getAllEntitiesOnUsername(String username) {
         return null;
-    }
-
-    @Override
-    public List<Entity> getAllEntitiesOnId(long organisationId) {
-        List<Entity> departments = new ArrayList<>();
-        try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM department WHERE organisation_id = ?");
-            preparedStatement.setLong(1, organisationId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                departments.add(new Department(
-                        resultSet.getLong(1),
-                        resultSet.getString(2),
-                        resultSet.getString(3),
-                        resultSet.getTimestamp(5).toLocalDateTime(),
-                        resultSet.getBoolean(6),
-                        resultSet.getLong(4)
-                ));
-            }
-
-        } catch (SQLException e) {
-            throw new EntityException("Noget gik galt, kunne ikke hente afdelinger", Alert.WARNING);
-        }
-        return departments;
     }
 
     @Override
@@ -260,7 +238,7 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
     }
 
     @Override
-    public List<UserInformationDto> getUsersFromEntityId(long entityId) {
+    public List<UserEntityRoleDto> getUsersFromEntityId(long entityId) {
         return null;
     }
 
@@ -270,20 +248,20 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
     }
 
     @Override
-    public List<UserEntityRoleDto> getUsersFromOrganisationId(long organisationId) {
+    public List<UserEntityRoleDto> getUsersFromParentIdAndEntityId(long organisationId, long departmentId) {
         List<UserEntityRoleDto> users = new ArrayList<>();
 
         try (Connection connection = dataSource.getConnection()) {
             String getAllUsersFromOrganisation = """
-                    SELECT username, role_id, task_id, project_id, team_id, department_id, organisation_id
+                    SELECT DISTINCT username, role_id, task_id, project_id, team_id, department_id, organisation_id
                     FROM user_entity_role
-                    JOIN organisation ON user_entity_role.organisation_id = organisation.id
-                    JOIN role ON user_entity_role.role_id = role.id
-                    WHERE organisation.id = ?;
+                    WHERE organisation_id = ? OR department_id = ?
+                    ORDER BY role_id DESC;
                     """;
 
             PreparedStatement pstmt = connection.prepareStatement(getAllUsersFromOrganisation);
             pstmt.setLong(1, organisationId);
+            pstmt.setLong(2, departmentId);
 
             ResultSet rs = pstmt.executeQuery();
 
@@ -297,8 +275,10 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
                 long deptId = rs.getLong(6);
                 long orgId = rs.getLong(7);
 
-                users.add(new UserEntityRoleDto(username, roleId, taskId, projectId,
-                        teamId, deptId, orgId));
+                UserEntityRoleDto newUser = new UserEntityRoleDto(username, roleId, taskId, projectId,
+                        teamId, deptId, orgId);
+
+                users.add(newUser);
             }
 
 
@@ -306,6 +286,81 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
             sqlException.printStackTrace();
         }
 
+
         return users;
+    }
+
+    @Override
+    public UserEntityRoleDto getUserFromParentId(String username, long parentId) {
+        UserEntityRoleDto user = null;
+
+        try (Connection connection = dataSource.getConnection()) {
+            String getUserFromParent = """
+                    SELECT username, role_id, task_id, project_id, team_id, department_id, organisation_id
+                    FROM user_entity_role
+                    WHERE username = ? AND organisation_id = ?
+                    """;
+
+            PreparedStatement pstmt = connection.prepareStatement(getUserFromParent);
+            pstmt.setString(1, username);
+            pstmt.setLong(2, parentId);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+
+                String name = rs.getString(1);
+                long roleId = rs.getLong(2);
+                long taskId = rs.getLong(3);
+                long projectId = rs.getLong(4);
+                long teamId = rs.getLong(5);
+                long deptId = rs.getLong(6);
+                long orgId = rs.getLong(7);
+
+                user = new UserEntityRoleDto(name, roleId, taskId, projectId,
+                        teamId, deptId, orgId);
+
+                return user;
+            }
+
+
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
+
+        return user;
+    }
+
+    @Override
+    public void assignMemberToEntity(long deptId, String username){
+        try (Connection connection = dataSource.getConnection()) {
+           RoleAssignUtil.assignDepartmentRole(connection,deptId,
+                   UserRole.DEPARTMENT_MEMBER,username);
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
+    }
+
+    @Override
+    public void promoteMemberToAdmin(long deptId, String username){
+        try (Connection connection = dataSource.getConnection()) {
+            RoleAssignUtil.removeDepartmentRole(connection,deptId,
+                    UserRole.DEPARTMENT_ADMIN,username);
+            RoleAssignUtil.removeDepartmentRole(connection,deptId,
+                    UserRole.DEPARTMENT_MEMBER,username);
+            RoleAssignUtil.assignDepartmentRole(connection,deptId,
+                    UserRole.DEPARTMENT_ADMIN,username);
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
+    }
+
+    @Override
+    public void kickMember(long deptId, String username){
+        try (Connection connection = dataSource.getConnection()) {
+            RoleAssignUtil.removeAllRoles(connection, EntityType.DEPARTMENT,deptId,username);
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
     }
 }

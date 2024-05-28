@@ -15,66 +15,39 @@
             <main class="d-flex justify-content-center text-center bg-secondary-subtle py-3 px-5 rounded shadow">
 
                 <div>
-                    <h1 th:text="'Ændre: ' + ${projectToEdit.resourceEntityName()}"></h1>
+                    <h1 th:text="'Ændre: ' + ${projectToEdit.projectName}"></h1>
 
                     <form th:action="@{edit}" method="post" th:object="${projectToEdit}">
-                        <p>
-                            <label>Navn:
-                                <input type="text" th:field="*{resourceEntityName}" required>
-                            </label>
-                        </p>
+                        <div class="form-group">
+                            <label for="projectName"  class="form-label">Navn:</label>
+                            <input id="projectName"  class="form-control" type="text" th:field="*{projectName}" required>
+                        </div>
 
-                        <p>
-                            <label>Beskrivelse:
-                                <input type="text" th:field="*{description}" required>
-                            </label>
-                        </p>
-
-                        <label>
-                            <input type="number" th:field="*{id}" hidden="hidden">
-                        </label>
-
-                        <label>
-                            <input type="number" th:field="*{parentId}" hidden="hidden">
-                        </label>
-
-                        <label>
-                            <input type="number" th:field="*{teamId}" hidden="hidden">
-                        </label>
-
-                        <label>
-                            <input type="number" th:field="*{projectId}" hidden="hidden">
-                        </label>
-
-                        <p>
-                            <label>Deadline:
-                                <input type="datetime-local" th:field="*{deadline}" required>
-                            </label>
-                        </p>
+                        <div class="form-group">
+                            <label for="projectDescription"  class="form-label">Beskrivelse:</label>
+                            <input id="projectDescription"  class="form-control" type="text" th:field="*{description}" required>
+                        </div>
 
 
-                        <p>
-                            <label>Antal anvendt timer for færdiggørelse:
-                                <input type="number" th:field="*{actualHours}" required>
-                            </label>
-                        </p>
+                        <div class="form-group">
+                            <label for="projectDeadline"  class="form-label">Deadline:</label>
+                            <input id="projectDeadline"  class="form-control" type="datetime-local" th:field="*{deadline}" required>
+                        </div>
 
-                        <p>
-                            <label>Antal betalte timer:
-                                <input type="number" th:field="*{allottedHours}" required>
-                            </label>
-                        </p>
-
-                        <label>Status:
-                            <select th:field="*{status}" required>
+                        <div class="form-group">
+                            <label for="alottedHours"  class="form-label">Antal betalte timer:</label>
+                            <input id="alottedHours"  class="form-control" type="number" th:field="*{allottedHours}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="status" class="form-label">Status:</label>
+                            <select class="form-select" id="status" th:field="*{status}" required>
                                 <option th:each="status : ${statusList}" th:value="${status}"
                                         th:text="${status}"></option>
                             </select>
-                        </label>
+                        </div>
 
-                        <label>
-                            <input type="number" th:field="*{estimatedHours}" hidden="hidden">
-                        </label>
+
+                        <input type="number" th:field="*{id}" hidden="hidden">
 
                         <button type="submit" class="btn btn-success fw-bold in-line">Bekræft</button>
                     </form>

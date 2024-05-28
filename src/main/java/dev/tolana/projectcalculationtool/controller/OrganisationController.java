@@ -94,4 +94,30 @@ public class OrganisationController {
         return "redirect:../{organisationId}";
     }
 
+
+    @PostMapping("/{orgId}/members/promote/{username}")
+    public String promoteMemberToAdmin(@PathVariable("orgId") long organisationId,
+                                       @PathVariable("username") String username){
+
+        UserEntityRoleDto user = organisationService.getUserFromOrganisationId(username,
+                organisationId);
+
+        organisationService.promoteMemberToAdmin(organisationId,user.username());
+
+
+        return "redirect:/organisation/" + organisationId +"/members";
+    }
+
+    @PostMapping("/{orgId}/members/kick/{username}")
+    public String kickMemberFromDepartment(@PathVariable("orgId") long organisationId,
+                                           @PathVariable("username") String username){
+
+        UserEntityRoleDto user = organisationService.getUserFromOrganisationId(username,
+                organisationId);
+
+        organisationService.kickMemberFromOrganisation(organisationId,user.username());
+
+
+        return "redirect:/organisation/" + organisationId +"/members";
+    }
 }

@@ -224,7 +224,8 @@ VALUES (13, 19),
        (14, 28),
        (14, 29),
        (14, 30),
-       (15, 21);
+       (15, 21),
+       (15, 27);
 
 # TASK ROLE PERMISSIONS
 INSERT INTO role_permission(role_id, perm_id)
