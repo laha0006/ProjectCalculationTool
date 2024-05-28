@@ -93,11 +93,7 @@ public class DepartmentController {
                                            @PathVariable("deptId") long deptId,
                                            @PathVariable("username") String username){
 
-
-        UserEntityRoleDto user = departmentService.getUserFromOrganisationId(username,
-                orgId);
-
-        departmentService.assignMemberToDepartment(deptId,user.username());
+        departmentService.assignMemberToDepartment(deptId,username);
 
 
         return "redirect:/organisation/" + orgId + "/department/"+ deptId +"/members";
@@ -109,10 +105,7 @@ public class DepartmentController {
                                        @PathVariable("username") String username){
 
 
-        UserEntityRoleDto user = departmentService.getUserFromOrganisationId(username,
-                orgId);
-
-        departmentService.promoteMemberToAdmin(deptId,user.username());
+        departmentService.promoteMemberToAdmin(deptId,username);
 
 
         return "redirect:/organisation/" + orgId + "/department/"+ deptId +"/members";
@@ -124,10 +117,8 @@ public class DepartmentController {
                                            @PathVariable("username") String username){
 
 
-        UserEntityRoleDto user = departmentService.getUserFromOrganisationId(username,
-                orgId);
 
-        departmentService.kickMemberFromDepartment(deptId,user.username());
+        departmentService.kickMemberFromDepartment(deptId,username);
 
 
         return "redirect:/organisation/" + orgId + "/department/"+ deptId +"/members";

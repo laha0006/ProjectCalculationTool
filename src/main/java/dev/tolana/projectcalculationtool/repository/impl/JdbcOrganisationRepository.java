@@ -3,6 +3,7 @@ package dev.tolana.projectcalculationtool.repository.impl;
 import dev.tolana.projectcalculationtool.dto.UserEntityRoleDto;
 import dev.tolana.projectcalculationtool.dto.UserInformationDto;
 import dev.tolana.projectcalculationtool.enums.Alert;
+import dev.tolana.projectcalculationtool.enums.EntityType;
 import dev.tolana.projectcalculationtool.enums.UserRole;
 import dev.tolana.projectcalculationtool.exception.EntityException;
 import dev.tolana.projectcalculationtool.model.*;
@@ -254,7 +255,7 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
     }
 
     @Override
-    public List<UserInformationDto> getUsersFromEntityId(long entityId) {
+    public List<UserEntityRoleDto> getUsersFromEntityId(long entityId) {
         return null;
     }
 
@@ -388,12 +389,7 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
         // add "remove from all" into this, such that it recursively removes a
         // member from dept, team, project, task
         try (Connection connection = dataSource.getConnection()) {
-            RoleAssignUtil.removeOrganisationRole(connection,orgId,
-                    UserRole.ORGANISATION_ADMIN,username);
-            RoleAssignUtil.removeOrganisationRole(connection,orgId,
-                    UserRole.ORGANISATION_MEMBER,username);
-            RoleAssignUtil.removeOrganisationRole(connection,orgId,
-                    UserRole.ORGANISATION_USER,username);
+           RoleAssignUtil.removeAllRoles(connection, EntityType.ORGANISATION,orgId,username);
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
         }

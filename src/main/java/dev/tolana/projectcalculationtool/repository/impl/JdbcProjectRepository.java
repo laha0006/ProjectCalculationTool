@@ -3,6 +3,7 @@ package dev.tolana.projectcalculationtool.repository.impl;
 import dev.tolana.projectcalculationtool.dto.UserEntityRoleDto;
 import dev.tolana.projectcalculationtool.dto.UserInformationDto;
 import dev.tolana.projectcalculationtool.enums.Alert;
+import dev.tolana.projectcalculationtool.enums.EntityType;
 import dev.tolana.projectcalculationtool.enums.Status;
 import dev.tolana.projectcalculationtool.enums.UserRole;
 import dev.tolana.projectcalculationtool.exception.EntityException;
@@ -420,8 +421,8 @@ public class JdbcProjectRepository implements ProjectRepository {
     }
 
     @Override
-    public List<UserInformationDto> getUsersFromEntityId(long teamId) {
-        List<UserInformationDto> userInformationDtoList = new ArrayList<>();
+    public List<UserEntityRoleDto> getUsersFromEntityId(long teamId) {
+        List<UserEntityRoleDto> userInformationDtoList = new ArrayList<>();
         String getTeamMembersFromTeamId = """
                                
                  SELECT uer.*
@@ -438,8 +439,8 @@ public class JdbcProjectRepository implements ProjectRepository {
             ResultSet teamMembersRs = pstmt.executeQuery();
 
             while (teamMembersRs.next()) {
-                UserInformationDto member = new UserInformationDto(
-                        teamMembersRs.getString(1)
+                UserEntityRoleDto member = new UserEntityRoleDto(
+                        teamMembersRs.getString(1),-1,-1,-1,-1,-1,-1
                 );
                 userInformationDtoList.add(member);
             }
@@ -449,6 +450,7 @@ public class JdbcProjectRepository implements ProjectRepository {
 
         return userInformationDtoList;
     }
+
     //TODO COMBINE IN QUERY
     @Override
     public List<UserRole> getAllUserRoles() {
@@ -536,8 +538,8 @@ public class JdbcProjectRepository implements ProjectRepository {
     @Override
     public void assignMemberToEntity(long projectId, String username) {
         try (Connection connection = dataSource.getConnection()) {
-            RoleAssignUtil.assignProjectRole(connection,projectId,
-                    UserRole.PROJECT_MEMBER,username);
+            RoleAssignUtil.assignProjectRole(connection, projectId,
+                    UserRole.PROJECT_MEMBER, username);
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
         }
@@ -546,12 +548,12 @@ public class JdbcProjectRepository implements ProjectRepository {
     @Override
     public void promoteMemberToAdmin(long projectId, String username) {
         try (Connection connection = dataSource.getConnection()) {
-            RoleAssignUtil.removeProjectRole(connection,projectId,
-                    UserRole.PROJECT_ADMIN,username);
-            RoleAssignUtil.removeProjectRole(connection,projectId,
-                    UserRole.PROJECT_MEMBER,username);
-            RoleAssignUtil.assignProjectRole(connection,projectId,
-                    UserRole.PROJECT_ADMIN,username);
+            RoleAssignUtil.removeProjectRole(connection, projectId,
+                    UserRole.PROJECT_ADMIN, username);
+            RoleAssignUtil.removeProjectRole(connection, projectId,
+                    UserRole.PROJECT_MEMBER, username);
+            RoleAssignUtil.assignProjectRole(connection, projectId,
+                    UserRole.PROJECT_ADMIN, username);
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
         }
@@ -560,12 +562,7 @@ public class JdbcProjectRepository implements ProjectRepository {
     @Override
     public void kickMember(long projectId, String username) {
         try (Connection connection = dataSource.getConnection()) {
-            RoleAssignUtil.removeProjectRole(connection,projectId,
-                    UserRole.PROJECT_ADMIN,username);
-            RoleAssignUtil.removeProjectRole(connection,projectId,
-                    UserRole.PROJECT_MEMBER,username);
-            RoleAssignUtil.removeProjectRole(connection,projectId,
-                    UserRole.PROJECT_USER,username);
+            RoleAssignUtil.removeAllRoles(connection, EntityType.PROJECT,projectId,username);
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
         }

@@ -28,8 +28,8 @@
                                         </form>
                                     </div>
                                     <div class="d-flex d-inline" th:if="${user.departmentId == department.id}"
-                                        th:unless="${user.roleId == 5}">
-                                        <form th:unless="${user.roleId == 6}" th:action="@{members/promote/{username} (username = ${user.username})}" method="post">
+                                        th:unless="${user.roleId == T(dev.tolana.projectcalculationtool.enums.UserRole).DEPARTMENT_OWNER.getRoleId()}">
+                                        <form th:unless="${user.roleId == T(dev.tolana.projectcalculationtool.enums.UserRole).DEPARTMENT_ADMIN.getRoleId()}" th:action="@{members/promote/{username} (username = ${user.username})}" method="post">
                                             <button class="btn btn-warning btn-sm fw-bold" type="submit">Tildel Admin</button>
                                         </form>
                                         <form th:action="@{members/kick/{username} (username = ${user.username})}" method="post">
@@ -37,7 +37,7 @@
                                         </form>
                                     </div>
                                     <div>
-                                        <button th:if="${user.roleId == 5}" class="btn btn-success fw-bold"
+                                        <button th:if="${user.roleId == T(dev.tolana.projectcalculationtool.enums.UserRole).DEPARTMENT_OWNER.getRoleId()}" class="btn btn-primary fw-bold"
                                                 type="submit">Owner</button>
                                     </div>
                                 </div>

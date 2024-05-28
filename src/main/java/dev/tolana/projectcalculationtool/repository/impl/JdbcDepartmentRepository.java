@@ -3,6 +3,7 @@ package dev.tolana.projectcalculationtool.repository.impl;
 import dev.tolana.projectcalculationtool.dto.UserEntityRoleDto;
 import dev.tolana.projectcalculationtool.dto.UserInformationDto;
 import dev.tolana.projectcalculationtool.enums.Alert;
+import dev.tolana.projectcalculationtool.enums.EntityType;
 import dev.tolana.projectcalculationtool.enums.UserRole;
 import dev.tolana.projectcalculationtool.exception.EntityException;
 import dev.tolana.projectcalculationtool.model.Department;
@@ -237,7 +238,7 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
     }
 
     @Override
-    public List<UserInformationDto> getUsersFromEntityId(long entityId) {
+    public List<UserEntityRoleDto> getUsersFromEntityId(long entityId) {
         return null;
     }
 
@@ -357,12 +358,7 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
     @Override
     public void kickMember(long deptId, String username){
         try (Connection connection = dataSource.getConnection()) {
-            RoleAssignUtil.removeDepartmentRole(connection,deptId,
-                    UserRole.DEPARTMENT_ADMIN,username);
-            RoleAssignUtil.removeDepartmentRole(connection,deptId,
-                    UserRole.DEPARTMENT_MEMBER,username);
-            RoleAssignUtil.removeDepartmentRole(connection,deptId,
-                    UserRole.DEPARTMENT_USER,username);
+            RoleAssignUtil.removeAllRoles(connection, EntityType.DEPARTMENT,deptId,username);
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
         }

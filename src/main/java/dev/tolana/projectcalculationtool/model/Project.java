@@ -48,4 +48,6 @@ public class Project extends ResourceEntity{
     public int getAllottedHours() {
         return allottedHours;
     }
+
+
 }

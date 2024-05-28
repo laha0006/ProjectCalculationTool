@@ -22,40 +22,32 @@
                     <form th:action="@{create}" method="post" th:object="${projectToCreate}">
 
                         <div class="form-group">
-                            <label class="form-label" >Navn:
-                                <input type="text" th:name="projectName" required>
-                            </label>
+                            <label for="projectName" class="form-label" >Navn: </label>
+                            <input id="projectName" class="form-control" type="text" th:name="projectName" required>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Beskrivelse:
-                                <input type="text" th:name="description" required>
-                            </label>
+                            <label for="descirption" class="form-label">Beskrivelse:</label>
+                            <input id="descirption" class="form-control" type="text" th:name="description" required>
                         </div>
 
 
                         <div class="form-group">
-                            <label class="form-label">Deadline:
-                                <input type="datetime-local" th:name="deadline" required>
-                            </label>
+                            <label for="deadline" class="form-label">Deadline: </label>
+                                <input id="deadline" class="form-control" type="datetime-local" th:name="deadline" required>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-group">Betalte timer
-                                <input type="number" th:name="allottedHours" required>
-                            </label>
+                            <label for="allottedHours" class="form-group">Betalte timer</label>
+                            <input id="allottedHours" th:class="form-control" type="number" th:name="allottedHours" required>
                         </div>
 
                         <div class="form-group">
-                            <label>
-                                <input type="number" th:field="*{parentId}" hidden="hidden">
-                            </label>
+                            <input type="number" th:field="*{parentId}" hidden="hidden">
                         </div>
 
                         <div class="form-group">
-                            <label>
                                 <input type="number" th:field="*{teamId}" hidden="hidden">
-                            </label>
                         </div>
 
                        <div class="d-flex">

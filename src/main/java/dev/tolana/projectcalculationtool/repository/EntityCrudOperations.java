@@ -28,7 +28,7 @@ public interface EntityCrudOperations {
 
     boolean assignUser(long entityId, List<String> username, UserRole role);
 
-    List<UserInformationDto> getUsersFromEntityId(long entityId);
+    List<UserEntityRoleDto> getUsersFromEntityId(long entityId);
 
     List<UserEntityRoleDto> getUsersFromParentIdAndEntityId(long parentId, long entityId);
 

@@ -24,7 +24,7 @@ public class ProjectService {
     private final TaskDtoMapper taskDtoMapper;
     private final EntityDtoMapper entityDtoMapper;
 
-    public ProjectService(ProjectRepository projectRepository,CalculationService calculationService,
+    public ProjectService(ProjectRepository projectRepository, CalculationService calculationService,
                           ProjectDtoMapper projectDtoMapper, TaskDtoMapper taskDtoMapper,
                           EntityDtoMapper entityDtoMapper) {
         this.projectRepository = projectRepository;
@@ -61,7 +61,7 @@ public class ProjectService {
         return taskDtoMapper.toTaskDtoViewList(taskList);
     }
 
-    public List<UserInformationDto> getAllTeamMembersFromTeamId(long teamId) {
+    public List<UserEntityRoleDto> getAllTeamMembersFromTeamId(long teamId) {
         return projectRepository.getUsersFromEntityId(teamId);
     }
 
@@ -77,7 +77,7 @@ public class ProjectService {
         projectRepository.deleteEntity(projectId);
     }
 
-    private List<Entity> fromProjecToEntityList(List<Project> entityList){
+    private List<Entity> fromProjecToEntityList(List<Project> entityList) {
         return new ArrayList<>(entityList);
     }
 
@@ -95,24 +95,14 @@ public class ProjectService {
         return projectDtoMapper.toProjectEditDto(projectToEdit);
     }
 
-    public List<UserEntityRoleDto> getUsersFromTeamId(long teamId,long projectId){
+    public List<UserEntityRoleDto> getUsersFromTeamId(long teamId, long projectId) {
         List<UserEntityRoleDto> scrubbedUsers = new ArrayList<>();
 
         List<UserEntityRoleDto> users = projectRepository.getUsersFromParentIdAndEntityId(
-                teamId,projectId);
+                teamId, projectId);
 
-        for (UserEntityRoleDto user: users) {
-            boolean exists = false;
-            if (!scrubbedUsers.isEmpty()){
-                for (UserEntityRoleDto scrub: scrubbedUsers) {
-                    if (user.username().equals(scrub.username())){
-                        exists = true;
-                    }
-                }
-                if (!exists){
-                    scrubbedUsers.add(user);
-                }
-            }else{
+        for (UserEntityRoleDto user : users) {
+            if (!scrubbedUsers.contains(user)) {
                 scrubbedUsers.add(user);
             }
         }
@@ -121,22 +111,22 @@ public class ProjectService {
         return scrubbedUsers;
     }
 
-    public UserEntityRoleDto getUserFromTeamId(String username, long teamId){
-        return projectRepository.getUserFromParentId(username,teamId);
+    public UserEntityRoleDto getUserFromTeamId(String username, long teamId) {
+        return projectRepository.getUserFromParentId(username, teamId);
     }
 
     //add authorisation
-    public void assignMemberToProject(long projectId, String username){
-        projectRepository.assignMemberToEntity(projectId,username);
+    public void assignMemberToProject(long projectId, String username) {
+        projectRepository.assignMemberToEntity(projectId, username);
     }
 
     //add authorisation
-    public void promoteMemberToAdmin(long projectId, String username){
-        projectRepository.promoteMemberToAdmin(projectId,username);
+    public void promoteMemberToAdmin(long projectId, String username) {
+        projectRepository.promoteMemberToAdmin(projectId, username);
     }
 
     //add authorisation
-    public void kickMemberFromProject(long projectId, String username){
-        projectRepository.kickMember(projectId,username);
+    public void kickMemberFromProject(long projectId, String username) {
+        projectRepository.kickMember(projectId, username);
     }
 }

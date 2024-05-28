@@ -103,10 +103,9 @@ public class TeamController {
                                      @PathVariable("teamId") long teamId,
                                      @PathVariable("username") String username){
 
-        UserEntityRoleDto user = teamService.getUserFromDepartmentId(username,
-                deptId);
 
-        teamService.assignMemberToTeam(teamId,user.username());
+
+        teamService.assignMemberToTeam(teamId,username);
 
 
         return "redirect:/organisation/" + orgId + "/department/"+ deptId + "/team/" + teamId +"/members";
@@ -118,10 +117,8 @@ public class TeamController {
                                        @PathVariable("teamId") long teamId,
                                        @PathVariable("username") String username){
 
-        UserEntityRoleDto user = teamService.getUserFromDepartmentId(username,
-                deptId);
 
-        teamService.promoteMemberToAdmin(teamId,user.username());
+        teamService.promoteMemberToAdmin(teamId,username);
 
 
         return "redirect:/organisation/" + orgId + "/department/"+ deptId + "/team/" + teamId +"/members";
@@ -133,10 +130,8 @@ public class TeamController {
                                            @PathVariable("teamId") long teamId,
                                            @PathVariable("username") String username){
 
-        UserEntityRoleDto user = teamService.getUserFromDepartmentId(username,
-                deptId);
 
-        teamService.kickMemberFromTeam(teamId,user.username());
+        teamService.kickMemberFromTeam(teamId,username);
 
 
         return "redirect:/organisation/" + orgId + "/department/"+ deptId + "/team/" + teamId +"/members";

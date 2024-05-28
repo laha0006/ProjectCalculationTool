@@ -3,6 +3,7 @@ package dev.tolana.projectcalculationtool.repository.impl;
 import dev.tolana.projectcalculationtool.dto.UserEntityRoleDto;
 import dev.tolana.projectcalculationtool.dto.UserInformationDto;
 import dev.tolana.projectcalculationtool.enums.Alert;
+import dev.tolana.projectcalculationtool.enums.EntityType;
 import dev.tolana.projectcalculationtool.enums.Status;
 import dev.tolana.projectcalculationtool.enums.UserRole;
 import dev.tolana.projectcalculationtool.exception.EntityException;
@@ -281,7 +282,7 @@ public class JdbcTeamRepository implements TeamRepository {
     }
 
     @Override
-    public List<UserInformationDto> getUsersFromEntityId(long entityId) {
+    public List<UserEntityRoleDto> getUsersFromEntityId(long entityId) {
         return null;
     }
 
@@ -398,12 +399,7 @@ public class JdbcTeamRepository implements TeamRepository {
     @Override
     public void kickMember(long teamId, String username) {
         try (Connection connection = dataSource.getConnection()) {
-            RoleAssignUtil.removeTeamRole(connection,teamId,
-                    UserRole.TEAM_ADMIN,username);
-            RoleAssignUtil.removeTeamRole(connection,teamId,
-                    UserRole.TEAM_MEMBER,username);
-            RoleAssignUtil.removeTeamRole(connection,teamId,
-                    UserRole.TEAM_USER,username);
+            RoleAssignUtil.removeAllRoles(connection, EntityType.TEAM,teamId,username);
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
         }
