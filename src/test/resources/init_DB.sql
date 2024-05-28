@@ -424,7 +424,7 @@ INSERT INTO status(name)
 VALUES ('IN_PROGRESS'),
        ('DONE'),
        ('IN_REVIEW'),
-       ("TODO");
+       ('TODO');
 
 INSERT INTO organisation(name,description) VALUES('EvilCorp','Evil Organisation');
 INSERT INTO organisation(name,description) VALUES('Apple','Fruit Organisation');
