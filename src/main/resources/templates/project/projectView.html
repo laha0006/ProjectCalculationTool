@@ -30,7 +30,7 @@
 
                     <!--                    LISTS ALL SUBPROJECTS ON PROJECT -->
                     <div th:if="${!allSubProjects.isEmpty()}">
-                        <table>
+                        <table class="table rounded align-middle">
                             <thead>
                             <tr>
                                 <th>Sub-projekt</th>
@@ -59,7 +59,7 @@
 
                     <!--                    LISTS ALL TASKS ON PROJECT END-->
                     <div th:if="${!allTasks.isEmpty()}">
-                        <table>
+                        <table class="table rounded align-middle">
                             <thead>
                             <tr>
                                 <th>Opgave</th>
@@ -68,6 +68,7 @@
                                 <th>Estimerede timer</th>
                                 <th>Brugte timer</th>
                                 <th>Status</th>
+                                <th></th>
                             </tr>
                             </thead>
 
@@ -90,14 +91,15 @@
                                                 <button class="btn btn-primary fw-bold">Ændre</button>
                                             </a>
                                         </div>
-                                         <div class="d-inline">
+                                        <div class="d-inline">
                                             <a th:href="@{{projectId}/task/{taskId}/members(taskId = ${task.id}, projectId = ${project.id()})}">
                                                 <button class="btn btn-success fw-bold">Medlemmer</button>
                                             </a>
                                         </div>
 
                                         <div class="d-inline">
-                                            <form th:action="@{{projectId}/task/{taskId}/delete (projectId=${projectId}, taskId=${task.id})}" method="post">
+                                            <form th:action="@{{projectId}/task/{taskId}/delete (projectId=${projectId}, taskId=${task.id})}"
+                                                  method="post">
                                                 <button class="btn btn-danger fw-bold">Slet</button>
                                             </form>
                                         </div>
@@ -125,8 +127,9 @@
                         <!--                        TODO MAKE SURE THIS IS HOW YOU CHECK ENUM VALUES-->
                         <!--                        <div th:if="${userRole == 'ORGANISATION_OWNER' || userRole == 'ORGANISATION_ADMIN'}">-->
 
-<!--                        IF THERE ARE NO TASKS OR SUBPROJECTS IN PROJECT HEAD SHOW OPTION FOR CREATING EITHER SUBPROJECT OR TASK.-->
-                        <div th:if="${allTasks.isEmpty() && allSubProjects.isEmpty() && project.parentId() == 0}" class="d-flex flex-row justify-content-start">
+                        <!--                        IF THERE ARE NO TASKS OR SUBPROJECTS IN PROJECT HEAD SHOW OPTION FOR CREATING EITHER SUBPROJECT OR TASK.-->
+                        <div th:if="${allTasks.isEmpty() && allSubProjects.isEmpty() && project.parentId() == 0}"
+                             class="d-flex flex-row justify-content-start">
 
                             <div class="d-inline">
                                 <a th:href="@{{projectId}/create/subproject (projectId=${project.id} )}">
@@ -147,24 +150,31 @@
                             </div>
                         </div>
 
-<!--                        IF THERE ARE SUBPROJECTS IN PROJECT, ONLY DISPLAY OPTION FOR CREATION OTHER SUBPROJECTS-->
-                        <div th:if="${allTasks.isEmpty() && !allSubProjects.isEmpty() }">
+                        <!--                        IF THERE ARE SUBPROJECTS IN PROJECT, ONLY DISPLAY OPTION FOR CREATION OTHER SUBPROJECTS-->
+                        <div th:if="${allTasks.isEmpty() && !allSubProjects.isEmpty() }" class="d-flex">
                             <div class="d-inline">
                                 <a th:href="@{{projectId}/create/subproject (projectId=${project.id} )}">
                                     <button class="btn btn-success fw-bold">Opret sub-projekt</button>
                                 </a>
                             </div>
 
+
                             <div class="d-inline">
                                 <form th:action="@{{projectId}/edit (projectId=${project.id()})}" method="get">
                                     <button class="btn btn-primary fw-bold">Ændre projekt</button>
                                 </form>
                             </div>
+
+                            <div class="d-inline">
+                                <form th:action="@{{projectId}/delete (projectId = ${project.id})}" method="post">
+                                    <button class="btn btn-danger fw-bold">Slet projekt</button>
+                                </form>
+                            </div>
                         </div>
 
-<!--                        IF THERE ARE TASKS IN PROJECT, ONLY DISPLAY OPTION FOR CREATION OTHER TASKS AND NOT SUBPROJECTS-->
+                        <!--                        IF THERE ARE TASKS IN PROJECT, ONLY DISPLAY OPTION FOR CREATION OTHER TASKS AND NOT SUBPROJECTS-->
                         <div class="d-flex">
-                            <div th:if="${!allTasks.isEmpty() && allSubProjects.isEmpty() || project.parentId() != 0}">
+                            <div th:if="${!allTasks.isEmpty() && allSubProjects.isEmpty() || project.parentId() != 0}" class="d-flex">
                                 <div class="d-inline">
                                     <a th:href="@{{projectId}/task/create (projectId=${project.id} )}">
                                         <button class="btn btn-success fw-bold">Opret opgave</button>
@@ -176,14 +186,16 @@
                                         <button class="btn btn-primary fw-bold">Ændre projekt</button>
                                     </form>
                                 </div>
+
+                                <div class="d-inline">
+                                    <form th:action="@{{projectId}/delete (projectId = ${project.id})}" method="post">
+                                        <button class="btn btn-danger fw-bold">Slet projekt</button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                         <!--TODO change this below since it appears weirdly on project page, with "ændre" on newline-->
-                        <div class="d-inline">
-                            <form th:action="@{{projectId}/delete (projectId = ${project.id})}" method="post">
-                                <button class="btn btn-danger fw-bold">Slet projekt</button>
-                            </form>
-                        </div>
+
                     </div>
 
 
@@ -201,7 +213,7 @@
                     </div>
                     <!--   END OF STATS SECTION -->
 
-<!--                    BACK BUTTON FOR MAIN PROJECT-->
+                    <!--                    BACK BUTTON FOR MAIN PROJECT-->
                     <div th:if="${project.parentId() == 0}" class="d-inline">
                         <div class="d-inline">
                             <a th:href="@{{id}/members (id = ${project.id}) }"
@@ -212,7 +224,7 @@
                         </a>
                     </div>
 
-<!--                    BACK BUTTON FOR SUBPROJECT THAT DIRECT TO MAIN PROJECT-->
+                    <!--                    BACK BUTTON FOR SUBPROJECT THAT DIRECT TO MAIN PROJECT-->
                     <div th:if="${project.parentId() != 0}" class="d-inline">
                         <a th:href="@{{projectParentId} (projectParentId=${project.parentId})}">
                             <button class="btn btn-warning fw-bold">Tilbage</button>
