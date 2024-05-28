@@ -5,7 +5,6 @@ import dev.tolana.projectcalculationtool.dto.TaskEditDto;
 import dev.tolana.projectcalculationtool.dto.TaskViewDto;
 import dev.tolana.projectcalculationtool.dto.UserEntityRoleDto;
 import dev.tolana.projectcalculationtool.enums.Status;
-import dev.tolana.projectcalculationtool.repository.impl.JdbcTaskRepository;
 import dev.tolana.projectcalculationtool.service.TaskService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,11 +20,9 @@ import java.util.List;
 public class TaskController {
 
     private final TaskService taskService;
-    private final JdbcTaskRepository jdbcTaskRepository;
 
-    public TaskController(TaskService taskService, JdbcTaskRepository jdbcTaskRepository) {
+    public TaskController(TaskService taskService) {
         this.taskService = taskService;
-        this.jdbcTaskRepository = jdbcTaskRepository;
     }
 
     @GetMapping("/{taskId}")
