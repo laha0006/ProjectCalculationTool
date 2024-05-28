@@ -12,13 +12,13 @@
             <li class="nav-item"><a th:href="@{/}" class="nav-link active" aria-current="page">Home</a></li>
             <li class="nav-item"><a th:href="@{/dashboard}" class="nav-link">Dashboard</a></li>
             <li class="nav-item"><a th:href="@{/organisation}" class="nav-link">Organisation</a></li>
-            <li class="nav-item"><a href="#" class="nav-link">FAQs</a></li>
-            <li class="nav-item"><a href="#" class="nav-link">About</a></li>
+            <li class="nav-item"><a th:href="@{/faq}" class="nav-link">FAQs</a></li>
+            <li class="nav-item"><a th:href="@{/about}" class="nav-link">About</a></li>
         </ul>
     </nav>
     <div sec:authorize="isAnonymous()" class="d-flex flex-row justify-content-end box-400">
-        <a type="button" class="btn btn-outline-primary fw-bold me-2">Log ind</a>
-        <a type="button" class="btn btn-primary fw-bold">Tilmeld</a>
+        <a th:href="@{/user/login}" type="button" class="btn btn-outline-primary fw-bold me-2">Log ind</a>
+        <a th:href="@{/user/register}" type="button" class="btn btn-primary fw-bold">Tilmeld</a>
     </div>
     <div sec:authorize="isAuthenticated()" class="d-flex justify-content-end box-400">
          <a href="/user/invitations" class="btn btn-primary fw-bold">
