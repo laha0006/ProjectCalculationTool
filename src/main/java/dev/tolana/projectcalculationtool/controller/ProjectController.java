@@ -194,10 +194,7 @@ public class ProjectController {
                                      @PathVariable("projectId") long projectId,
                                      @PathVariable("username") String username){
 
-        UserEntityRoleDto user = projectService.getUserFromTeamId(username,
-                teamId);
-
-        projectService.assignMemberToProject(projectId,user.username());
+        projectService.assignMemberToProject(projectId,username);
 
 
         return "redirect:/organisation/" + orgId + "/department/"+ deptId +
@@ -211,10 +208,9 @@ public class ProjectController {
                                        @PathVariable("projectId") long projectId,
                                        @PathVariable("username") String username){
 
-        UserEntityRoleDto user = projectService.getUserFromTeamId(username,
-                teamId);
 
-        projectService.promoteMemberToAdmin(projectId,user.username());
+
+        projectService.promoteMemberToAdmin(projectId,username);
 
 
         return "redirect:/organisation/" + orgId + "/department/"+ deptId +
