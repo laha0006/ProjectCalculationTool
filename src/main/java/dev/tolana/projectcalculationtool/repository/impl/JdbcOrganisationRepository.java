@@ -254,7 +254,7 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
     }
 
     @Override
-    public List<UserInformationDto> getUsersFromEntityId(long entityId) {
+    public List<UserEntityRoleDto> getUsersFromEntityId(long entityId) {
         return null;
     }
 
