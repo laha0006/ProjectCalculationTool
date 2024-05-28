@@ -3,6 +3,7 @@ package dev.tolana.projectcalculationtool.repository.impl;
 import dev.tolana.projectcalculationtool.dto.UserEntityRoleDto;
 import dev.tolana.projectcalculationtool.dto.UserInformationDto;
 import dev.tolana.projectcalculationtool.enums.Alert;
+import dev.tolana.projectcalculationtool.enums.EntityType;
 import dev.tolana.projectcalculationtool.enums.Status;
 import dev.tolana.projectcalculationtool.enums.UserRole;
 import dev.tolana.projectcalculationtool.exception.EntityException;
@@ -561,12 +562,7 @@ public class JdbcProjectRepository implements ProjectRepository {
     @Override
     public void kickMember(long projectId, String username) {
         try (Connection connection = dataSource.getConnection()) {
-            RoleAssignUtil.removeProjectRole(connection, projectId,
-                    UserRole.PROJECT_ADMIN, username);
-            RoleAssignUtil.removeProjectRole(connection, projectId,
-                    UserRole.PROJECT_MEMBER, username);
-            RoleAssignUtil.removeProjectRole(connection, projectId,
-                    UserRole.PROJECT_USER, username);
+            RoleAssignUtil.removeAllRoles(connection, EntityType.PROJECT,projectId,username);
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
         }
