@@ -255,7 +255,7 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
                     SELECT DISTINCT username, role_id, task_id, project_id, team_id, department_id, organisation_id
                     FROM user_entity_role
                     WHERE organisation_id = ? OR department_id = ?
-                    ORDER BY username;
+                    ORDER BY role_id DESC;
                     """;
 
             PreparedStatement pstmt = connection.prepareStatement(getAllUsersFromOrganisation);
@@ -286,38 +286,7 @@ public class JdbcDepartmentRepository implements DepartmentRepository {
         }
 
 
-        List<UserEntityRoleDto> cleanedUsers = getCleanUserEntityRoleDtos(users);
-
-        return cleanedUsers;
-    }
-
-    private static List<UserEntityRoleDto> getCleanUserEntityRoleDtos(List<UserEntityRoleDto> users) {
-        //takes the list of user entities sorted by Username and checks if there's a duplicate
-        //if there is a duplicate, the first one will always have 0 as deptId, and so it is set
-        //to the second one's deptId, which is then used for operations in the html page
-        List<UserEntityRoleDto> cleanedUsers = new ArrayList<>();
-        for (int i = 0; i < users.size(); i++) {
-            if(i+1 != users.size()){ //avoids out of bounds
-                if (users.get(i+1).username().equals(users.get(i).username())){
-                    //adds user with the deptID of the duplicate that comes after it
-                    cleanedUsers.add(new UserEntityRoleDto(users.get(i).username(),
-                            users.get(i).roleId(), users.get(i).taskId(), users.get(i).projectId(),
-                            users.get(i).teamId(), users.get(i+1).departmentId(),
-                            users.get(i).organizationId()));
-                }else if(i != 0){ //avoids out of bounds
-                    if (!users.get(i-1).username().equals(users.get(i).username())){
-                        //checks that user isn't a duplicate of the previous user
-                        //without this, only users with duplicates, and the last index place will be added
-                        cleanedUsers.add(users.get(i));
-                    }
-                }
-            }else if(i != 0){
-                if(!users.get(i-1).username().equals(users.get(i).username())) {
-                    cleanedUsers.add(users.get(i));
-                }
-            }
-        }
-        return cleanedUsers;
+        return users;
     }
 
     @Override

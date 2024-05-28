@@ -34,17 +34,19 @@ public class DepartmentController {
     }
 
     @GetMapping("{deptId}/members")
-    public String organisationMembersView(@PathVariable("deptId") long departmentId, Model model){
+    public String organisationMembersView(@PathVariable("orgId") long orgId,
+            @PathVariable("deptId") long departmentId, Model model){
         //TODO exclude owner of department from results
         EntityViewDto department = departmentService.getDepartment(departmentId);
         model.addAttribute("department", department);
 
-        EntityViewDto organisation = departmentService.getParent(department.parentId());
+        EntityViewDto organisation = departmentService.getParent(orgId);
         model.addAttribute("organisation", organisation);
 
         List<UserEntityRoleDto> users = departmentService.getUsersFromOrganisationId(
                             organisation.id(),departmentId);
-        model.addAttribute("orgUsers",users);
+
+        model.addAttribute("deptUsers",users);
 
         return "department/viewMembers";
     }

@@ -8,6 +8,8 @@ import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -67,7 +69,29 @@ public class DepartmentService {
     }
 
     public List<UserEntityRoleDto> getUsersFromOrganisationId(long organisationId,long departmentId){
-        return jdbcDepartmentRepository.getUsersFromParentIdAndEntityId(organisationId,departmentId);
+        List<UserEntityRoleDto> scrubbedUsers = new ArrayList<>();
+
+        List<UserEntityRoleDto> users = jdbcDepartmentRepository.getUsersFromParentIdAndEntityId(
+                                organisationId,departmentId);
+
+        for (UserEntityRoleDto user: users) {
+            boolean exists = false;
+            if (!scrubbedUsers.isEmpty()){
+                for (UserEntityRoleDto scrub: scrubbedUsers) {
+                    if (user.username().equals(scrub.username())){
+                        exists = true;
+                    }
+                }
+                if (!exists){
+                    scrubbedUsers.add(user);
+                }
+            }else{
+                scrubbedUsers.add(user);
+            }
+        }
+
+        Collections.sort(scrubbedUsers);
+        return scrubbedUsers;
     }
 
     public UserEntityRoleDto getUserFromOrganisationId(String username, long orgId){

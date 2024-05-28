@@ -299,7 +299,7 @@ public class JdbcTeamRepository implements TeamRepository {
                     SELECT DISTINCT username, role_id, task_id, project_id, team_id, department_id, organisation_id
                     FROM user_entity_role
                     WHERE department_id = ? OR team_id = ?
-                    ORDER BY username;
+                    ORDER BY role_id DESC;
                     """;
 
             PreparedStatement pstmt = connection.prepareStatement(getAllUsersFromDepartment);
@@ -329,35 +329,7 @@ public class JdbcTeamRepository implements TeamRepository {
             sqlException.printStackTrace();
         }
 
-
-        List<UserEntityRoleDto> cleanedUsers = getCleanUserEntityRoleDtos(users);
-
-        return cleanedUsers;
-    }
-
-
-    private static List<UserEntityRoleDto> getCleanUserEntityRoleDtos(List<UserEntityRoleDto> users) {
-        List<UserEntityRoleDto> cleanedUsers = new ArrayList<>();
-        for (int i = 0; i < users.size(); i++) {
-            if(i+1 != users.size()){ //avoids out of bounds
-                if (users.get(i+1).username().equals(users.get(i).username())){
-                    //adds user with the teamId of the duplicate that comes after it
-                    cleanedUsers.add(new UserEntityRoleDto(users.get(i).username(),
-                            users.get(i).roleId(), users.get(i).taskId(), users.get(i).projectId(),
-                            users.get(i+1).teamId(), users.get(i).departmentId(),
-                            users.get(i).organizationId()));
-                }else if(i != 0){ //avoids out of bounds
-                    if (!users.get(i-1).username().equals(users.get(i).username())){
-                        cleanedUsers.add(users.get(i));
-                    }
-                }
-            }else if(i != 0){
-                if(!users.get(i-1).username().equals(users.get(i).username())) {
-                    cleanedUsers.add(users.get(i));
-                }
-            }
-        }
-        return cleanedUsers;
+        return users;
     }
 
     @Override

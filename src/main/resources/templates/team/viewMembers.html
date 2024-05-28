@@ -22,22 +22,23 @@
                             <td>
                                 <div class="d-flex d-inline">
 
-                                    <!--TODO
-                                        add authorisation check
-                                    -->
-
                                     <div class="d-flex d-inline" th:if="${user.teamId == 0}">
                                         <form th:action="@{members/assign/{username} (username = ${user.username})}" method="post">
                                             <button class="btn btn-success fw-bold">Invitér</button>
                                         </form>
                                     </div>
-                                    <div class="d-flex d-inline" th:if="${user.teamId == team.id}">
-                                        <form th:action="@{members/promote/{username} (username = ${user.username})}" method="post">
+                                    <div class="d-flex d-inline" th:if="${user.teamId == team.id}"
+                                         th:unless="${user.roleId == 9}">
+                                        <form th:unless="${user.roleId == 10}" th:action="@{members/promote/{username} (username = ${user.username})}" method="post">
                                             <button class="btn btn-warning btn-sm fw-bold" type="submit">Tildel Admin</button>
                                         </form>
                                         <form th:action="@{members/kick/{username} (username = ${user.username})}" method="post">
                                             <button class="btn btn-danger btn-sm fw-bold" type="submit">Fjern</button>
                                         </form>
+                                    </div>
+                                    <div>
+                                        <button th:if="${user.roleId == 9}" class="btn btn-success fw-bold"
+                                                type="submit">Owner</button>
                                     </div>
                                 </div>
                             </td>
