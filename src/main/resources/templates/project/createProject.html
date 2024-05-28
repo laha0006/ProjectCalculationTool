@@ -14,7 +14,7 @@
             <div th:replace="~{fragments/alerts :: alerts}"></div>
             <main class="d-flex justify-content-center text-center bg-secondary-subtle py-3 px-5 rounded shadow">
 
-<!--                START OF FORM USED FOR CREATION ORDINARY PROJECT-->
+                <!--                START OF FORM USED FOR CREATION ORDINARY PROJECT-->
                 <div th:if="${projectToCreate != null}">
 
                     <h2>Nyt Projekt</h2>
@@ -22,7 +22,7 @@
                     <form th:action="@{create}" method="post" th:object="${projectToCreate}">
 
                         <div class="form-group">
-                            <label for="projectName" class="form-label" >Navn: </label>
+                            <label for="projectName" class="form-label">Navn: </label>
                             <input id="projectName" class="form-control" type="text" th:name="projectName" required>
                         </div>
 
@@ -34,12 +34,13 @@
 
                         <div class="form-group">
                             <label for="deadline" class="form-label">Deadline: </label>
-                                <input id="deadline" class="form-control" type="datetime-local" th:name="deadline" required>
+                            <input id="deadline" class="form-control" type="datetime-local" th:name="deadline" required>
                         </div>
 
                         <div class="form-group">
                             <label for="allottedHours" class="form-group">Betalte timer</label>
-                            <input id="allottedHours" th:class="form-control" type="number" th:name="allottedHours" required>
+                            <input id="allottedHours" th:class="form-control" type="number" th:name="allottedHours"
+                                   required>
                         </div>
 
                         <div class="form-group">
@@ -47,67 +48,61 @@
                         </div>
 
                         <div class="form-group">
-                                <input type="number" th:field="*{teamId}" hidden="hidden">
+                            <input type="number" th:field="*{teamId}" hidden="hidden">
                         </div>
 
-                       <div class="d-flex">
-                          <div class="d-inline">
-                              <button class="btn btn-success fw-bold" type="submit">Opret</button>
-                          </div>
+                        <div class="d-flex">
+                            <div class="d-inline">
+                                <button class="btn btn-success fw-bold" type="submit">Opret</button>
+                            </div>
 
-                           <div class="d-inline">
-                               <a class="btn btn-warning fw-bold"
-                                  th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId} (orgId = ${orgId}, deptId = ${deptId}, teamId = ${teamId})}">
-                                   Annullér
-                               </a>
-                           </div>
-                       </div>
+                            <div class="d-inline">
+                                <a class="btn btn-warning fw-bold"
+                                   th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId} (orgId = ${orgId}, deptId = ${deptId}, teamId = ${teamId})}">
+                                    Annullér
+                                </a>
+                            </div>
+                        </div>
                     </form>
                 </div>
-<!--                END OF FORM USED FOR CREATION ORDINARY PROJECT-->
+                <!--                END OF FORM USED FOR CREATION ORDINARY PROJECT-->
 
-<!--                START OF FORM USED FOR CREATION OF SUBPROJECT-->
+                <!--                START OF FORM USED FOR CREATION OF SUBPROJECT-->
                 <div th:if="${subProjectToCreate != null}">
 
                     <h2>Nyt sub-projekt</h2>
-                    
-                    <form th:action="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/create (orgId = ${orgId}, deptId = ${deptId}, teamId = ${teamId})}" method="post" th:object="${subProjectToCreate}">
+
+                    <form th:action="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/create (orgId = ${orgId}, deptId = ${deptId}, teamId = ${teamId})}"
+                          method="post" th:object="${subProjectToCreate}">
 
                         <div class="form-group">
-                            <label class="form-label" >Navn:
-                                <input type="text" th:name="projectName" required>
-                            </label>
+                            <label for="subprojectName" class="form-label">Navn:</label>
+                            <input id="subprojectName" class="form-control" type="text" th:name="projectName" required>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Beskrivelse:
-                                <input type="text" th:name="description" required>
-                            </label>
+                            <label for="subprojectDescription" class="form-label">Beskrivelse:</label>
+                            <input id="subprojectDescription" class="form-control" type="text" th:name="description"
+                                   required>
                         </div>
 
 
                         <div class="form-group">
-                            <label class="form-label">Deadline:
-                                <input type="datetime-local" th:name="deadline" required>
-                            </label>
+                            <label for="subprojectDeadline" class="form-label">Deadline:</label>
+                            <input id="subprojectDeadline" class="form-control" type="datetime-local" th:name="deadline" required>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-group">Betalte timer
-                                <input type="number" th:name="allottedHours" required>
-                            </label>
+                            <label for="subprojectAllottedHours" class="form-label">Betalte timer</label>
+                            <input id="subprojectAllottedHours" class="form-control" type="number" th:name="allottedHours" required>
                         </div>
 
                         <div class="form-group">
-                            <label>
-                                <input type="number" th:field="*{parentId}" hidden="hidden">
-                            </label>
+                            <input type="number" th:field="*{parentId}" hidden="hidden">
                         </div>
 
                         <div class="form-group">
-                            <label>
-                                <input type="number" th:field="*{teamId}" hidden="hidden">
-                            </label>
+                            <input type="number" th:field="*{teamId}" hidden="hidden">
                         </div>
 
                         <div class="d-flex">
@@ -124,7 +119,7 @@
                         </div>
                     </form>
                 </div>
-<!--                END OF FORM USED FOR CREATION OF SUBPROJECT-->
+                <!--                END OF FORM USED FOR CREATION OF SUBPROJECT-->
             </main>
         </div>
         <footer th:replace="~{fragments/footer :: footer}"></footer>

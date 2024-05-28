@@ -18,50 +18,45 @@
                     <h1 th:text="'Ændre: ' + ${taskToEdit.taskName}"></h1>
 
                     <form th:action="@{edit}" method="post" th:object="${taskToEdit}">
-                        <p>
-                            <label>Navn:
-                                <input type="text" th:field="*{taskName}" required>
-                            </label>
-                        </p>
+                        <div class="form-group">
+                            <label for="taskName" class="form-label">Navn:</label>
+                            <input id="taskName" class="form-control" type="text" th:field="*{taskName}" required>
+                        </div>
 
-                        <p>
-                            <label>Beskrivelse:
-                                <input type="text" th:field="*{description}" required>
-                            </label>
-                        </p>
+                        <div class="form-group">
+                            <label for="description" class="form-label">Beskrivelse:</label>
+                            <input id="description" class="form-control" type="text" th:field="*{description}" required>
+                        </div>
 
-                        <p>
-                            <label>Deadline:
-                                <input type="datetime-local" th:field="*{deadline}" required>
-                            </label>
-                        </p>
+                        <div class="form-group">
+                            <label for="deadline" class="form-label">Deadline:</label>
+                            <input id="deadline" class="form-control" type="datetime-local" th:field="*{deadline}"
+                                   required>
+                        </div>
 
-                        <p>
-                            <label>Estimeret antal timer for færdiggørelse:
-                                <input type="number" th:field="*{estimatedHours}" required>
-                            </label>
-                        </p>
+                        <div class="form-group">
+                            <label for="estimatedHours" class="form-label">Estimeret antal timer for
+                                færdiggørelse:</label>
+                            <input id="estimatedHours" class="form-control" type="number" th:field="*{estimatedHours}"
+                                   required>
+                        </div>
 
-                        <p>
-                            <label>Brugte antal timer for færdiggørelse:
-                                <input type="number" th:field="*{actualHours}" required>
-                            </label>
-                        </p>
+                        <div class="form-group">
+                            <label for="actualHours" class="form-label">Brugte antal timer for færdiggørelse:</label>
+                            <input id="actualHours" class="form-control" type="number" th:field="*{actualHours}"
+                                   required>
+                        </div>
 
-                        <label>Status:
-                            <select th:field="*{status}" required>
+                        <div class="form-group">
+
+                            <label class="form-label" for="status">Status: </label>
+                            <select class="form-select" id="status" th:field="*{status}" required>
                                 <option th:each="status : ${statusList}" th:value="${status}"
                                         th:text="${status}"></option>
                             </select>
-                        </label>
-
-                        <label>
-                            <input type="number" th:field="*{parentId}" hidden="hidden">
-                        </label>
-
-                        <label>
-                            <input type="number" th:field="*{id}" hidden="hidden">
-                        </label>
+                        </div>
+                        <input type="number" th:field="*{parentId}" hidden="hidden">
+                        <input type="number" th:field="*{id}" hidden="hidden">
 
                         <button type="submit" class="btn btn-success fw-bold in-line">Bekræft</button>
                     </form>
