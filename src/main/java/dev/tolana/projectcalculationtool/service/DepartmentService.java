@@ -73,22 +73,26 @@ public class DepartmentService {
 
         List<UserEntityRoleDto> users = jdbcDepartmentRepository.getUsersFromParentIdAndEntityId(
                                 organisationId,departmentId);
-
-        for (UserEntityRoleDto user: users) {
-            boolean exists = false;
-            if (!scrubbedUsers.isEmpty()){
-                for (UserEntityRoleDto scrub: scrubbedUsers) {
-                    if (user.username().equals(scrub.username())){
-                        exists = true;
-                    }
-                }
-                if (!exists){
-                    scrubbedUsers.add(user);
-                }
-            }else{
+        for(UserEntityRoleDto user : users){
+            if(!scrubbedUsers.contains(user)){
                 scrubbedUsers.add(user);
             }
         }
+//        for (UserEntityRoleDto user: users) {
+//            boolean exists = false;
+//            if (!scrubbedUsers.isEmpty()){
+//                for (UserEntityRoleDto scrub: scrubbedUsers) {
+//                    if (user.username().equals(scrub.username())){
+//                        exists = true;
+//                    }
+//                }
+//                if (!exists){
+//                    scrubbedUsers.add(user);
+//                }
+//            }else{
+//                scrubbedUsers.add(user);
+//            }
+//        }
 
         Collections.sort(scrubbedUsers);
         return scrubbedUsers;

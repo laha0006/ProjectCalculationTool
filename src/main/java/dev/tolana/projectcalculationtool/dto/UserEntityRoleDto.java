@@ -13,6 +13,12 @@ implements Comparable<UserEntityRoleDto>
     public int compareTo(UserEntityRoleDto userEntityRoleDto){
         return CharSequence.compare(this.username,userEntityRoleDto.username);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        UserEntityRoleDto userEntityRoleDto = (UserEntityRoleDto) obj;
+        return username.equals(userEntityRoleDto.username);
+    }
 }
 
 
