@@ -90,6 +90,11 @@
                                                 <button class="btn btn-primary fw-bold">Ændre</button>
                                             </a>
                                         </div>
+                                         <div class="d-inline">
+                                            <a th:href="@{{projectId}/task/{taskId}/members(taskId = ${task.id}, projectId = ${project.id()})}">
+                                                <button class="btn btn-success fw-bold">Medlemmer</button>
+                                            </a>
+                                        </div>
 
                                         <div class="d-inline">
                                             <form th:action="@{{projectId}/task/{taskId}/delete (projectId=${projectId}, taskId=${task.id})}" method="post">
