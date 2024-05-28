@@ -23,7 +23,7 @@
                     </div>
 
                     <div th:if="${!allTasks.isEmpty()}">
-                        <table >
+                        <table>
                             <thead>
                             <tr>
                                 <th>Under opgave</th>
@@ -52,6 +52,12 @@
                                         </div>
 
                                         <div class="d-inline">
+                                            <a th:href="@{{taskId}/members(taskId = ${task.id})}">
+                                                <button class="btn btn-success fw-bold">Medlemmer</button>
+                                            </a>
+                                        </div>
+
+                                        <div class="d-inline">
                                             <form th:action="@{{taskId}/delete (taskId=${task.id()})}" method="post">
                                                 <button class="btn btn-danger fw-bold">Slet</button>
                                             </form>
@@ -70,11 +76,13 @@
                             </a>
                         </div>
 
+
                         <div class="d-inline">
                             <a th:href="@{/organisation/{orgId}/department/{deptId}/team/{teamId}/project/{projectId} (orgId=${orgId}, deptId=${deptId}, teamId=${teamId}, projectId=${projectId})}">
                                 <button class="btn btn-secondary fw-bold">Tilbage</button>
                             </a>
                         </div>
+
                     </div>
                 </div>
             </main>
