@@ -281,7 +281,7 @@ public class JdbcTeamRepository implements TeamRepository {
     }
 
     @Override
-    public List<UserInformationDto> getUsersFromEntityId(long entityId) {
+    public List<UserEntityRoleDto> getUsersFromEntityId(long entityId) {
         return null;
     }
 
