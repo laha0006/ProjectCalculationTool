@@ -23,6 +23,23 @@
     </div>
     <div th:if="${alertWarning != null}" th:text="${alertWarning}" class="alert alert-warning alertPanel" role="alert">
     </div>
+<!--    <div th:text="${breadCrumb}"></div>-->
+<!--    <div th:if="${breadCrumb.show}">-->
+
+<!--        <div th:each="breadcrumb : ${breadCrumb.breadCrumbs}">-->
+<!--            <a th:href="${breadcrumb.url}" th:text="${breadcrumb.name}"></a>-->
+<!--        </div>-->
+<!--    </div>-->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li th:each="breadcrumb : ${breadCrumb.breadCrumbs}" class="breadcrumb-item"
+            th:classappend="${breadcrumb.active ? 'active' : ''}">
+                <a th:unless="${breadcrumb.active}" th:href="${breadcrumb.url}" th:text="${breadcrumb.name}"></a>
+                <th:block th:if="${breadcrumb.active}" th:text="${breadcrumb.name}">
+                </th:block>
+            </li>
+        </ol>
+    </nav>
 </div>
 
 </body>
