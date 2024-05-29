@@ -9,6 +9,7 @@ import dev.tolana.projectcalculationtool.model.Task;
 import dev.tolana.projectcalculationtool.repository.ProjectRepository;
 import dev.tolana.projectcalculationtool.repository.TaskRepository;
 import dev.tolana.projectcalculationtool.repository.impl.JdbcProjectRepository;
+import dev.tolana.projectcalculationtool.util.GanttBuilderUtil;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLOutput;
@@ -22,10 +23,12 @@ public class CalculationService {
 
     private ProjectRepository projectRepository;
     private TaskRepository taskRepository;
+    private GanttBuilderUtil ganttBuilderUtil;
 
-    public CalculationService(ProjectRepository projectRepository, TaskRepository taskRepository) {
+    public CalculationService(ProjectRepository projectRepository, TaskRepository taskRepository, GanttBuilderUtil ganttBuilderUtil) {
         this.projectRepository = projectRepository;
         this.taskRepository = taskRepository;
+        this.ganttBuilderUtil = ganttBuilderUtil;
     }
 
     public ProjectStatsDto getProjectStats(long projectId) {
@@ -146,5 +149,39 @@ public class CalculationService {
                 subTasksTotal,
                 subTasksDone
         );
+    }
+
+    private void addAllTasksAndSubTasksToList(List<Entity> allTasks, List<Entity> tasks) {
+        allTasks.addAll(tasks);
+        for (Entity entity : tasks) {
+            System.out.println("TASK: " + entity);
+            List<Entity> subTasks = taskRepository.getChildren(entity.getId());
+            System.out.println("SUB TASKS: " + subTasks);
+            allTasks.addAll(subTasks);
+        }
+    }
+
+    public List<Entity> getAllTasksAndSubTaksFromProjectId(long projectId) {
+        List<Entity> allTasks = new ArrayList<>();
+        List<Entity> tasks = projectRepository.getChildren(projectId);
+        List<Project> subProjects = projectRepository.getSubProjects(projectId);
+        System.out.println("Sub projects: " + subProjects);
+        if (subProjects.isEmpty()) {
+            addAllTasksAndSubTasksToList(allTasks, tasks);
+        } else {
+            for (Project subProejct : subProjects) {
+                tasks = projectRepository.getChildren(subProejct.getId());
+                addAllTasksAndSubTasksToList(allTasks, tasks);
+
+            }
+        }
+        return allTasks;
+
+    }
+
+    public String getGanttDataSetFromProjectId(long projectId) {
+        List<Entity> allTasks = getAllTasksAndSubTaksFromProjectId(projectId);
+        return ganttBuilderUtil.buildGanttDataSet(allTasks);
+
     }
 }
