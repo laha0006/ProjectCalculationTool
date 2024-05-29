@@ -45,7 +45,7 @@ public class BreadCrumbRepository {
     }
 
     public NameHierarchy getNameHierarchy(long id, EntityType entityType) {
-        System.out.println("WE'RE CHILLIN'");
+
         try(Connection con = dataSource.getConnection()) {
             PreparedStatement ps = con.prepareStatement(NAME_HIERARCHY_SQL);
 
@@ -56,8 +56,7 @@ public class BreadCrumbRepository {
                 case DEPARTMENT -> {ps.setLong(5,0); ;ps.setLong(4, 0);ps.setLong(3, 0);ps.setLong(2, id);ps.setLong(1, 0);}
                 case ORGANISATION -> {ps.setLong(5,0); ;ps.setLong(4, 0);ps.setLong(3, 0);ps.setLong(2, 0);ps.setLong(1, id);}
             }
-            System.out.println("PS: " + ps.toString());
-            System.out.println("EntityType: " + entityType.name());
+
 
 
             ResultSet rs = ps.executeQuery();

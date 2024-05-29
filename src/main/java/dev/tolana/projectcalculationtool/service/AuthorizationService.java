@@ -35,7 +35,7 @@ public class AuthorizationService {
     }
 
     public boolean hasProjectAccess(long projectId, Permission requiredPermission) {
-        System.out.println("PROJECT");
+
         return hasAccess(projectId, EntityType.PROJECT, requiredPermission);
     }
 
@@ -71,23 +71,7 @@ public class AuthorizationService {
         return permissions.contains(requiredPermission); // O(1)
     }
 
-//    public boolean canPerform(long id, String targetUser, Permission permission) {
-//        if (roles == null) {
-//            initRoles();
-//        }
-//        String userPerformingAction = SecurityContextHolder.getContext().getAuthentication().getName();
-//        HierarchyDto hierarchy = authorizationRepository.getHierarchy(id);
-//        List<Long> userPerformingActionRoleIds = authorizationRepository.getRoleIdsMatchingHierarchy(userPerformingAction, hierarchy);
-//        System.out.println("userPerformingAction: " + userPerformingActionRoleIds);
-//        List<Long> targetUserRoleIds = authorizationRepository.getRoleIdsMatchingHierarchy(targetUser, hierarchy);
-//        System.out.println("targetUserRoleIds: " + targetUserRoleIds);
-//
-//        if (!hasPermission(userPerformingActionRoleIds, permission)) {
-//            return false;
-//        }
-//        return getHighestWeight(userPerformingActionRoleIds) > getHighestWeight(targetUserRoleIds);
-//
-//    }
+
 
     private int getHighestWeight(List<Long> userRoleIds) {
         short highestWeight = 0;
@@ -97,7 +81,7 @@ public class AuthorizationService {
                 highestWeight = weight;
             }
         }
-        System.out.println("Highest weight is " + highestWeight);
+
         return highestWeight;
     }
 }

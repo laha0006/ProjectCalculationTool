@@ -283,7 +283,7 @@ public class JdbcProjectRepository implements ProjectRepository {
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                System.out.println("PROJECT ID " + rs.getLong(1));
+
                 Project project = new Project(
                         rs.getLong(1),
                         rs.getString(2),
@@ -345,7 +345,7 @@ public class JdbcProjectRepository implements ProjectRepository {
     @Override
     public boolean deleteEntity(long projectId) {
         boolean isDeleted;
-        System.out.println("IN DELETE ENTITY");
+
         String deleteProject = """
                 DELETE FROM project
                 WHERE project.id = ?;
@@ -451,7 +451,7 @@ public class JdbcProjectRepository implements ProjectRepository {
         return userInformationDtoList;
     }
 
-    //TODO COMBINE IN QUERY
+
     @Override
     public List<UserRole> getAllUserRoles() {
         List<UserRole> roles = new ArrayList<>(2);

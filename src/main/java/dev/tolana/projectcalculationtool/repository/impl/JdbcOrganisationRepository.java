@@ -372,8 +372,7 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
             RoleAssignUtil.removeOrganisationRole(connection,orgId,
                     UserRole.ORGANISATION_ADMIN,username);
             //then we removed member, before adding admin
-            //TODO ideally, we want the option to add admin rank to only show up if the user
-            // isn't an admin already, but this works for now
+
             RoleAssignUtil.removeOrganisationRole(connection,orgId,
                     UserRole.ORGANISATION_MEMBER,username);
             RoleAssignUtil.assignOrganisationRole(connection,orgId,
@@ -385,9 +384,7 @@ public class JdbcOrganisationRepository implements OrganisationRepository {
 
     @Override
     public void kickMember(long orgId, String username){
-        //TODO
-        // add "remove from all" into this, such that it recursively removes a
-        // member from dept, team, project, task
+
         try (Connection connection = dataSource.getConnection()) {
            RoleAssignUtil.removeAllRoles(connection, EntityType.ORGANISATION,orgId,username);
         } catch (SQLException sqlException) {

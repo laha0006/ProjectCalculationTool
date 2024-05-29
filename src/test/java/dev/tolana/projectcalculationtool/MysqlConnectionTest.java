@@ -28,7 +28,7 @@ public class MysqlConnectionTest {
             ResultSet rs = stmt.executeQuery("SHOW DATABASES;");
             if (rs.next()) {
                 String dbName = rs.getString(1);
-                System.out.println("Database Name: " + dbName);
+
                 assertFalse(dbName.isEmpty());
             } else {
                 fail();
