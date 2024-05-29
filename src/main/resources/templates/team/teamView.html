@@ -22,10 +22,11 @@
                     </div>
 
                     <div th:unless="${allProjects.isEmpty()}">
-                        <table>
+                        <table class="table rounded align-middle">
                             <thead>
                             <tr>
                                 <th>Projekt</th>
+                                <th>Beskrivelse</th>
                                 <th>Deadline</th>
                                 <th>Status</th>
                             </tr>
@@ -37,6 +38,7 @@
                                     <a th:text="${project.projectName}"
                                        th:href="@{{teamId}/project/{projectId} (teamId=${team.id}, projectId=${project.id})}"></a>
                                 </td>
+                                <td th:text="${project.description()}"></td>
                                 <td th:text="${project.deadline}"></td>
                                 <td th:text="${project.status}"></td>
                             </tr>
