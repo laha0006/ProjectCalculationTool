@@ -1,4 +1,9 @@
-
+.vis-item {
+    border-color: white !important;
+    color: black !important;
+    font-weight: bold !important;
+    background-color: cadetblue !important;
+}
 
 .breadcrumb-panel {
     margin-top: -40px !important;

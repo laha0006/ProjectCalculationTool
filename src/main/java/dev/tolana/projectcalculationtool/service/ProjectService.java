@@ -9,6 +9,7 @@ import dev.tolana.projectcalculationtool.mapper.TaskDtoMapper;
 import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.Project;
 import dev.tolana.projectcalculationtool.repository.ProjectRepository;
+import dev.tolana.projectcalculationtool.util.GanttBuilderUtil;
 import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,7 @@ public class ProjectService {
         this.projectDtoMapper = projectDtoMapper;
         this.taskDtoMapper = taskDtoMapper;
         this.entityDtoMapper = entityDtoMapper;
+
     }
 
     @PreAuthorize("@auth.hasTeamAccess(#project.parentId(), " +
@@ -146,5 +148,9 @@ public class ProjectService {
                   "T(dev.tolana.projectcalculationtool.enums.Permission).PROJECT_READ)")
     public void kickMemberFromProject(long projectId, String username) {
         projectRepository.kickMember(projectId, username);
+    }
+
+    public String getGanttDataSetFromProjectId(long projectId) {
+        return calculationService.getGanttDataSetFromProjectId(projectId);
     }
 }
