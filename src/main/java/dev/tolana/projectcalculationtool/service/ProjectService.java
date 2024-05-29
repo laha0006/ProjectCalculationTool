@@ -38,7 +38,7 @@ public class ProjectService {
 
     }
 
-    @PreAuthorize("@auth.hasTeamAccess(#project.parentId(), " +
+    @PreAuthorize("@auth.hasTeamAccess(#project.teamId(), " +
                   "T(dev.tolana.projectcalculationtool.enums.Permission).PROJECT_CREATE)")
     public void createProject(String username, ProjectCreationDto project) {
         Entity newProject = projectDtoMapper.toEntity(project);
