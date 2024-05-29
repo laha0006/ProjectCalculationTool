@@ -45,7 +45,7 @@ public class RoleAssignUtil {
         ps.setString(1, username);
         ps.setLong(2, userRole.getRoleId());
         ps.setLong(3, id);
-        System.out.println("PS:   " + ps);
+
         return ps.executeUpdate();
     }
 

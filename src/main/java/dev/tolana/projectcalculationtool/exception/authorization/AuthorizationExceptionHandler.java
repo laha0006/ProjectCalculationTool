@@ -62,7 +62,7 @@ public class AuthorizationExceptionHandler {
     }
 
 
-    //TODO: figure out a better place to put global model attributes.
+
     @ModelAttribute("inviteCount")
     public int getInviteCount(Authentication authentication) {
         if (authentication == null) {

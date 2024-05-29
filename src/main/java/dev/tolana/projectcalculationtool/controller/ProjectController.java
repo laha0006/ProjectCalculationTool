@@ -171,10 +171,10 @@ public class ProjectController {
                                      @PathVariable("deptId") long deptId,
                                      @PathVariable("teamId") long teamId,
                                      @PathVariable("projectId") long projectId, Model model){
-        //TODO exclude owner of department from results
+
 
         ProjectViewDto project = projectService.getProjectToView(projectId);
-        System.out.println("Project: " + project);
+
         model.addAttribute("project", project);
 
         List<UserEntityRoleDto> users = projectService.getUsersFromTeamId(

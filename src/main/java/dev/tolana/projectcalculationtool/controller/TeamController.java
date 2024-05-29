@@ -82,7 +82,7 @@ public class TeamController {
     public String departmentMembersView(@PathVariable("orgId") long orgId,
                                         @PathVariable("deptId") long deptId,
                                         @PathVariable("teamId") long teamId, Model model){
-        //TODO exclude owner of department from results
+
         EntityViewDto team = teamService.getTeam(teamId);
         model.addAttribute("team", team);
 

@@ -36,7 +36,7 @@ public class DepartmentController {
     @GetMapping("{deptId}/members")
     public String organisationMembersView(@PathVariable("orgId") long orgId,
             @PathVariable("deptId") long departmentId, Model model){
-        //TODO exclude owner of department from results
+
         EntityViewDto department = departmentService.getDepartment(departmentId);
         model.addAttribute("department", department);
 

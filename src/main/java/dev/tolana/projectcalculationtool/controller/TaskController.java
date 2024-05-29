@@ -146,7 +146,7 @@ public class TaskController {
                                      Model model, Authentication authentication) {
         TaskViewDto task = taskService.getTaskToView(taskId);
         model.addAttribute("task", task);
-        System.out.println("task = " + task);
+
 
         List<UserEntityRoleDto> users = taskService.getUsersFromTaskId(taskId);
         String username = authentication.getName();
@@ -175,7 +175,7 @@ public class TaskController {
                                      @PathVariable long teamId,
                                      @PathVariable long projectId,
                                      @PathVariable long taskId, Authentication authentication) {
-        System.out.println("WE ARE HERE AT TASK ASSINGMENT OFFICES SMILEY FACE.");
+
         String username = authentication.getName();
         taskService.assignMemberToTask(username, taskId);
         return determineRedirection(orgId, deptId, teamId, projectId, taskId) + "/members";

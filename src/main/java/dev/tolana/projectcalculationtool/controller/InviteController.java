@@ -36,7 +36,7 @@ public class InviteController {
 
     @PostMapping("organisation/invite")
     public String invite(InviteFormDto formdata, Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
-        System.out.println("##################### POSTED LOL ");
+
         String referer = request.getHeader("referer");
         String userToBeInvited = formdata.username();
         userService.createInvite(formdata);
@@ -63,7 +63,7 @@ public class InviteController {
 
     @PostMapping("user/accept")
     public String acceptInvite(@RequestParam long orgId, RedirectAttributes redirectAttributes, Authentication authentication) {
-        System.out.println("WE ACCEPTED???");
+
         String username = authentication.getName();
         userService.acceptInvite(username,orgId);
         redirectAttributes.addFlashAttribute("alertSuccess", "Du har accepteret invitationen!");

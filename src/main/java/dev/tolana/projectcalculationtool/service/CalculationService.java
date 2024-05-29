@@ -154,9 +154,9 @@ public class CalculationService {
     private void addAllTasksAndSubTasksToList(List<Entity> allTasks, List<Entity> tasks) {
         allTasks.addAll(tasks);
         for (Entity entity : tasks) {
-            System.out.println("TASK: " + entity);
+
             List<Entity> subTasks = taskRepository.getChildren(entity.getId());
-            System.out.println("SUB TASKS: " + subTasks);
+
             allTasks.addAll(subTasks);
         }
     }
@@ -165,7 +165,7 @@ public class CalculationService {
         List<Entity> allTasks = new ArrayList<>();
         List<Entity> tasks = projectRepository.getChildren(projectId);
         List<Project> subProjects = projectRepository.getSubProjects(projectId);
-        System.out.println("Sub projects: " + subProjects);
+
         if (subProjects.isEmpty()) {
             addAllTasksAndSubTasksToList(allTasks, tasks);
         } else {
