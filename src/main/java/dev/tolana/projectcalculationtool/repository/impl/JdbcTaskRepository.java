@@ -12,6 +12,8 @@ import dev.tolana.projectcalculationtool.model.ResourceEntity;
 import dev.tolana.projectcalculationtool.model.Task;
 import dev.tolana.projectcalculationtool.repository.TaskRepository;
 import dev.tolana.projectcalculationtool.util.RoleAssignUtil;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -383,11 +385,11 @@ public class JdbcTaskRepository implements TaskRepository {
     }
 
     @Override
-    public void promoteMemberToAdmin(long entityId, String username) {
+    public void promoteMemberToAdmin(long taskId, String username) {
         try(Connection con = dataSource.getConnection()) {
-            RoleAssignUtil.removeTaskRole(con,entityId, UserRole.TASK_ADMIN,username);
-            RoleAssignUtil.removeTaskRole(con,entityId, UserRole.TASK_MEMBER,username);
-            RoleAssignUtil.assignTaskRole(con,entityId, UserRole.TASK_ADMIN,username);
+            RoleAssignUtil.removeTaskRole(con,taskId, UserRole.TASK_ADMIN,username);
+            RoleAssignUtil.removeTaskRole(con,taskId, UserRole.TASK_MEMBER,username);
+            RoleAssignUtil.assignTaskRole(con,taskId, UserRole.TASK_ADMIN,username);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -401,6 +403,16 @@ public class JdbcTaskRepository implements TaskRepository {
             throw new RuntimeException(e);
         }
 
+    }
+
+    @Override
+    public void removeSelfFromTask(long taskId) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        try(Connection con = dataSource.getConnection()) {
+            RoleAssignUtil.removeTaskRole(con,taskId,UserRole.TASK_MEMBER,username);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

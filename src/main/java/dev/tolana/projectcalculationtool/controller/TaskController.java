@@ -181,6 +181,16 @@ public class TaskController {
         return determineRedirection(orgId, deptId, teamId, projectId, taskId) + "/members";
     }
 
+    @PostMapping("/{taskId}/removeself")
+    public String removeSelf(@PathVariable long orgId,
+                             @PathVariable long deptId,
+                             @PathVariable long teamId,
+                             @PathVariable long projectId,
+                             @PathVariable long taskId) {
+        taskService.removeSelfFromTask(taskId);
+        return determineRedirection(orgId, deptId, teamId, projectId, taskId) + "/members";
+    }
+
 
     @PostMapping("/{taskId}/members/promote/{username}")
     public String promoteMemberToAdmin(@PathVariable("orgId") long orgId,

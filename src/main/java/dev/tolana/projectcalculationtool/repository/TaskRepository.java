@@ -7,4 +7,6 @@ import java.util.List;
 public interface TaskRepository extends ResourceEntityCrudOperations{
     @Override
     List<UserEntityRoleDto> getUsersFromEntityId(long entityId);
+
+    void removeSelfFromTask(long taskId);
 }

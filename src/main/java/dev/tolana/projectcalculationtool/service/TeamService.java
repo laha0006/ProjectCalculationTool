@@ -5,6 +5,8 @@ import dev.tolana.projectcalculationtool.mapper.EntityDtoMapper;
 import dev.tolana.projectcalculationtool.mapper.ProjectDtoMapper;
 import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.repository.TeamRepository;
+import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -24,31 +26,44 @@ public class TeamService {
         this.entityDtoMapper = entityDtoMapper;
     }
 
+
+    @PreAuthorize("@auth.hasTeamAccess(#teamId, " +
+                  "T(dev.tolana.projectcalculationtool.enums.Permission).TEAM_READ)")
     public EntityViewDto getTeam(long teamId){
         Entity team = teamRepository.getEntityOnId(teamId);
         return entityDtoMapper.toEntityViewDto(team);
     }
 
+    @PreAuthorize("@auth.hasTeamAccess(#teamId, " +
+                  "T(dev.tolana.projectcalculationtool.enums.Permission).TEAM_EDIT)")
     public EntityEditDto getTeamToEdit(long teamId){
         Entity team = teamRepository.getEntityOnId(teamId);
         return entityDtoMapper.toEntityEditDto(team);
     }
 
+    @PreAuthorize("@auth.hasTeamAccess(#editDto.id(), " +
+                  "T(dev.tolana.projectcalculationtool.enums.Permission).TEAM_EDIT)")
     public void editTeam(EntityEditDto editDto) {
         Entity teamToEdit = entityDtoMapper.toEntity(editDto);
         teamRepository.editEntity(teamToEdit);
     }
 
+    @PreAuthorize("@auth.hasDepartmentAccess(#teamCreationInfo.parentId(), " +
+                  "T(dev.tolana.projectcalculationtool.enums.Permission).TEAM_CREATE)")
     public void createTeam(EntityCreationDto teamCreationInfo, String username) {
         Entity teamToCreate = entityDtoMapper.toEntity(teamCreationInfo);
         teamRepository.createEntity(username, teamToCreate);
     }
 
+    @PostFilter("@auth.hasProjectAccess(filterObject.id(), " +
+                "T(dev.tolana.projectcalculationtool.enums.Permission).PROJECT_READ)")
     public List<ProjectViewDto> getChildren(long teamId) {
         List<Entity> projectList = teamRepository.getChildren(teamId);
         return projectDtoMapper.toProjectViewDtoList(projectList);
     }
 
+    @PreAuthorize("@auth.hasTeamAccess(#teamId, " +
+                  "T(dev.tolana.projectcalculationtool.enums.Permission).TEAM_DELETE)")
     public void deleteTeam(long teamId) {
         teamRepository.deleteEntity(teamId);
     }
@@ -79,17 +94,20 @@ public class TeamService {
         return teamRepository.getUserFromParentId(username,deptId);
     }
 
-    //add authorisation
+    @PreAuthorize("@auth.hasTeamAccess(#teamId, " +
+                  "T(dev.tolana.projectcalculationtool.enums.Permission).TEAM_INVITE)")
     public void assignMemberToTeam(long teamId, String username){
         teamRepository.assignMemberToEntity(teamId,username);
     }
 
-    //add authorisation
+    @PreAuthorize("@auth.hasTeamAccess(#teamId, " +
+                  "T(dev.tolana.projectcalculationtool.enums.Permission).TEAM_EDIT)")
     public void promoteMemberToAdmin(long teamId, String username){
         teamRepository.promoteMemberToAdmin(teamId,username);
     }
 
-    //add authorisation
+    @PreAuthorize("@auth.hasTeamAccess(#teamId, " +
+                  "T(dev.tolana.projectcalculationtool.enums.Permission).TEAM_KICK)")
     public void kickMemberFromTeam(long teamId, String username){
         teamRepository.kickMember(teamId,username);
     }

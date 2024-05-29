@@ -19,7 +19,12 @@
                                 <form th:action="@{assign}" method="POST">
                                     <button class="btn btn-success fw-bold" type="submit">Tilslut</button>
                                 </form>
-                            </div>
+                     </div>
+                    <div th:if="${isMember}">
+                                <form th:action="@{removeself}" method="POST">
+                                    <button class="btn btn-danger fw-bold" type="submit">Forlad</button>
+                                </form>
+                     </div>
                     <table class="table rounded align-middle">
                         <tbody>
                         <tr th:each="user : ${users}">

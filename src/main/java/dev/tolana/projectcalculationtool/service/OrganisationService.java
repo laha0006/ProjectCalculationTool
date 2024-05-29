@@ -5,6 +5,7 @@ import dev.tolana.projectcalculationtool.mapper.EntityDtoMapper;
 import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.Invitation;
 import dev.tolana.projectcalculationtool.repository.OrganisationRepository;
+import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -78,6 +79,8 @@ public class OrganisationService {
         organisationRepository.deleteEntity(organisationId);
     }
 
+    @PostFilter("@auth.hasDepartmentAccess(filterObject.id()," +
+                "T(dev.tolana.projectcalculationtool.enums.Permission).DEPARTMENT_READ)")
     public List<EntityViewDto> getChildren(long organisationId) {
         List<Entity> departments = organisationRepository.getChildren(organisationId);
         return entityDtoMapper.toEntityViewDtoList(departments);
@@ -87,12 +90,14 @@ public class OrganisationService {
         return organisationRepository.getUserFromOrganisationId(username,orgId);
     }
 
-    //add authorisation
+    @PreAuthorize("@auth.hasOrgansiationAccess(#orgId, " +
+                  "T(dev.tolana.projectcalculationtool.enums.Permission).ORGANISATION_EDIT)")
     public void promoteMemberToAdmin(long orgId, String username){
         organisationRepository.promoteMemberToAdmin(orgId,username);
     }
 
-    //add authorisation
+    @PreAuthorize("@auth.hasOrgansiationAccess(#orgId, " +
+                  "T(dev.tolana.projectcalculationtool.enums.Permission).ORGANISATION_KICK)")
     public void kickMemberFromOrganisation(long orgId, String username){
         organisationRepository.kickMember(orgId,username);
     }

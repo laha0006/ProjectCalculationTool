@@ -22,7 +22,8 @@ public class DepartmentService {
         this.jdbcDepartmentRepository = jdbcDepartmentRepository;
         this.entityDtoMapper = entityDtoMapper;
     }
-
+    @PreAuthorize("@auth.hasDepartmentAccess(#departmentId, " +
+                  "T(dev.tolana.projectcalculationtool.enums.Permission).DEPARTMENT_READ)")
     public EntityViewDto getDepartment(long departmentId) {
         Entity department = jdbcDepartmentRepository.getEntityOnId(departmentId);
         return entityDtoMapper.toEntityViewDto(department);
@@ -39,14 +40,19 @@ public class DepartmentService {
 
     //filterObject referes to the current object of the collection, when looping.
 
+
+    @PostFilter("@auth.hasTeamAccess(filterObject.id(), " +
+                  "T(dev.tolana.projectcalculationtool.enums.Permission).TEAM_READ)")
     public List<EntityViewDto> getChildren(long parentId) {
         List<Entity> teamList = jdbcDepartmentRepository.getChildren(parentId);
         return entityDtoMapper.toEntityViewDtoList(teamList);
     }
-
+    @PreAuthorize("@auth.hasDepartmentAccess(#deptId, " +
+                  "T(dev.tolana.projectcalculationtool.enums.Permission).DEPARTMENT_DELETE)")
     public void deleteDepartment(long deptId) {
         jdbcDepartmentRepository.deleteEntity(deptId);
     }
+
     @PreAuthorize("@auth.hasDepartmentAccess(#departmentId, " +
                   "T(dev.tolana.projectcalculationtool.enums.Permission).DEPARTMENT_EDIT)")
     public EntityEditDto getDepartmentToEdit(long departmentId) {
@@ -62,7 +68,7 @@ public class DepartmentService {
     }
 
 
-    //TODO add authorisation check
+
     public EntityViewDto getParent(long parentId) {
         Entity organisation = jdbcDepartmentRepository.getParent(parentId);
         return entityDtoMapper.toEntityViewDto(organisation);
@@ -88,17 +94,20 @@ public class DepartmentService {
         return jdbcDepartmentRepository.getUserFromParentId(username,orgId);
     }
 
-    //add authorisation
+    @PreAuthorize("@auth.hasDepartmentAccess(#deptId, " +
+                  "T(dev.tolana.projectcalculationtool.enums.Permission).DEPARTMENT_EDIT)")
     public void assignMemberToDepartment(long deptId, String username){
         jdbcDepartmentRepository.assignMemberToEntity(deptId,username);
     }
 
-    //add authorisation
+    @PreAuthorize("@auth.hasDepartmentAccess(#deptId, " +
+                  "T(dev.tolana.projectcalculationtool.enums.Permission).DEPARTMENT_EDIT)")
     public void promoteMemberToAdmin(long deptId, String username){
         jdbcDepartmentRepository.promoteMemberToAdmin(deptId,username);
     }
 
-    //add authorisation
+    @PreAuthorize("@auth.hasDepartmentAccess(#deptId, " +
+                  "T(dev.tolana.projectcalculationtool.enums.Permission).DEPARTMENT_KICK)")
     public void kickMemberFromDepartment(long deptId, String username){
         jdbcDepartmentRepository.kickMember(deptId,username);
     }
