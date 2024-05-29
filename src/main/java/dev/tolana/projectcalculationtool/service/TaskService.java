@@ -28,7 +28,7 @@ public class TaskService {
     }
 
 
-    @PreAuthorize("@auth.hasProjectAccess(#newTask.parentId(), " +
+    @PreAuthorize("@auth.hasProjectAccess(#newTask.projectId(), " +
                   "T(dev.tolana.projectcalculationtool.enums.Permission).TASK_CREATE)")
     public void createTask(String username, TaskCreationDto newTask) {
         Entity task =  taskDtoMapper.toEntity(newTask);
