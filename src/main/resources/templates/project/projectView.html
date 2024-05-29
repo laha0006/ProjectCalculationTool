@@ -165,11 +165,7 @@
                                 </form>
                             </div>
 
-                            <div class="d-inline">
-                                <form th:action="@{{projectId}/delete (projectId = ${project.id})}" method="post">
-                                    <button class="btn btn-danger fw-bold">Slet projekt</button>
-                                </form>
-                            </div>
+
                         </div>
 
                         <!--                        IF THERE ARE TASKS IN PROJECT, ONLY DISPLAY OPTION FOR CREATION OTHER TASKS AND NOT SUBPROJECTS-->
@@ -187,14 +183,15 @@
                                         <button class="btn btn-primary fw-bold">Ændre projekt</button>
                                     </form>
                                 </div>
-
-                                <div class="d-inline">
-                                    <form th:action="@{{projectId}/delete (projectId = ${project.id})}" method="post">
-                                        <button class="btn btn-danger fw-bold">Slet projekt</button>
-                                    </form>
-                                </div>
                             </div>
                         </div>
+
+                        <div class="d-inline">
+                            <form th:action="@{{projectId}/delete (projectId = ${project.id})}" method="post">
+                                <button class="btn btn-danger fw-bold">Slet projekt</button>
+                            </form>
+                        </div>
+
                         <!--TODO change this below since it appears weirdly on project page, with "ændre" on newline-->
 
                     </div>
