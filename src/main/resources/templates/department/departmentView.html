@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html th:fragment="" lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       data-bs-theme="dark">
 <head>
     <th:block th:insert="~{fragments/head :: headFiles}"></th:block>
@@ -35,16 +34,9 @@
 
 
                     <div class="d-flex">
-                        <!--                        TODO MAKE SURE THIS IS HOW YOU CHECK ENUM VALUES-->
-                        <!--                        <div th:if="${userRole == 'ORGANISATION_OWNER' || userRole == 'ORGANISATION_ADMIN'}">-->
                         <div class="d-inline">
                             <a th:href="@{/organisation/{orgId}/department/{deptId}/team/create (orgId = ${department.parentId}, deptId = ${department.id}) }"
                                class="btn btn-success fw-bold">Opret team</a>
-                        </div>
-
-                        <div class="d-inline">
-                            <a th:href="@{/organisation/{orgId}/department/{deptId}/invite (orgId = ${department.parentId}, deptId = ${department.id})}"
-                               class="btn btn-success fw-bold">Tilføj brugere</a>
                         </div>
 
                         <div class="d-inline">
@@ -54,7 +46,7 @@
 
                         <div class="d-inline">
                             <a th:href="@{/organisation/{orgId}/department/{deptId}/edit (orgId = ${department.parentId}, deptId = ${department.id})}"
-                               class="btn btn-primary fw-bold">Ændr afdeling</a>
+                               class="btn btn-primary fw-bold">Ændre afdeling</a>
                         </div>
 
                         <div class="d-inline">
