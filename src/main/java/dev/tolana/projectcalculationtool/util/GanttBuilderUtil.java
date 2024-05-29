@@ -16,7 +16,6 @@ package dev.tolana.projectcalculationtool.util;
 
 import com.google.gson.Gson;
 import dev.tolana.projectcalculationtool.dto.ProjectStatsDto;
-import dev.tolana.projectcalculationtool.dto.ResourceEntityViewDto;
 import dev.tolana.projectcalculationtool.dto.TaskStatsDto;
 import dev.tolana.projectcalculationtool.model.Entity;
 import dev.tolana.projectcalculationtool.model.Task;
