@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html th:fragment="" lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       data-bs-theme="dark">
 <head>
     <th:block th:insert="~{fragments/head :: headFiles}"></th:block>
@@ -15,12 +14,12 @@
             <main class="d-flex justify-content-center text-center bg-secondary-subtle py-3 px-5 rounded shadow">
                 <div class="box-400">
                     <div>
-                        <h1>Opret Bruger.</h1>
+                        <h1>Opret Bruger</h1>
                     </div>
                     <form th:action="@{/user/register}" method="post" th:object="${newUser}">
 
                         <div class="form-group">
-                            <label class="form-label" for="username">Username: </label>
+                            <label class="form-label" for="username">Brugernavn: </label>
                             <input class="form-control" id="username" type="text" th:name="username" required
                             autofocus>
                         </div>
@@ -33,7 +32,7 @@
                             <button class="btn btn-success fw-bold" type="submit">Register</button>
                         </div>
                         <div class="form-group">
-                            Already have an account?
+                            Har du allerede en bruger?
                             <a th:href="@{/user/login}">
                                 Log in
                             </a>

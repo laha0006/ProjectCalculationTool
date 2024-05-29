@@ -1,28 +1,28 @@
 <!DOCTYPE html>
 <html th:fragment="" lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       data-bs-theme="dark">
 <head>
     <th:block th:insert="~{fragments/head :: headFiles}"></th:block>
     <title>Title</title>
 </head>
 <body>
-<div>
-    <th:block th:fragment="progressBar(width)">
-        <div class="progress" role="progressbar">
-            <div th:if="${width <= 50}" class="progress-bar bg-success fw-bold"
-                 th:style="'width:' + ${width}+'%;'"
-                 th:text="${width} + '%'">
+    <div>
+        <th:block th:fragment="progressBar(width)">
+            <div class="progress" role="progressbar">
+                <div th:if="${width <= 50}" class="progress-bar bg-success fw-bold"
+                     th:style="'width:' + ${width}+'%;'"
+                     th:text="${width} + '%'">
+                </div>
+                <div th:if="${width > 50 && width <= 99}" class="progress-bar bg-warning fw-bold text-dark"
+                     th:style="'width:' + ${width}+'%;'"
+                     th:text="${width} + '%'">
+                </div>
+                <div th:if="${width > 99}" class="progress-bar bg-danger fw-bold"
+                     th:style="'width:' + ${width}+'%;'"
+                     th:text="${width} + '%'">
+                </div>
             </div>
-            <div th:if="${width > 50 && width <= 99}" class="progress-bar bg-warning fw-bold text-dark"
-                 th:style="'width:' + ${width}+'%;'"
-                 th:text="${width} + '%'">
-            </div>
-            <div th:if="${width > 99}" class="progress-bar bg-danger fw-bold"
-                 th:style="'width:' + ${width}+'%;'"
-                 th:text="${width} + '%'">
-            </div>
-        </div>
-    </th:block>
+        </th:block>
+    </div>
 </body>
 </html>

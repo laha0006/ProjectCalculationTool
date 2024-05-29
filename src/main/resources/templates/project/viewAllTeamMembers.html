@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Team members</title>
@@ -9,7 +9,7 @@
 
 <div th:if="${teamMembers.isEmpty()}">
     <p>
-        There are no team members to assign.
+        Der er ingen teammedlemmer at tilføje.
     </p>
 </div>
 
