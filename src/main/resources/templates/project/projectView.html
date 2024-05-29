@@ -174,7 +174,8 @@
 
                         <!--                        IF THERE ARE TASKS IN PROJECT, ONLY DISPLAY OPTION FOR CREATION OTHER TASKS AND NOT SUBPROJECTS-->
                         <div class="d-flex">
-                            <div th:if="${!allTasks.isEmpty() && allSubProjects.isEmpty() || project.parentId() != 0}" class="d-flex">
+                            <div th:if="${!allTasks.isEmpty() && allSubProjects.isEmpty() || project.parentId() != 0}"
+                                 class="d-flex">
                                 <div class="d-inline">
                                     <a th:href="@{{projectId}/task/create (projectId=${project.id} )}">
                                         <button class="btn btn-success fw-bold">Opret opgave</button>
@@ -210,6 +211,10 @@
                         <div style="width: 800px">
                             <div th:replace="~{fragments/stats/progressBar :: progressBar(width=${projectStats.estimatedOverAllottedHours()})}"></div>
                         </div>
+                        <div class="mt-4 mb-4 text-start">
+                            <h3 class="text-center">Gantt Diagram</h3>
+                            <div id="timeLine"></div>
+                        </div>
                     </div>
                     <!--   END OF STATS SECTION -->
 
@@ -236,5 +241,23 @@
         <footer th:replace="~{fragments/footer :: footer}"></footer>
     </div>
 </div>
+
+<!-- gantt diagram script -->
+<script th:inline="javascript">
+    const container = document.getElementById("timeLine");
+    const myData = [[${ganttDataSet}]]
+    console.log(myData)
+
+    // Create a DataSet (allows two way data-binding)
+    const items = new vis.DataSet(JSON.parse(myData));
+
+    // Configuration for the Timeline
+    const options = {};
+
+    // Create a Timeline
+    const timeline = new vis.Timeline(container, items, options);
+</script>
+
+
 </body>
 </html>
