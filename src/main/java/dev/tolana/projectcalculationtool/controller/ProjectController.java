@@ -36,6 +36,9 @@ public class ProjectController {
         ProjectStatsDto stats = projectService.getProjectStats(projectId);
         model.addAttribute("projectStats", stats);
 
+        String ganttDataSet = projectService.getGanttDataSetFromProjectId(projectId);
+        model.addAttribute("ganttDataSet", ganttDataSet);
+
         model.addAttribute("orgId", orgId);
         model.addAttribute("deptId", deptId);
         model.addAttribute("teamId", teamId);
