@@ -17,7 +17,7 @@
                     <h1 th:text="'Projekter i: ' + ${team.name}"></h1>
                     <div th:if="${allProjects.isEmpty()}">
                         <h3>
-                            Teamet har ingen projekter.
+                            Teamet har ingen projekter
                         </h3>
                     </div>
 
@@ -58,7 +58,7 @@
 
                         <div class="d-inline">
                             <a th:href="@{{teamId}/edit (teamId=${team.id})}"
-                               class="btn btn-primary fw-bold">Ændr afdeling</a>
+                               class="btn btn-primary fw-bold">Ændre team</a>
                         </div>
 
                         <div class="d-inline">

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -10,11 +9,11 @@
 <div th:fragment="alerts" class="text-center">
 
     <div th:if="${param.error}" class="alert alert-danger alertPanel">
-        Invalid username or password
+        Ugyldigt brugernavn eller password
     </div>
 
     <div th:if="${param.logout}" class="alert alert-success alertPanel">
-        You have successfully logged out.
+        Du er nu logget ud
     </div>
 
     <div th:if="${alertSuccess != null}" th:text="${alertSuccess}" class="alert alert-success alertPanel" role="alert">
@@ -23,13 +22,7 @@
     </div>
     <div th:if="${alertWarning != null}" th:text="${alertWarning}" class="alert alert-warning alertPanel" role="alert">
     </div>
-<!--    <div th:text="${breadCrumb}"></div>-->
-<!--    <div th:if="${breadCrumb.show}">-->
 
-<!--        <div th:each="breadcrumb : ${breadCrumb.breadCrumbs}">-->
-<!--            <a th:href="${breadcrumb.url}" th:text="${breadcrumb.name}"></a>-->
-<!--        </div>-->
-<!--    </div>-->
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li th:each="breadcrumb : ${breadCrumb.breadCrumbs}" class="breadcrumb-item"
